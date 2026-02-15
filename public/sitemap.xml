@@ -9,14 +9,20 @@
    </url>
 
    <url>
-      <loc>https://boutiqueempresarial.com.br/privacidade</loc>
+      <loc>https://boutiqueempresarial.com.br/privacidade.hmtl</loc>
       <lastmod>2026-02-15</lastmod>
       <changefreq>yearly</changefreq>
       <priority>0.3</priority>
    </url>
 
    <url>
-      <loc>https://boutiqueempresarial.com.br/termos</loc>
+      <loc>https://boutiqueempresarial.com.br/termos.hmtl</loc>
+      <lastmod>2026-02-15</lastmod>
+      <changefreq>yearly</changefreq>
+      <priority>0.3</priority>
+   </url>
+   <url>
+      <loc>https://boutiqueempresarial.com.br/formulario.hmtl</loc>
       <lastmod>2026-02-15</lastmod>
       <changefreq>yearly</changefreq>
       <priority>0.3</priority>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	<link rel="shortcut icon" href="/favicon.ico" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+	<meta name="apple-mobile-web-app-title" content="BoutiqueEmpresarial" />
+	<link rel="manifest" href="/site.webmanifest" />
+    <meta name="description"
+        content="Solicite seu Diagnóstico Estratégico. Consultoria especializada para escalar seu negócio.">
+    <link rel="canonical" href="https://boutiqueempresarial.com.br/formulario.html">
+    <title>Diagnóstico Estratégico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f5f2eb;
+            --txt: #1f1f1f;
+            --err: #b91c1c;
+            --g: #6b6b6b
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background: var(--bg);
+            font-family: 'Playfair Display', serif;
+            color: var(--txt);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100dvh;
+            padding: 1rem;
+            transition: padding .3s
+        }
+
+        input,
+        button {
+            font-family: inherit
+        }
+
+        .c {
+            width: 100%;
+            max-width: 680px;
+            padding: 2rem 1.5rem;
+            position: relative
+        }
+
+        .l-w {
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: .95
+        }
+
+        .l-img {
+            width: 200px;
+            height: auto;
+            aspect-ratio: 200/200;
+            display: block;
+            margin: 0 auto
+        }
+
+        .p-c {
+            width: 100%;
+            background: #e5e7eb;
+            height: 2px;
+            margin-bottom: 2rem;
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        .bar {
+            background: var(--txt);
+            height: 100%;
+            width: 14%;
+            transition: width .4s ease
+        }
+
+        .step {
+            display: none;
+            animation: f .4s ease-out forwards
+        }
+
+        .step.a {
+            display: block
+        }
+
+        @keyframes f {
+            from {
+                opacity: 0;
+                transform: translatex(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translatex(0)
+            }
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.2
+        }
+
+        input:not([type=radio]):not([type=checkbox]) {
+            width: 100%;
+            background: 0 0;
+            border: 0;
+            border-bottom: 1px solid rgba(0, 0, 0, .15);
+            font-size: 16px;
+            padding: .8rem 0;
+            color: var(--txt);
+            border-radius: 0;
+            transition: .3s
+        }
+
+        input:focus {
+            outline: 0;
+            border-bottom: 2px solid var(--txt)
+        }
+
+        .rg {
+            display: flex;
+            flex-direction: column;
+            gap: .8rem
+        }
+
+        .rl {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: .5rem 0;
+            user-select: none
+        }
+
+        .rl input {
+            appearance: none;
+            width: 1.2em;
+            height: 1.2em;
+            border: 1px solid #aaa;
+            border-radius: 50%;
+            margin-right: .8rem;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0
+        }
+
+        .rl input::before {
+            content: "";
+            width: .65em;
+            height: .65em;
+            border-radius: 50%;
+            transform: scale(0);
+            transition: .2s;
+            background: var(--txt)
+        }
+
+        .rl input:checked {
+            border-color: var(--txt)
+        }
+
+        .rl input:checked::before {
+            transform: scale(1)
+        }
+
+        .btns {
+            margin-top: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .btn {
+            background: var(--txt);
+            color: #fff;
+            border: 0;
+            padding: .8rem 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: .3s;
+            border-radius: 4px;
+            font-weight: 600
+        }
+
+        .btn:active {
+            transform: scale(.98)
+        }
+
+        .btn:disabled {
+            opacity: .6;
+            cursor: wait
+        }
+
+        .b-bk {
+            background: 0 0;
+            color: var(--g);
+            padding: 0
+        }
+
+        .b-bk:hover {
+            color: var(--txt)
+        }
+
+        .err {
+            color: var(--err);
+            font-size: .85rem;
+            margin-top: .5rem;
+            display: none
+        }
+
+        .i-err {
+            border-bottom-color: var(--err) !important
+        }
+
+        .shake {
+            animation: s .4s cubic-bezier(.36, .07, .19, .97) both
+        }
+
+        @keyframes s {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0)
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0)
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0)
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0)
+            }
+        }
+
+        .prg-inf {
+            text-align: center;
+            margin-top: 2rem;
+            opacity: .8
+        }
+
+        .prg-txt {
+            color: var(--g);
+            margin-bottom: .5rem;
+            font-size: .75rem;
+            letter-spacing: .5px
+        }
+
+        .dots {
+            justify-content: center;
+            gap: .4rem;
+            display: flex
+        }
+
+        .dot {
+            background: #d1d5db;
+            border-radius: 50%;
+            width: 6px;
+            height: 6px;
+            transition: background .3s
+        }
+
+        .dot.act {
+            background: var(--txt)
+        }
+
+        .leg {
+            margin-top: 3rem;
+            font-size: .7rem;
+            text-align: center;
+            color: #9ca3af;
+            line-height: 1.4;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1rem
+        }
+
+        .leg a {
+            color: var(--g)
+        }
+
+        .h {
+            display: none !important
+        }
+
+        @media(max-height:600px) {
+            body {
+                justify-content: flex-start;
+                padding-top: 2rem
+            }
+        }
+    </style>
+    
+</head>
+
+<body>
+    <div class="c">
+        <div class="l-w"><img src="/boutiquelogo.webp" alt="Boutique Empresarial" class="l-img" width="200"
+                height="200"></div>
+        <div class="p-c">
+            <div class="bar" id="pb"></div>
+        </div>
+        <form id="f" onsubmit="return!1"><input type="hidden" name="event_id" id="eid">
+            <div class="step a" data-s="0">
+                <h2>Para começar, qual seu nome?</h2><input type="text" name="nome" id="nome" autocomplete="name"
+                    placeholder="Digite sua resposta..." class="req">
+                <p class="err">Campo obrigatório.</p>
+            </div>
+            <div class="step" data-s="1">
+                <h2>Qual seu WhatsApp?</h2>
+                <p style="font-size:.9rem;color:#666;margin-bottom:1rem">Priorizamos o contato por aqui.</p><input
+                    type="tel" name="whatsapp" id="whatsapp" autocomplete="tel" inputmode="numeric"
+                    placeholder="(DD) 99999-9999" class="req">
+                <p class="err">Informe um WhatsApp válido.</p>
+            </div>
+            <div class="step" data-s="2">
+                <h2>Qual seu melhor e-mail?</h2><input type="email" name="email" id="email" autocomplete="email"
+                    inputmode="email" placeholder="nome@exemplo.com">
+                <p class="err" id="err-email">E-mail inválido ou obrigatório.</p>
+            </div>
+            <div class="step" data-s="3">
+                <h2>Qual o faturamento médio mensal?</h2>
+                <div class="rg"><label class="rl"><input type="radio" name="faturamento" value="Até 50k">Até
+                        50k</label><label class="rl"><input type="radio" name="faturamento" value="50k a 100k">50k a
+                        100k</label><label class="rl"><input type="radio" name="faturamento" value="100k a 300k">100k a
+                        300k</label><label class="rl"><input type="radio" name="faturamento" value="Acima de 300k">Acima
+                        de 300k</label></div>
+            </div>
+            <div class="step" data-s="4">
+                <h2>Tamanho do Time (fixos e freelancers):</h2>
+                <div class="rg"><label class="rl"><input type="radio" name="time" value="1-5">1 a 5
+                        pessoas</label><label class="rl"><input type="radio" name="time" value="6-15">6 a 15
+                        pessoas</label><label class="rl"><input type="radio" name="time" value="16-30">16 a 30
+                        pessoas</label><label class="rl"><input type="radio" name="time" value="+31">Mais de 31
+                        pessoas</label></div>
+            </div>
+            <div class="step" data-s="5">
+                <h2>Se ausentar por 7 dias, a operação continua?</h2>
+                <div class="rg"><label class="rl"><input type="radio" name="operacao" value="Sim">Sim, roda
+                        sozinha.</label><label class="rl"><input type="radio" name="operacao" value="Falhas">Roda, mas
+                        com falhas.</label><label class="rl"><input type="radio" name="operacao" value="Trava">Não, a
+                        operação trava.</label></div>
+            </div>
+            <div class="step" data-s="6">
+                <h2>Disposta a investir na estruturação?</h2>
+                <div class="rg"><label class="rl"><input type="radio" name="investimento" value="Sim">Sim, pronta para
+                        investir.</label><label class="rl"><input type="radio" name="investimento"
+                            value="Entender">Quero entender valores.</label></div>
+            </div>
+            <div class="btns"><button type="button" id="prev" class="btn b-bk h"
+                    onclick="nav(-1)">Voltar</button><button type="button" id="next" class="btn"
+                    onclick="nav(1)">Próximo</button></div>
+            <div class="prg-inf">
+                <p class="prg-txt">Leva menos de 1 minuto. Apenas 7 perguntas.</p>
+                <div class="dots" id="dots"><span class="dot act"></span><span class="dot"></span><span
+                        class="dot"></span><span class="dot"></span><span class="dot"></span><span
+                        class="dot"></span><span class="dot"></span></div>
+            </div>
+            <p id="l-msg" class="leg h" style="color:var(--txt);font-weight:600">Processando...</p>
+            <div class="leg">Ao enviar, você concorda com nossa <a href="/privacidade.html" target="_blank">Política
+                    de Privacidade</a>.</div>
+        </form>
+    </div>
+    <script>const G_URL = "https://script.google.com/macros/s/AKfycbxRfDJx9yIZcS-fFVjVAVQuAY-qVWvYKMs9KCHSbMRRE78LPjYjrnb20KJrAPlj_NIo/exec", S = document.querySelectorAll(".step"), PB = document.getElementById("pb"), PV = document.getElementById("prev"), NX = document.getElementById("next"), DT = document.querySelectorAll(".dot"); let c = 0; document.getElementById("eid").value = eid; const mk = v => (v = v.replace(/\D/g, ""), v.length > 11 && (v = v.slice(0, 11)), v.length > 2 && (v = `(${v.substring(0, 2)}) ${v.substring(2)}`), v.length > 9 && (v = `${v.substring(0, 10)}-${v.substring(10)}`), v); document.getElementById("whatsapp").addEventListener("input", e => e.target.value = mk(e.target.value)); const ui = () => { S.forEach((s, i) => { s.classList.toggle("a", i === c), i === c && (s.style.animation = "none", s.offsetHeight, s.style.animation = null) }); DT.forEach((d, i) => d.classList.toggle("act", i === c)); PB.style.width = `${(c + 1) / 7 * 100}%`; PV.classList.toggle("h", 0 === c); NX.innerText = 6 === c ? "Solicitar Diagnóstico" : "Próximo" }, isEm = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e), val = i => { const s = S[i], t = s.querySelector("input[type=text],input[type=tel]"), m = s.querySelector("input[type=email]"), r = s.querySelectorAll("input[type=radio]"), e = s.querySelector(".err"); let k = !0; const sw = (o, x) => { o.classList.toggle("i-err", !x), e && (e.style.display = x ? "none" : "block") }; if (t && t.value.length < 3 && (k = !1, sw(t, 0)), r.length > 0 && ![...r].some(x => x.checked) && (k = !1, s.classList.add("shake"), setTimeout(() => s.classList.remove("shake"), 500)), 2 === i) { const z = document.getElementById("whatsapp").value.replace(/\D/g, ""), v = m.value.trim(); if (z.length < 10 && !v) { k = !1; document.getElementById("err-email").innerText = "Precisamos de pelo menos um contato."; sw(m, 0) } else if (v && !isEm(v)) { k = !1; document.getElementById("err-email").innerText = "E-mail inválido."; sw(m, 0) } else { sw(m, 1) } } return k }, nav = d => { if (1 === d && !val(c)) return; if (6 === c && 1 === d) { sub(); return } c += d, ui() }; document.querySelectorAll("input").forEach(i => { i.addEventListener("focus", e => { setTimeout(() => { e.target.scrollIntoView({ behavior: "smooth", block: "center" }) }, 300) }), i.addEventListener("input", function () { this.classList.remove("i-err"); const e = this.parentElement.querySelector(".err"); e && (e.style.display = "none") }), i.addEventListener("keypress", e => { "Enter" === e.key && nav(1) }) }); const sub = () => { NX.disabled = !0; NX.innerText = "Enviando..."; document.getElementById("l-msg").classList.remove("h"); const f = new FormData(document.getElementById("f")), d = Object.fromEntries(f.entries()); d.user_agent = navigator.userAgent; const u = new URLSearchParams(window.location.search);["utm_source", "utm_campaign", "fbclid"].forEach(k => d[k] = u.get(k) || ""); d.lgpd_consent = "on"; const h = { em: d.email.trim().toLowerCase(), ph: d.whatsapp.replace(/\D/g, ""), eid: eid }; localStorage.setItem("ld", JSON.stringify(h)); fetch(G_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(d) }).then(() => { setTimeout(() => window.location.href = "obrigada.html" + window.location.search, 500) }).catch(() => { alert("Erro. Tente novamente."), NX.disabled = !1, NX.innerText = "Solicitar Diagnóstico" }) }; ui();</script>
+</body>
+
+</html>
