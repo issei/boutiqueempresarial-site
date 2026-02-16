@@ -1,111 +1,307 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-	<link rel="shortcut icon" href="/favicon.ico" />
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-	<meta name="apple-mobile-web-app-title" content="BoutiqueEmp" />
-	<link rel="manifest" href="/site.webmanifest" />
-	
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="BoutiqueEmp" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <title>Boutique Empresarial | Clareza. Estabilidade. Operação Previsível.</title>
-    
-    <meta name="description" content="O refúgio estratégico do empresário. Um programa de estruturação avançada que transforma negócios reativos em operações estáveis e silenciosas.">
+
+    <meta name="description"
+        content="O refúgio estratégico do empresário. Um programa de estruturação avançada que transforma negócios reativos em operações estáveis e silenciosas.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://boutiqueempresarial.com.br/">
-    
+
     <meta property="og:type" content="website">
     <meta property="og:title" content="Boutique Empresarial | Negócios estáveis não nascem do caos">
-    <meta property="og:description" content="Transforme sua empresa em uma operação estável onde decisões são claras e o dono deixa de ser o centro do caos.">
-    <meta property="og:image" content="https://boutiqueempresarial.com.br/share.jpg">
+    <meta property="og:description"
+        content="Transforme sua empresa em uma operação estável onde decisões são claras e o dono deixa de ser o centro do caos.">
+    <meta property="og:image" content="https://boutiqueempresarial.com.br/boutiquelogo.webp">
+    <meta property="og:image:width" content="300">
+    <meta property="og:image:height" content="300">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+
     <style>
         :root {
             /* Paleta "Silêncio e Elegância" */
-            --bg-color: #f5f2eb; /* Off-white para reduzir brilho */
-            --text-primary: #1f1f1f; /* Preto suave */
+            --bg-color: #f5f2eb;
+            /* Off-white para reduzir brilho */
+            --text-primary: #1f1f1f;
+            /* Preto suave */
             --text-secondary: #555555;
-            --accent-color: #1C1C1C; /* Minimalismo: o destaque é a própria estrutura */
+            --accent-color: #1C1C1C;
+            /* Minimalismo: o destaque é a própria estrutura */
             --border-color: #E5E5E5;
-            --gold-subtle: #C5A059; /* Apenas para detalhes mínimos */
+            --gold-subtle: #C5A059;
+            /* Apenas para detalhes mínimos */
         }
 
         /* Reset Minimalista */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-primary); line-height: 1.8; font-weight: 300; }
-        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
         /* Tipografia de Autoridade */
-        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; font-weight: 400; letter-spacing: -0.02em; color: var(--text-primary); }
-        h1 { font-size: clamp(2.5rem, 4vw, 3.8rem); line-height: 1.2; margin-bottom: 1.5rem; }
-        h2 { font-size: clamp(2rem, 3vw, 2.5rem); margin-bottom: 2rem; }
-        h3 { font-size: 1.5rem; margin-bottom: 1rem; font-weight: 600; }
-        p { margin-bottom: 1.5rem; font-size: 1.125rem; color: var(--text-secondary); }
-        strong { font-weight: 600; color: var(--text-primary); }
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 4vw, 3.8rem);
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 3vw, 2.5rem);
+            margin-bottom: 2rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+        }
+
+        strong {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
 
         /* Layout "Breathable" (Que respira) */
-        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; }
-        section { padding: 100px 0; }
-        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+        }
+
+        section {
+            padding: 100px 0;
+        }
+
         /* Header Discreto */
-        header { padding: 40px 0; position: absolute; width: 100%; top: 0; z-index: 10; }
-        nav { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 600; letter-spacing: 0.05em; text-decoration: none; color: var(--text-primary); }
-        .apply-link { text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em; text-decoration: none; color: var(--text-primary); border-bottom: 1px solid transparent; transition: 0.3s; }
-        .apply-link:hover { border-bottom: 1px solid var(--text-primary); }
+        header {
+            padding: 40px 0;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            z-index: 10;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .apply-link {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            color: var(--text-primary);
+            border-bottom: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        .apply-link:hover {
+            border-bottom: 1px solid var(--text-primary);
+        }
 
         /* Hero Section - A Verdade Dura */
-        .hero { padding-top: 180px; padding-bottom: 120px; text-align: left; }
-        .hero-sub { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.2em; color: var(--text-secondary); margin-bottom: 20px; display: block; }
-        
+        .hero {
+            padding-top: 180px;
+            padding-bottom: 120px;
+            text-align: left;
+        }
+
+        .hero-sub {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            display: block;
+        }
+
         /* Botão "Aplicação" - Elegante e Direto */
-        .btn { display: inline-block; padding: 16px 40px; background-color: var(--text-primary); color: #fff; text-decoration: none; font-size: 0.9rem; letter-spacing: 0.05em; border-radius: 2px; transition: all 0.3s ease; border: 1px solid var(--text-primary); }
-        .btn:hover { background-color: transparent; color: var(--text-primary); }
-        .btn-outline { background-color: transparent; color: var(--text-primary); border: 1px solid var(--text-primary); }
-        .btn-outline:hover { background-color: var(--text-primary); color: #fff; }
+        .btn {
+            display: inline-block;
+            padding: 16px 40px;
+            background-color: var(--text-primary);
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--text-primary);
+        }
+
+        .btn:hover {
+            background-color: transparent;
+            color: var(--text-primary);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--text-primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--text-primary);
+            color: #fff;
+        }
 
         /* Seção "O Quadro Real" (Dor) */
-        .pain-section { background-color: #fff; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
-        .pain-list { list-style: none; margin-top: 2rem; }
-        .pain-list li { margin-bottom: 1rem; padding-left: 20px; border-left: 2px solid var(--gold-subtle); }
+        .pain-section {
+            background-color: #fff;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .pain-list {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        .pain-list li {
+            margin-bottom: 1rem;
+            padding-left: 20px;
+            border-left: 2px solid var(--gold-subtle);
+        }
 
         /* Metodologia (3 Fases) */
-        .methodology { background-color: var(--bg-color); }
-        .steps-grid { display: grid; grid-template-columns: 1fr; gap: 40px; margin-top: 40px; }
-        .step-card { background: #fff; padding: 40px; border: 1px solid var(--border-color); transition: 0.3s; }
-        .step-number { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold-subtle); opacity: 0.5; margin-bottom: 10px; display: block; }
+        .methodology {
+            background-color: var(--bg-color);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .step-card {
+            background: #fff;
+            padding: 40px;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
+
+        .step-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--gold-subtle);
+            opacity: 0.5;
+            margin-bottom: 10px;
+            display: block;
+        }
 
         /* Manifesto */
-        .manifesto { text-align: center; max-width: 700px; margin: 0 auto; }
-        .manifesto p { font-size: 1.25rem; font-style: italic; color: var(--text-primary); }
+        .manifesto {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .manifesto p {
+            font-size: 1.25rem;
+            font-style: italic;
+            color: var(--text-primary);
+        }
 
         /* Footer */
-        footer { padding: 60px 0; border-top: 1px solid var(--border-color); text-align: center; font-size: 0.85rem; color: var(--text-secondary); }
-		
-		.skip-link { position: absolute; top: -40px; left: 0; background: #000; color: #fff; padding: 8px; z-index: 100; transition: top 0.3s; }
-		.skip-link:focus { top: 0; }
+        footer {
+            padding: 60px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #000;
+            color: #fff;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
 
         @media (min-width: 768px) {
-            .steps-grid { grid-template-columns: repeat(3, 1fr); }
-            h1 { max-width: 90%; }
+            .steps-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            h1 {
+                max-width: 90%;
+            }
         }
     </style>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8HNXV7KTY9"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-8HNXV7KTY9');
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-8HNXV7KTY9');
     </script>
 </head>
+
 <body>
-	<a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
     <header>
         <div class="container">
             <nav>
@@ -120,7 +316,9 @@
             <div class="container">
                 <span class="hero-sub">Clareza • Estabilidade • Estrutura</span>
                 <h1>Sua empresa só funciona porque você está lá o tempo todo?</h1>
-                <p>Estruture um negócio que funcione com estabilidade, direção e autonomia — mesmo quando você sai de cena. A <strong>Boutique Empresarial™</strong> é um programa de estruturação para empresários que desejam sair do centro da operação e preparar sua empresa para a nova economia.</p>
+                <p>Estruture um negócio que funcione com estabilidade, direção e autonomia — mesmo quando você sai de
+                    cena. A <strong>Boutique Empresarial™</strong> é um programa de estruturação para empresários que
+                    desejam sair do centro da operação e preparar sua empresa para a nova economia.</p>
                 <br>
                 <a href="/formulario.html" class="btn">Aplicar para a Boutique</a>
             </div>
@@ -136,30 +334,35 @@
                     <li>Férias? Só se levar o celular.</li>
                     <li>No fundo, você sabe: <strong>se parar 5 dias, o negócio para junto.</strong></li>
                 </ul>
-                <p style="margin-top: 2rem;">Isso não é liberdade. É sobrevivência. Você não precisa de mais produtividade. <strong>Precisa de estrutura que respira.</strong></p>
+                <p style="margin-top: 2rem;">Isso não é liberdade. É sobrevivência. Você não precisa de mais
+                    produtividade. <strong>Precisa de estrutura que respira.</strong></p>
             </div>
         </section>
 
         <section class="methodology" id="programa">
             <div class="container">
                 <h2>Arquitetura Operacional</h2>
-                <p>Não somos uma mentoria. Não somos consultoria tradicional. Somos arquitetura empresarial sob medida. Nossa metodologia se baseia em 3 fases:</p>
-                
+                <p>Não somos uma mentoria. Não somos consultoria tradicional. Somos arquitetura empresarial sob medida.
+                    Nossa metodologia se baseia em 3 fases:</p>
+
                 <div class="steps-grid">
                     <div class="step-card">
                         <span class="step-number">01</span>
                         <h3>Diagnóstico de Estabilidade™</h3>
-                        <p>Análise profunda do que hoje trava, sobrecarrega ou depende exclusivamente de você. Identificamos onde está o ruído.</p>
+                        <p>Análise profunda do que hoje trava, sobrecarrega ou depende exclusivamente de você.
+                            Identificamos onde está o ruído.</p>
                     </div>
                     <div class="step-card">
                         <span class="step-number">02</span>
                         <h3>Arquitetura Operacional™</h3>
-                        <p>Estruturação dos pilares que sustentam o negócio sem a sua presença diária. Criamos processos leves e funcionais.</p>
+                        <p>Estruturação dos pilares que sustentam o negócio sem a sua presença diária. Criamos processos
+                            leves e funcionais.</p>
                     </div>
                     <div class="step-card">
                         <span class="step-number">03</span>
                         <h3>Ritmo de Execução™</h3>
-                        <p>Implementação de um ritual de gestão e acompanhamento para manter a estabilidade e previsibilidade no dia a dia.</p>
+                        <p>Implementação de um ritual de gestão e acompanhamento para manter a estabilidade e
+                            previsibilidade no dia a dia.</p>
                     </div>
                 </div>
             </div>
@@ -168,8 +371,10 @@
         <section>
             <div class="container manifesto">
                 <h2>O fim do ruído</h2>
-                <p>"A maioria das empresas não quebra por falta de cliente. Quebra porque o dono desaba antes da operação sustentar o crescimento."</p>
-                <p>Aqui, nós estruturamos o que ninguém vê. Alinhamos a fundação. Silenciamos o ruído. Criamos estabilidade operacional onde antes havia sobrevivência.</p>
+                <p>"A maioria das empresas não quebra por falta de cliente. Quebra porque o dono desaba antes da
+                    operação sustentar o crescimento."</p>
+                <p>Aqui, nós estruturamos o que ninguém vê. Alinhamos a fundação. Silenciamos o ruído. Criamos
+                    estabilidade operacional onde antes havia sobrevivência.</p>
             </div>
         </section>
 
@@ -178,11 +383,13 @@
                 <div style="display: flex; flex-wrap: wrap; gap: 40px;">
                     <div style="flex: 1; min-width: 300px;">
                         <h3>Para quem é</h3>
-                        <p>Empresários que já faturam R$ 50 mil/mês ou mais, possuem equipe e sentem que a empresa só anda com a força deles.</p>
+                        <p>Empresários que já faturam R$ 50 mil/mês ou mais, possuem equipe e sentem que a empresa só
+                            anda com a força deles.</p>
                     </div>
                     <div style="flex: 1; min-width: 300px;">
                         <h3>Para quem não é</h3>
-                        <p>Negócios iniciantes, quem busca "consultoria express" ou quem não está disposto a ajustar sua rotina com seriedade.</p>
+                        <p>Negócios iniciantes, quem busca "consultoria express" ou quem não está disposto a ajustar sua
+                            rotina com seriedade.</p>
                     </div>
                 </div>
             </div>
@@ -191,7 +398,8 @@
         <section id="aplicacao" style="text-align: center;">
             <div class="container">
                 <h2>Sua ausência não deveria gerar pânico.</h2>
-                <p>As vagas são limitadas a 5 empresas por ciclo. Se você quer estruturar um negócio estável, leve e pronto para o futuro, aplique agora.</p>
+                <p>As vagas são limitadas a 5 empresas por ciclo. Se você quer estruturar um negócio estável, leve e
+                    pronto para o futuro, aplique agora.</p>
                 <br>
                 <a href="/formulario.html" class="btn">Preencher Aplicação</a>
             </div>
@@ -203,8 +411,11 @@
             <p>Boutique Empresarial™ &copy; 2026</p>
             <p>Quando tudo depende de você, o crescimento vira peso.<br>Nós transformamos isso em estrutura.</p>
             <div style="margin-top: 20px; font-size: 0.75rem;">
-                <a href="/privacidade.html" style="color: var(--text-secondary); text-decoration: none; margin: 0 10px;">Política de Privacidade</a>
-                <a href="/termos.html" style="color: var(--text-secondary); text-decoration: none; margin: 0 10px;">Termos de Uso</a>
+                <a href="/privacidade.html"
+                    style="color: var(--text-secondary); text-decoration: none; margin: 0 10px;">Política de
+                    Privacidade</a>
+                <a href="/termos.html"
+                    style="color: var(--text-secondary); text-decoration: none; margin: 0 10px;">Termos de Uso</a>
             </div>
         </div>
     </footer>
@@ -225,4 +436,5 @@
     }
     </script>
 </body>
+
 </html>

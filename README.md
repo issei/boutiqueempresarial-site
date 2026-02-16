@@ -70,6 +70,76 @@ Observação: o workflow comenta que o `outDir` pode estar configurado para gera
 - `.github/workflows/deploy.yml` — workflow CI/CD para build e deploy
 - `package.json` — scripts e dependências
 
+## Metodologia de Desenvolvimento (SDD & VibeCoding)
+
+Este projeto adota uma abordagem moderna de desenvolvimento de software que combina rigor na especificação com agilidade na implementação.
+
+### 1. SDD (Specification Driven Development)
+
+**"A documentação é a fonte da verdade."**
+
+Antes de escrever qualquer linha de código, definimos o "o quê" e o "como" nas especificações.
+
+*   **Processo**:
+    1.  Toda nova feature ou página começa com a criação/atualização de um arquivo em `docs/specs/`.
+    2.  Use o template `docs/specs/PAGE_SPEC_TEMPLATE.md` para novas páginas.
+    3.  Valide a arquitetura em `docs/specs/ARCHITECTURE.md` e o estilo em `docs/specs/STYLE_GUIDE.md`.
+    4.  Somente após a aprovação da *spec*, o código é implementado.
+
+*   **Benefícios**: Clareza, redução de retrabalho e alinhamento entre produto e engenharia.
+
+### 2. VibeCoding
+
+**"Codifique na velocidade do pensamento."**
+
+Após a definição clara via SDD, utilizamos ferramentas de IA e automação para implementar a solução de forma rápida e fluida.
+
+*   **Filosofia**:
+    *   Foco no fluxo (*flow*) e na experiência do usuário final.
+    *   Iterações rápidas com feedback visual imediato.
+    *   O código é "gerado" e "refinado", não apenas "escrito".
+    *   A IA atua como par programador, seguindo estritamente as *specs* definidas no passo anterior.
+
+
+## Testes e Qualidade (QA)
+
+A garantia de qualidade é fundamental para evitar regressões em um ambiente de deploy contínuo. Utilizamos **Playwright** para testes automatizados.
+
+### 1. Tipos de Testes
+
+*   **Smoke Tests (Testes de Fumaça)**:
+    *   Verificam se as páginas principais carregam corretamente (Status 200).
+    *   Validam se não há links quebrados (404) internos ou assets ausentes.
+    *   Garantem que o site está "de pé" após um deploy.
+    *   Arquivo: `tests/smoketest.spec.js`
+
+*   **Testes E2E (Ponta a Ponta)**:
+    *   Simulam a navegação do usuário real.
+    *   Validam fluxos críticos, como funcionamento de menus, formulários e renderização de componentes chave.
+    *   Arquivo: `tests/home.spec.js`
+
+### 2. Executando os Testes
+
+Para rodar os testes localmente:
+
+1.  **Smoke Test**: Executa a validação rápida de links e assets.
+    ```bash
+    npm run test:smoke
+    ```
+
+2.  **Todos os Testes (Playwright)**: Executa a suíte completa (E2E + Smoke).
+    ```bash
+    npx playwright test
+    ```
+
+3.  **Relatório Visual**:
+    ```bash
+    npx playwright show-report
+    ```
+
+> **Nota**: O projeto atualmente foca em testes E2E/Smoke devido à natureza estática do site. Testes unitários (Vitest/Jest) podem ser adicionados futuramente caso haja introdução de lógica complexa em JavaScript.
+
+
 ## Como contribuir
 
 1. Crie uma branch para sua mudança: `git checkout -b feat/minha-mudanca`
