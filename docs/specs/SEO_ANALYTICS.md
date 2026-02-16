@@ -53,6 +53,7 @@ Para garantir que o link do site apareça com imagem e título corretos no Linke
 * **og:type:** `website`
 * **og:image:** `/og-image.jpg` (Imagem de 1200x630px localizada em `public/`)
 * **og:site_name:** `Boutique Empresarial`
+* **og:url:** `<meta property="og:url" content="https://boutiqueempresarial.com.br/NOME_DA_PAGINA" />`
 
 ---
 
