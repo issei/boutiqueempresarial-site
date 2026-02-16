@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import { resolve, parse } from 'path';
 import tailwindcss from '@tailwindcss/vite'
 import { globSync } from 'glob';
+import sitemap from 'vite-plugin-sitemap';
+
 
 // Seleciona todos os HTMLs na pasta src
 const htmlFiles = globSync('src/*.html');
@@ -24,5 +26,6 @@ export default defineConfig({
   },
   plugins: [
     tailwindcss(),
+    sitemap({ hostname: 'https://boutiqueempresarial.com.br' })
   ]
 })
