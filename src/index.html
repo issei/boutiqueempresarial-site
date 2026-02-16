@@ -2,6 +2,15 @@
 <html lang="pt-br">
 
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8HNXV7KTY9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-8HNXV7KTY9');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -23,7 +32,7 @@
     <meta property="og:title" content="Boutique Empresarial | Negócios estáveis não nascem do caos">
     <meta property="og:description"
         content="Transforme sua empresa em uma operação estável onde decisões são claras e o dono deixa de ser o centro do caos.">
-    <meta property="og:image" content="https://boutiqueempresarial.com.br/boutiquelogo.webp">
+    <meta property="og:image" content="https://boutiqueempresarial.com.br/boutiqueempresarial.png">
     <meta property="og:image:width" content="300">
     <meta property="og:image:height" content="300">
 
@@ -33,47 +42,10 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
         rel="stylesheet">
 
+    <link rel="stylesheet" href="/style.css">
+
     <style>
-        :root {
-            /* Paleta "Silêncio e Elegância" */
-            --bg-color: #f5f2eb;
-            /* Off-white para reduzir brilho */
-            --text-primary: #1f1f1f;
-            /* Preto suave */
-            --text-secondary: #555555;
-            --accent-color: #1C1C1C;
-            /* Minimalismo: o destaque é a própria estrutura */
-            --border-color: #E5E5E5;
-            --gold-subtle: #C5A059;
-            /* Apenas para detalhes mínimos */
-        }
-
-        /* Reset Minimalista */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.8;
-            font-weight: 300;
-        }
-
-        /* Tipografia de Autoridade */
-        h1,
-        h2,
-        h3,
-        h4 {
-            font-family: 'Playfair Display', serif;
-            font-weight: 400;
-            letter-spacing: -0.02em;
-            color: var(--text-primary);
-        }
-
+        /* Estilos específicos desta página que ainda não foram migrados totalmente */
         h1 {
             font-size: clamp(2.5rem, 4vw, 3.8rem);
             line-height: 1.2;
@@ -100,18 +72,6 @@
         strong {
             font-weight: 600;
             color: var(--text-primary);
-        }
-
-        /* Layout "Breathable" (Que respira) */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 24px;
-            position: relative;
-        }
-
-        section {
-            padding: 100px 0;
         }
 
         /* Header Discreto */
@@ -152,7 +112,7 @@
             border-bottom: 1px solid var(--text-primary);
         }
 
-        /* Hero Section - A Verdade Dura */
+        /* Hero Section */
         .hero {
             padding-top: 180px;
             padding-bottom: 120px;
@@ -168,7 +128,7 @@
             display: block;
         }
 
-        /* Botão "Aplicação" - Elegante e Direto */
+        /* Botão */
         .btn {
             display: inline-block;
             padding: 16px 40px;
@@ -187,18 +147,7 @@
             color: var(--text-primary);
         }
 
-        .btn-outline {
-            background-color: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--text-primary);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--text-primary);
-            color: #fff;
-        }
-
-        /* Seção "O Quadro Real" (Dor) */
+        /* Seção "O Quadro Real" */
         .pain-section {
             background-color: #fff;
             border-top: 1px solid var(--border-color);
@@ -216,7 +165,7 @@
             border-left: 2px solid var(--gold-subtle);
         }
 
-        /* Metodologia (3 Fases) */
+        /* Metodologia */
         .methodology {
             background-color: var(--bg-color);
         }
@@ -233,6 +182,10 @@
             padding: 40px;
             border: 1px solid var(--border-color);
             transition: 0.3s;
+        }
+
+        .step-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
         .step-number {
@@ -266,21 +219,6 @@
             color: var(--text-secondary);
         }
 
-        .skip-link {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            background: #000;
-            color: #fff;
-            padding: 8px;
-            z-index: 100;
-            transition: top 0.3s;
-        }
-
-        .skip-link:focus {
-            top: 0;
-        }
-
         @media (min-width: 768px) {
             .steps-grid {
                 grid-template-columns: repeat(3, 1fr);
@@ -291,14 +229,6 @@
             }
         }
     </style>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8HNXV7KTY9"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-8HNXV7KTY9');
-    </script>
 </head>
 
 <body>
