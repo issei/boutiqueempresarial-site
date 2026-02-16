@@ -11,6 +11,6 @@ test('A Home deve carregar os elementos principais', async ({ page }) => {
     await expect(header).toBeVisible();
 
     // Simula clique no botão de contato
-    const cta = page.locator('text=Aplicar');
-    await expect(cta).toBeAttribute('href', /#|contato/);
+    const cta = page.locator('text=Aplicar para a Boutique');
+    await expect(cta).toHaveAttribute('href', /\/formulario\.html/);
 });
