@@ -49,6 +49,7 @@ O projeto é um **Multi-Page Application (MPA)** estático construído com **Vit
 2.  **HTML First**: Cada rota é um arquivo HTML físico. Isso garante SEO perfeito e carregamento instantâneo, sem necessidade de hidratação de componentes JS.
 3.  **GitOps**: Nenhuma alteração manual é feita na infraestrutura de produção. A "Fonte da Verdade" é sempre o repositório Git.
 4.  **Imagem Otimizada**: Imagens devem estar em formatos modernos (WebP/AVIF) e localizadas em `public/` ou importadas via Vite para otimização.
+5.  Sempre que for criar uma nova funcionalidade, leia primeiro a pasta docs/specs/. Se a alteração envolver UI, siga estritamente o STYLE_GUIDE.md. Se envolver deploy, valide contra o CICD_OIDC.md
 
 ## Processo de Build (Vite)
 
