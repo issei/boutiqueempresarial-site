@@ -24,6 +24,11 @@ dist-ssr/
 *.sln
 *.sw?
 
+# Google IDX (Antigravity)
+.idx/temp/
+.idx/state/
+.idx/dist/
+
 # AWS / Variáveis de Ambiente
 .env
 .env.local
