@@ -148,9 +148,21 @@ Para rodar os testes localmente:
 
 O deploy automático ocorre ao merge/push na branch `main`.
 
+## Licença e Direitos Autorais
+
+Copyright (c) 2024-2026 Boutique Empresarial. **Todos os direitos reservados**.
+
+Este repositório é público estritamente para fins de **consulta*.
+É **estritamente proibido**, sem o consentimento prévio e por escrito:
+- Copiar, replicar ou distribuir o código ou seus componentes;
+- Criar trabalhos derivados utilizando recursos corporativos, designs ou a arquitetura deste projeto;
+- Fazer uso comercial ou não comercial do código-fonte e suas estruturas.
+
+Para mais detalhes, consulte o arquivo [LICENSE](./LICENSE).
+
 ## Notas adicionais
 
-- O `package.json` marca o projeto como `private: true`. Se for torná-lo público, adicione um campo `license` apropriado.
+- O projeto está marcado com `"license": "UNLICENSED"` e `"private": true` no `package.json` para refletir sua natureza proprietária.
 - Se você alterar a estrutura de saída do build (`outDir`), atualize também o workflow de deploy para apontar para a pasta correta.
 
 ## Contato
