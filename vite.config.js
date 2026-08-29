@@ -26,6 +26,10 @@ export default defineConfig({
   },
   plugins: [
     tailwindcss(),
-    sitemap({ hostname: 'https://boutiqueempresarial.com.br' })
+    sitemap({
+      hostname: 'https://boutiqueempresarial.com.br',
+      // identidade-visual.html é uma página interna de referência visual (não indexável).
+      exclude: ['/identidade-visual'],
+    })
   ]
 })

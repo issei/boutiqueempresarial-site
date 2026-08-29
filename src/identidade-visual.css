@@ -1,0 +1,545 @@
+/* Estilos exclusivos de /identidade-visual.html — sistema visual "Talita Issei".
+   Escopados em .ig-guide para nao colidir com os tokens institucionais de src/style.css. */
+
+.ig-guide,
+.ig-guide *,
+.ig-guide *::before,
+.ig-guide *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.ig-guide {
+    --ig-bg-paper: #FFFFFF;
+    --ig-bg-warm-paper: #FBFAF7;
+    --ig-bg-dark-notepad: #121212;
+    --ig-text-ink-primary: #111522;
+    --ig-text-ink-muted: #92949B;
+    --ig-text-dark-primary: #F5F5F7;
+    --ig-accent-amber: #EAA034;
+    --ig-highlight-caramel: #9E7138;
+    --ig-highlight-pin: #E7D6C2;
+    --ig-verified-cyan: #13C4E5;
+    --ig-check-green: #5C9E31;
+    --ig-serif: 'Playfair Display', serif;
+    --ig-sans: 'Inter', sans-serif;
+    --ig-border: #E5E5E5;
+
+    font-family: var(--ig-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+.ig-guide img {
+    max-width: 100%;
+    display: block;
+}
+
+/* Faixa de aviso interno (fora da dualidade claro/escuro) */
+.ig-internal-bar {
+    background: var(--ig-text-ink-primary);
+    color: var(--ig-text-dark-primary);
+}
+
+.ig-internal-bar__inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--ig-sans);
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+}
+
+.ig-internal-bar a {
+    color: var(--ig-text-dark-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Estrutura geral de secao */
+.ig-section {
+    padding: 96px 0;
+}
+
+.ig-section--paper {
+    background: var(--ig-bg-paper);
+    color: var(--ig-text-ink-primary);
+}
+
+.ig-section--warm {
+    background: var(--ig-bg-warm-paper);
+    color: var(--ig-text-ink-primary);
+}
+
+.ig-section--dark {
+    background: var(--ig-bg-dark-notepad);
+    color: var(--ig-text-dark-primary);
+}
+
+.ig-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.ig-eyebrow {
+    font-family: var(--ig-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    color: var(--ig-text-ink-muted);
+    margin-bottom: 16px;
+}
+
+.ig-section--dark .ig-eyebrow {
+    color: var(--ig-accent-amber);
+}
+
+.ig-h1 {
+    font-family: var(--ig-serif);
+    font-weight: 700;
+    font-size: clamp(2.1rem, 5vw, 3.4rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+}
+
+.ig-h2 {
+    font-family: var(--ig-serif);
+    font-weight: 600;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    margin-bottom: 40px;
+}
+
+.ig-lede {
+    font-family: var(--ig-sans);
+    font-weight: 400;
+    font-size: 1.05rem;
+    color: var(--ig-text-ink-muted);
+    max-width: 58ch;
+    margin-top: 24px;
+}
+
+.ig-section--dark .ig-lede {
+    color: #C7C8CE;
+}
+
+.ig-note {
+    font-family: var(--ig-sans);
+    font-size: 0.85rem;
+    color: var(--ig-text-ink-muted);
+    margin-top: 16px;
+}
+
+.ig-section--dark .ig-note {
+    color: #9B9CA3;
+}
+
+/* Rotulo "modo claro / modo escuro" acima de cada bloco de componente */
+.ig-mode-tag {
+    display: inline-block;
+    font-family: var(--ig-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border: 1px solid var(--ig-text-ink-primary);
+    margin-bottom: 24px;
+}
+
+.ig-section--dark .ig-mode-tag {
+    border-color: var(--ig-accent-amber);
+    color: var(--ig-accent-amber);
+}
+
+/* 1. Paleta de cores */
+.ig-palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.ig-swatch {
+    border: 1px solid var(--ig-border);
+    background: var(--ig-bg-paper);
+}
+
+.ig-swatch__color {
+    height: 88px;
+}
+
+.ig-swatch__meta {
+    padding: 14px 16px 18px;
+}
+
+.ig-swatch__token {
+    font-family: var(--ig-sans);
+    font-weight: 600;
+    font-size: 0.82rem;
+}
+
+.ig-swatch__hex {
+    font-family: var(--ig-sans);
+    font-size: 0.78rem;
+    color: var(--ig-text-ink-muted);
+    margin-top: 2px;
+}
+
+.ig-swatch__usage {
+    font-family: var(--ig-sans);
+    font-size: 0.78rem;
+    color: var(--ig-text-ink-muted);
+    margin-top: 8px;
+    line-height: 1.4;
+}
+
+/* 2. Tipografia */
+.ig-type-row {
+    padding: 22px 0;
+    border-bottom: 1px solid var(--ig-border);
+}
+
+.ig-type-row:last-child {
+    border-bottom: none;
+}
+
+.ig-type-row__label {
+    font-family: var(--ig-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.68rem;
+    color: var(--ig-text-ink-muted);
+    margin-bottom: 10px;
+}
+
+.ig-type-sample--name {
+    font-family: var(--ig-serif);
+    font-weight: 700;
+    font-size: 1.6rem;
+}
+
+.ig-type-sample--handle {
+    font-family: var(--ig-sans);
+    font-weight: 400;
+    font-size: 0.95rem;
+    color: var(--ig-text-ink-muted);
+}
+
+.ig-type-sample--h1 {
+    font-family: var(--ig-serif);
+    font-weight: 700;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.15;
+}
+
+.ig-type-sample--diagnostico {
+    font-family: var(--ig-serif);
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.ig-type-sample--checklist-a {
+    font-family: var(--ig-serif);
+    font-weight: 400;
+    font-size: 1.25rem;
+}
+
+.ig-type-sample--checklist-b {
+    font-family: var(--ig-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+}
+
+.ig-type-sample--ios {
+    font-family: var(--ig-sans);
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--ig-accent-amber);
+}
+
+/* 3. Cabecalho de autoria (modo claro) */
+.ig-author {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.ig-author__avatar {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ig-highlight-caramel), var(--ig-accent-amber));
+    color: #fff;
+    font-family: var(--ig-serif);
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ig-author__name-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ig-author__name {
+    font-family: var(--ig-serif);
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.ig-author__badge {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+}
+
+.ig-author__handle {
+    font-family: var(--ig-sans);
+    font-size: 0.9rem;
+    color: var(--ig-text-ink-muted);
+    margin-top: 2px;
+}
+
+/* 4. Divisor editorial */
+.ig-divider {
+    width: 110px;
+    height: 4px;
+    background: var(--ig-text-ink-primary);
+    margin: 40px 0;
+}
+
+/* 5. Checklists */
+.ig-checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.ig-checklist--a li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-family: var(--ig-serif);
+    font-size: 1.25rem;
+    color: var(--ig-text-ink-primary);
+}
+
+.ig-check-icon {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: var(--ig-check-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.ig-check-icon svg {
+    width: 13px;
+    height: 13px;
+}
+
+.ig-checklist--b li {
+    font-family: var(--ig-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--ig-text-dark-primary);
+}
+
+.ig-checkbox {
+    font-family: var(--ig-sans);
+    font-style: normal;
+    font-weight: 600;
+    color: var(--ig-accent-amber);
+    margin-right: 6px;
+}
+
+.ig-step-title {
+    font-family: var(--ig-serif);
+    font-size: 1.5rem;
+    color: var(--ig-text-dark-primary);
+    margin-bottom: 24px;
+}
+
+.ig-step-title strong {
+    color: var(--ig-accent-amber);
+    font-weight: 700;
+}
+
+/* 6. Topo "Apple Notes" */
+.ig-notes-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--ig-sans);
+    font-weight: 600;
+    color: var(--ig-accent-amber);
+    margin-bottom: 48px;
+}
+
+.ig-notes-bar__back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1.05rem;
+}
+
+.ig-notes-bar__back svg {
+    width: 16px;
+    height: 16px;
+}
+
+.ig-notes-bar__menu {
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+}
+
+/* 7. Grifo de selecao iOS */
+.ig-highlight {
+    position: relative;
+    display: inline-block;
+    background: rgba(158, 113, 56, 0.6);
+    padding: 2px 6px;
+}
+
+.ig-highlight::before,
+.ig-highlight::after {
+    content: "";
+    position: absolute;
+    width: 9px;
+    background: var(--ig-highlight-pin);
+}
+
+.ig-highlight::before {
+    top: -18px;
+    left: -5px;
+    height: 18px;
+    border-radius: 50% 50% 3px 3px;
+}
+
+.ig-highlight::after {
+    bottom: -18px;
+    right: -5px;
+    height: 18px;
+    border-radius: 3px 3px 50% 50%;
+}
+
+/* 8. Cards de exemplo completos */
+.ig-card {
+    max-width: 420px;
+    margin: 40px auto 0;
+    border: 1px solid var(--ig-border);
+}
+
+.ig-card--light {
+    background: var(--ig-bg-paper);
+    padding: 32px 28px;
+}
+
+.ig-card--dark {
+    background: var(--ig-bg-dark-notepad);
+    color: var(--ig-text-dark-primary);
+    border-color: rgba(255, 255, 255, 0.08);
+    padding: 32px 28px;
+}
+
+.ig-card__body {
+    font-family: var(--ig-serif);
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1.3;
+    margin: 24px 0;
+}
+
+.ig-card__cta {
+    font-family: var(--ig-serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--ig-text-ink-muted);
+    margin-top: 32px;
+}
+
+.ig-card__actions {
+    display: flex;
+    gap: 20px;
+    margin-top: 36px;
+}
+
+.ig-card__actions svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* 9. Grid & layout */
+.ig-ruler {
+    margin-top: 32px;
+    border-left: 2px dashed var(--ig-text-ink-primary);
+    border-right: 2px dashed var(--ig-text-ink-primary);
+    padding: 20px 24px;
+    font-family: var(--ig-sans);
+    font-size: 0.85rem;
+    color: var(--ig-text-ink-muted);
+}
+
+/* 10. Tabela Fazer/Evitar */
+.ig-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 24px;
+    font-family: var(--ig-sans);
+    font-size: 0.92rem;
+}
+
+.ig-table th,
+.ig-table td {
+    text-align: left;
+    padding: 14px 16px;
+    border: 1px solid var(--ig-border);
+    vertical-align: top;
+}
+
+.ig-table th {
+    font-weight: 600;
+    background: var(--ig-bg-warm-paper);
+}
+
+/* Rodape da pagina-guia */
+.ig-guide-footer {
+    background: var(--ig-bg-paper);
+    border-top: 1px solid var(--ig-border);
+    padding: 48px 0;
+    text-align: center;
+    font-family: var(--ig-sans);
+    font-size: 0.85rem;
+    color: var(--ig-text-ink-muted);
+}
+
+.ig-guide-footer a {
+    color: var(--ig-text-ink-primary);
+}
+
+@media (max-width: 560px) {
+    .ig-section {
+        padding: 64px 0;
+    }
+
+    .ig-card {
+        max-width: 100%;
+    }
+}
