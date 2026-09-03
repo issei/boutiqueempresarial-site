@@ -1,0 +1,131 @@
+# apm.yml — manifesto APM (Agent Package Manager) do boutiqueempresarial-site.
+#
+# Uma fonte só descreve o contexto do harness. `apm install` resolve a árvore e
+# faz o deploy dos primitivos em formato nativo; `apm.lock.yaml` fixa commit +
+# hash, então duas máquinas recebem contexto byte a byte idêntico.
+#
+# Convenções do repositório: AGENTS.md (diretiva primária) e docs/specs/.
+# Contrato que este manifesto serve: docs/specs/HARNESS_AEO.md
+# Pipeline e matriz de modelos:   docs/specs/PLANO_MULTIAGENTE.md
+#
+# NOTA DE ESTADO: os primitivos em `.claude/` listados abaixo são criados na
+# Fase 0 do PLANO_MULTIAGENTE.md. Até lá este arquivo é declaração de intenção,
+# não inventário. O `apm` CLI ainda não está instalado nesta máquina.
+
+name: boutique-empresarial-site
+version: 1.0.0
+description: >-
+  Site MPA (Vite 6 + Tailwind v4 + HTML/CSS) da Boutique Empresarial,
+  desenvolvido em fluxo agent-driven e spec-driven: um pipeline de subagentes
+  estreitos em modelos econômicos, com quality gate determinístico
+  (build + Playwright + axe) versionado junto do código.
+author: Maurício Yokoyama Issei
+license: UNLICENSED
+
+# Um único harness em uso. Segundo harness só entra com o gatilho de
+# HARNESS_AEO.md §A5 — enquanto isso, compilar para cinco alvos é custo sem uso.
+target: [claude]
+
+# ---------------------------------------------------------------------------
+# Inclusões locais
+# ---------------------------------------------------------------------------
+# `auto` = consentimento explícito para deployar o layout local autoritativo
+# deste repositório. O que ele cobre (criado na Fase 0):
+#
+#   .claude/agents/   page-auditor · head-fixer · copy-writer ·
+#                     test-author · gate-runner
+#   .claude/skills/   new-page · ship-page
+#
+# Registrar o campo (em vez de omiti-lo) evita o audit advisory de
+# consentimento implícito.
+includes: auto
+
+# ---------------------------------------------------------------------------
+# Dependências
+# ---------------------------------------------------------------------------
+dependencies:
+  # Plugins de harness instalados fora do APM (marketplace do Claude Code).
+  # Declarados aqui como contrato de ambiente: sem eles o pipeline de
+  # PLANO_MULTIAGENTE.md não tem as skills que cita.
+  plugins:
+    # Disciplina de escopo: força a solução mais simples que funciona.
+    # Skills: ponytail · ponytail-review · ponytail-audit · ponytail-debt.
+    # Obrigatória em TODO subagente de implementação — diff menor é
+    # output token menor, e revisão menor depois.
+    - name: ponytail
+      marketplace: ponytail
+      version: "4.9.0"
+      scope: user
+
+    # ATENÇÃO — dependência não resolvida.
+    # "rtk" foi pedido mas não existe nesta máquina (nenhum plugin, skill ou
+    # MCP com esse nome em ~/.claude). Confirmar origem antes de instalar;
+    # o pipeline não depende dele para rodar.
+    # - name: rtk
+    #   marketplace: ???
+    #   scope: user
+
+  # Pacotes APM externos. Sem pin de tag: quem fixa a versão exata é o
+  # apm.lock.yaml (commit SHA + content hash).
+  # Coordenadas atestadas pelo apm.yml do repositório irmão mauricio-site.
+  apm:
+    # Disciplina de código: TDD, code review, toolkit de PR, fluxos de git.
+    - thinkjones/awesome-apm-stacks/code-core
+
+    # E2E/Playwright: linguagem comum com o quality gate e tests/*.spec.js.
+    - thinkjones/awesome-apm-stacks/test-core
+
+    # UI/UX e acessibilidade — par externo do STYLE_GUIDE.md e do contrato
+    # WCAG 2.1 AA de HARNESS_AEO.md §B5.
+    - thinkjones/awesome-apm-stacks/design-frontend
+
+  # Servidores MCP — instalados em todo cliente detectado.
+  mcp:
+    # Medição de custo de token: `caveman learn` mostra onde o contexto vai,
+    # cavemem tira do prompt o que se repete toda sessão. É o medidor do
+    # pipeline; ponytail é a dieta. Ver PLANO_MULTIAGENTE.md §5.
+    # Binário local, instalado fora do npm.
+    - name: caveman
+      registry: false
+      transport: stdio
+      command: "${env:USERPROFILE}/.caveman/bin/caveman-mcp.exe"
+
+    # Docs versionadas de Vite 6, Tailwind v4 e Playwright — evita que um
+    # subagente gaste turnos adivinhando API de build.
+    - name: io.github.upstash/context7
+
+    # Navegador dirigido por agente: snapshot de acessibilidade e verificação
+    # visual de uma página antes de rodar o gate inteiro (mais barato que
+    # rodar Playwright cross-browser para checar uma correção).
+    - name: io.github.microsoft/playwright-mcp
+
+    # Acesso a arquivo para harness sem ferramenta de edição nativa.
+    # Escopo fechado nos diretórios de conteúdo — nunca a raiz do repositório.
+    - name: filesystem
+      registry: false
+      transport: stdio
+      command: npx
+      args:
+        - "-y"
+        - "@modelcontextprotocol/server-filesystem"
+        - "./src"
+        - "./public"
+        - "./docs"
+
+# ---------------------------------------------------------------------------
+# Scripts — `apm run <nome>`
+# ---------------------------------------------------------------------------
+scripts:
+  # `apm run` sem argumento cai aqui.
+  start: "npm run dev"
+
+  # Gate ÚNICO e fail-closed: vite build → Playwright (smoke + SEO + AEO + axe).
+  # Contrato entre agentes: nenhum subagente declara sucesso sem ele verde.
+  gate: "npm run gate"
+  test: "npx playwright test"
+
+  # Preflight de push para main (main = deploy automático na AWS via OIDC).
+  preflight: "npm run gate"
+
+  # Auditoria de custo do próprio fluxo agêntico, roda fora do ciclo de código.
+  "cost:report": "caveman learn report --json"
