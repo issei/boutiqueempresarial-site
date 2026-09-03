@@ -2,6 +2,31 @@
 <html lang="pt-BR">
 
 <head>
+    <!-- Facebook Domain Verification -->
+    <meta name="facebook-domain-verification" content="mwj9leq8r1nzwxtlmfc5ntempn8wst" />
+
+    <!-- Meta Pixel Code 2026 Implementation -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+
+    // Previne disparos fantasmas de rotas virtuais (Padrão 2026)
+    fbq.disablePushState = true;
+
+    // Ativa o Processamento Limitado de Dados (LDU) para LGPD/CCPA
+    fbq('dataProcessingOptions', ['LDU'], 1, 1000);
+
+    fbq('init', '746637190095687');
+    fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -336,6 +361,9 @@
 </head>
 
 <body>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=746637190095687&ev=PageView&noscript=1"
+    /></noscript>
     <div class="c">
         <div class="l-w"><img src="/boutiquelogo.webp" alt="Boutique Empresarial" class="l-img" width="200"
                 height="200"></div>
