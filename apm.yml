@@ -57,13 +57,23 @@ dependencies:
       version: "4.9.0"
       scope: user
 
-    # ATENÇÃO — dependência não resolvida.
-    # "rtk" foi pedido mas não existe nesta máquina (nenhum plugin, skill ou
-    # MCP com esse nome em ~/.claude). Confirmar origem antes de instalar;
-    # o pipeline não depende dele para rodar.
-    # - name: rtk
-    #   marketplace: ???
-    #   scope: user
+  # Ferramentas de ambiente — não são plugins de harness nem pacotes APM, mas
+  # o pipeline de PLANO_MULTIAGENTE.md conta com elas. Instaladas na máquina,
+  # declaradas aqui para que o contrato de ambiente seja versionado.
+  env:
+    # RTK (Rust Token Killer) — https://github.com/rtk-ai/rtk
+    # Proxy de CLI que comprime a saída de comandos de shell ANTES de ela virar
+    # contexto: mostra só a falha de um teste, só o essencial de um git diff.
+    # Ataca a alavanca nº 1 do §5 do plano (contexto que entra) no nível do
+    # harness, de forma transparente.
+    #   instalação: brew install rtk  |  curl -fsSL <install.sh> | sh
+    #   hook:       rtk init -g   (reescreve comandos Bash para o equivalente rtk)
+    #   analytics:  rtk gain
+    # NOTA: não encontrado no PATH desta máquina Windows na data deste commit —
+    # confirmar em que ambiente está instalado (WSL?) antes da Fase 0.
+    - name: rtk
+      repo: https://github.com/rtk-ai/rtk
+      init: "rtk init -g"
 
   # Pacotes APM externos. Sem pin de tag: quem fixa a versão exata é o
   # apm.lock.yaml (commit SHA + content hash).
@@ -128,4 +138,6 @@ scripts:
   preflight: "npm run gate"
 
   # Auditoria de custo do próprio fluxo agêntico, roda fora do ciclo de código.
+  # caveman mede o contexto inteiro; rtk mede só o que ele mesmo comprimiu.
   "cost:report": "caveman learn report --json"
+  "cost:gain": "rtk gain"

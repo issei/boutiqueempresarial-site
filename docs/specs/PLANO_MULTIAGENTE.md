@@ -158,13 +158,24 @@ porque a saída de uma alimenta a próxima.
 | :-- | :-- | :-- |
 | **ponytail** | força o menor diff que funciona. Menos token de saída (o caro: $5–25/MTok), menos superfície de revisão, menos código para o gate cobrir depois | obrigatória em `head-fixer`, `test-author`, `copy-writer` |
 | **ponytail-review** | passada de revisão que só caça over-engineering | antes do PR de cada fase, em Sonnet |
+| **rtk** ([Rust Token Killer](https://github.com/rtk-ai/rtk)) | comprime a saída de comando de shell antes de ela virar contexto — só a falha do teste, só o essencial do diff. `rtk init -g` instala um hook que reescreve os comandos Bash de forma transparente; `rtk gain` mostra o que foi economizado | no harness, sempre ligado; ganho concentrado em `gate-runner` e nas leituras de git |
 | **caveman** | mede. `caveman learn report --json` ranqueia onde o token realmente foi; `cavemem` tira do prompt o que se repete toda sessão | fora do ciclo de código, ao fim de cada fase |
-| **rtk** | **não resolvido** — ver §8 | — |
 
-**Ponytail e caveman são complementares, não redundantes:** caveman mede o custo do *contexto*
-(o que entra), ponytail reduz o custo da *produção* (o que sai). Medir sem dieta produz
-relatório; dieta sem medir produz palpite. As duas juntas fecham o laço — e o `apm.yml` já
-declara `cost:report` para que a medição seja um comando, não um ritual.
+**As três atacam pontos diferentes do mesmo ciclo, e por isso somam:**
+
+- **rtk** corta o que *entra* (saída de comando), automaticamente e sem prompt.
+- **ponytail** corta o que *sai* (diff produzido), que é o token caro.
+- **caveman** *mede* o resultado das duas, para que "ficou mais barato" seja número e não impressão.
+
+Medir sem dieta produz relatório; dieta sem medir produz palpite. O `apm.yml` declara
+`cost:report` (caveman, o ciclo inteiro) e `cost:gain` (rtk, só o que ele comprimiu) para que a
+medição seja um comando, não um ritual.
+
+**rtk e `gate-runner` não são redundantes, são camadas:** rtk comprime o log do Playwright
+sintaticamente (descarta ruído); o `gate-runner` o converte semanticamente em uma decisão
+(`green` / lista de asserções). Com rtk ligado o `gate-runner` fica mais barato — não
+desnecessário. Verificar na Fase 0 se os filtros do rtk cobrem Playwright; a documentação cita
+Jest, pytest, cargo e Go test nominalmente.
 
 **Ordem de aplicação, do maior retorno para o menor:**
 
@@ -205,6 +216,7 @@ Ordem obrigatória, porque o pipeline sem o gate é um pipeline sem árbitro:
 - [ ] `.claude/agents/{page-auditor,head-fixer,copy-writer,test-author,gate-runner}.md`
       com `model:` no frontmatter
 - [ ] `AGENTS.md` na raiz (`HARNESS_AEO.md` §A1)
+- [ ] `rtk` disponível no shell que o harness usa + hook instalado (`rtk init -g`)
 - [ ] baseline de custo: `caveman learn report --json` **antes** da Fase 1, para que o ganho
       seja medido e não afirmado
 
@@ -214,7 +226,8 @@ Ordem obrigatória, porque o pipeline sem o gate é um pipeline sem árbitro:
 
 | Item | Situação |
 | :-- | :-- |
-| **`rtk`** | pedido no escopo, mas não existe nesta máquina — nenhum plugin, skill ou MCP com esse nome em `~/.claude`, e nada em `.claude.json`. Declarado comentado no `apm.yml`. **Precisa de confirmação de origem** antes de virar dependência |
+| **`rtk`** | identificado: [rtk-ai/rtk](https://github.com/rtk-ai/rtk), declarado em `apm.yml`. **Não está no PATH desta máquina Windows** (nem em `~/.rtk`, `~/.cargo/bin` ou no PATH do PowerShell), e o hook `rtk init -g` não aparece em `~/.claude/settings.json`. A instalação documentada é Homebrew ou `install.sh` (macOS/Linux) — confirmar em que ambiente ele roda aqui antes da Fase 0 |
+| **Cobertura do rtk** | os filtros citados nominalmente são Jest, pytest, cargo test e Go test. Se Playwright não estiver entre os 100+ comandos suportados, o ganho na Fase 2+ vem do `gate-runner`, não do rtk. Medir com `rtk gain`, não presumir |
 | **`apm` CLI** | não instalado nesta máquina; `apm.yml` do repositório irmão também não tem `apm.lock.yaml`. O manifesto é válido como documentação de contrato desde já, mas `apm install` ainda não foi exercido |
 | **MCP `caveman`** | o servidor está configurado em `~/.claude.json` e falhou ao conectar na sessão em que este spec foi escrito. Verificar antes de depender dele na Fase 0 |
 | **Multi-agente pode custar mais** | se as regras do §6 não forem seguidas. O baseline da Fase 0 existe para detectar isso na primeira medição, não na décima |
