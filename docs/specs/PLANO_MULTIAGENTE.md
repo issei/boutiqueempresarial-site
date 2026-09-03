@@ -159,7 +159,7 @@ porque a saída de uma alimenta a próxima.
 | **ponytail** | força o menor diff que funciona. Menos token de saída (o caro: $5–25/MTok), menos superfície de revisão, menos código para o gate cobrir depois | obrigatória em `head-fixer`, `test-author`, `copy-writer` |
 | **ponytail-review** | passada de revisão que só caça over-engineering | antes do PR de cada fase, em Sonnet |
 | **rtk** ([Rust Token Killer](https://github.com/rtk-ai/rtk)) | comprime a saída de comando de shell antes de ela virar contexto — só a falha do teste, só o essencial do diff. `rtk init -g` instala um hook que reescreve os comandos Bash de forma transparente; `rtk gain` mostra o que foi economizado | no harness, sempre ligado; ganho concentrado em `gate-runner` e nas leituras de git |
-| **caveman** | mede. `caveman learn report --json` ranqueia onde o token realmente foi; `cavemem` tira do prompt o que se repete toda sessão | fora do ciclo de código, ao fim de cada fase |
+| **caveman** | mede. `caveman learn --json` ranqueia onde o token realmente foi; `cavemem` tira do prompt o que se repete toda sessão | fora do ciclo de código, ao fim de cada fase |
 
 **As três atacam pontos diferentes do mesmo ciclo, e por isso somam:**
 
@@ -217,7 +217,7 @@ Ordem obrigatória, porque o pipeline sem o gate é um pipeline sem árbitro:
       com `model:` no frontmatter
 - [ ] `AGENTS.md` na raiz (`HARNESS_AEO.md` §A1)
 - [ ] `rtk` disponível no shell que o harness usa + hook instalado (`rtk init -g`)
-- [ ] baseline de custo: `caveman learn report --json` **antes** da Fase 1, para que o ganho
+- [ ] baseline de custo: `caveman learn --json` **antes** da Fase 1, para que o ganho
       seja medido e não afirmado
 
 ---

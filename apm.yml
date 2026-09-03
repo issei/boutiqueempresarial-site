@@ -139,5 +139,5 @@ scripts:
 
   # Auditoria de custo do próprio fluxo agêntico, roda fora do ciclo de código.
   # caveman mede o contexto inteiro; rtk mede só o que ele mesmo comprimiu.
-  "cost:report": "caveman learn report --json"
+  "cost:report": "caveman learn --json"
   "cost:gain": "rtk gain"
