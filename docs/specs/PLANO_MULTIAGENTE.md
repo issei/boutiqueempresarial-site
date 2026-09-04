@@ -158,7 +158,7 @@ porque a saída de uma alimenta a próxima.
 | :-- | :-- | :-- |
 | **ponytail** | força o menor diff que funciona. Menos token de saída (o caro: $5–25/MTok), menos superfície de revisão, menos código para o gate cobrir depois | obrigatória em `head-fixer`, `test-author`, `copy-writer` |
 | **ponytail-review** | passada de revisão que só caça over-engineering | antes do PR de cada fase, em Sonnet |
-| **rtk** ([Rust Token Killer](https://github.com/rtk-ai/rtk)) | comprime a saída de comando de shell antes de ela virar contexto — só a falha do teste, só o essencial do diff. `rtk init -g` instala um hook que reescreve os comandos Bash de forma transparente; `rtk gain` mostra o que foi economizado | no harness, sempre ligado; ganho concentrado em `gate-runner` e nas leituras de git |
+| **rtk** ([Rust Token Killer](https://github.com/rtk-ai/rtk)) | comprime a saída de comando de shell antes de ela virar contexto — só a falha do teste, só o essencial do diff. `rtk init -g` instala um hook que reescreve os comandos Bash de forma transparente; `rtk gain` mostra o que foi economizado | no harness local, sempre ligado; ganho concentrado em `gate-runner` e nas leituras de git. **Não assumido no cloud** — ver §9.5 |
 | **caveman** | mede. `caveman learn --json` ranqueia onde o token realmente foi; `cavemem` tira do prompt o que se repete toda sessão | fora do ciclo de código, ao fim de cada fase |
 
 **As três atacam pontos diferentes do mesmo ciclo, e por isso somam:**
@@ -222,7 +222,9 @@ Ordem obrigatória, porque o pipeline sem o gate é um pipeline sem árbitro:
 - [ ] `.claude/agents/{page-auditor,head-fixer,copy-writer,test-author,gate-runner}.md`
       com `model:` no frontmatter
 - [ ] `AGENTS.md` na raiz (`HARNESS_AEO.md` §A1)
-- [ ] `rtk` disponível no shell que o harness usa + hook instalado (`rtk init -g`)
+- [ ] `.claude/settings.json` **commitado** (§9) — sem ele nada do acima existe no cloud
+- [ ] `scripts/bootstrap.sh` + hook `SessionStart` (§9)
+- [ ] `rtk` disponível no shell que o harness usa + hook instalado (`rtk init -g`) — local
 - [ ] baseline de custo: `caveman learn --json` **antes** da Fase 1, para que o ganho
       seja medido e não afirmado
 
@@ -236,15 +238,120 @@ Ordem obrigatória, porque o pipeline sem o gate é um pipeline sem árbitro:
 | **`caveman`** | **resolvido.** `@caveman-ai/cli@1.3.1` + `caveman setup --install` (6 binários em `~/.caveman/bin`, checksum conferido, `ready: true`); handshake MCP testado. O erro anterior era o binário inexistente. Baseline inicial: Cave Score 75, sink `dumbzone` 413/512 turnos acima de 50% da janela |
 | **`apm` CLI** | não instalado nesta máquina; `apm.yml` do repositório irmão também não tem `apm.lock.yaml`. O manifesto é válido como documentação de contrato desde já, mas `apm install` ainda não foi exercido |
 | **Multi-agente pode custar mais** | se as regras do §6 não forem seguidas. O baseline da Fase 0 existe para detectar isso na primeira medição, não na décima |
+| **Ambiente cloud** | rtk e caveman podem não instalar no VM (403 em asset de release; ver §9.5). O pipeline roda sem eles, mais caro em token. `ponytail` via `extraKnownMarketplaces` precisa de confirmação na primeira sessão cloud |
+| **Duas cópias do setup script** | o diálogo do ambiente não lê o repositório; `docs/specs/cloud-setup.sh` é a cópia canônica e o diálogo recebe uma cópia colada. Divergem se alguém editar só um lado |
 | **Escala do repositório** | 7 páginas. O pipeline se paga no fan-out das fases 1 e 3; abaixo de ~5 páginas, sessão única é mais barata. Se o site encolher, este plano deixa de valer |
 
 ---
 
-## 9. Referências
+## 9. Portabilidade — o mesmo plano no ambiente cloud
+
+### 9.1 O problema
+
+Tudo que foi instalado para viabilizar este plano é **local a uma máquina**: binários em
+caminhos Windows, plugins em escopo de usuário, MCP declarado em `~/.claude.json`. Uma sessão
+cloud clona o repositório num VM **Ubuntu 24.04 x86_64** limpo e não recebe nada disso —
+configuração de usuário fica na máquina do usuário, e `/plugin` sequer existe lá.
+
+O critério é simples: **se não está no repositório, não existe no cloud.**
+
+| Item | Onde vive hoje | Chega no cloud? |
+| :-- | :-- | :-- |
+| specs (`docs/specs/`), `apm.yml` | repositório | ✅ |
+| `.claude/agents/*.md` | repositório (Fase 0) | ✅ subagentes do repo são carregados automaticamente |
+| `.claude/settings.json` (hooks, permissions, plugins) | **não existe ainda** | ✅ se commitado |
+| `.mcp.json` (MCP de projeto) | **não existe ainda** | ✅ se commitado — mas o servidor precisa existir no VM |
+| plugin `ponytail` | `~/.claude`, escopo user | ❌ user-level não viaja; declarar em `.claude/settings.json` |
+| binários `caveman` | `~/.caveman/bin`, win32/amd64 | ❌ arquitetura errada e caminho local |
+| `rtk` + hook | `D:\tools\...`, hook em `~/.claude/settings.json` | ❌ caminho Windows, `.exe`, hook user-level |
+| `apm install` | CLI não instalado em lugar nenhum | ❌ |
+
+### 9.2 O que o VM já traz
+
+Node 20/21/22 (22 no PATH, em `/opt/node22`), npm/pnpm/yarn, `gh` autenticado por proxy, git,
+jq, ripgrep, Docker, Postgres e Redis. Rede em nível **Trusted**: registries de pacote e GitHub,
+nada além disso.
+
+Falta para este projeto: **os navegadores do Playwright** (o VM traz chromedriver, não os
+browsers que o `@playwright/test` baixa).
+
+### 9.3 As três camadas, e o que vai em cada uma
+
+| Camada | Onde se configura | Roda | Use para |
+| :-- | :-- | :-- | :-- |
+| **Setup script** | diálogo do ambiente em claude.ai — **fora do repositório** | como root, antes do Claude Code, só quando não há cache | toolchain que não vem pré-instalado |
+| **Hook `SessionStart`** | `.claude/settings.json` **no repositório** | toda sessão, local e cloud | setup de projeto: `npm ci`, browsers do Playwright |
+| **`.claude/settings.json`** | repositório | sempre | permissions, hooks, `enabledPlugins`, `extraKnownMarketplaces` |
+
+Regra prática: setup de **máquina** vai no setup script; setup de **projeto** vai no hook, porque
+o hook também roda no seu laptop e evita que os dois ambientes divirjam.
+
+O setup script não é versionável pelo diálogo — por isso a cópia canônica fica em
+`docs/specs/cloud-setup.sh` no repositório, e o diálogo recebe uma cópia colada. Duas cópias é
+ruim, uma cópia perdida é pior.
+
+### 9.4 Mudanças concretas no projeto
+
+1. **`.claude/settings.json`** (commitado):
+   - `permissions.allow` para `npm run gate`, `npx playwright test`, `npx vite build`, `node scripts/`
+   - hook `SessionStart` → `bash "$CLAUDE_PROJECT_DIR"/scripts/bootstrap.sh`
+   - `enabledPlugins: { "ponytail@ponytail": true }` + `extraKnownMarketplaces` com a origem
+2. **`scripts/bootstrap.sh`** — idempotente e `exit 0` sempre: `npm ci` quando faltar
+   `node_modules`, e `npx playwright install --with-deps chromium` só quando
+   `CLAUDE_CODE_REMOTE=true`.
+3. **`scripts/quality-gate.mjs`** — usa `rtk playwright test` **se `rtk` estiver no PATH**, e
+   `playwright test` caso contrário. Resolve o aninhamento do §5 e a portabilidade de uma vez.
+4. **`.claude/agents/*.md`** — nenhum caminho absoluto, nenhum `.exe`, nenhum comando de
+   PowerShell. Os cinco agentes já são portáveis por desenho; a regra fica escrita.
+5. **`AGENTS.md`** — seção curta dizendo onde o projeto roda e que o gate é o mesmo nos dois.
+6. **`docs/specs/cloud-setup.sh`** — instala rtk e caveman no VM, com `|| true` em cada linha
+   (§9.5 explica por que pode falhar), para colar no diálogo do ambiente.
+7. **Branch pushada** — a sessão cloud clona do GitHub no branch atual, não do checkout local.
+
+### 9.5 Degradação graciosa (a regra que sustenta tudo)
+
+**rtk, caveman e ponytail são otimização, não requisito.** O gate, os testes e os cinco agentes
+precisam funcionar com zero dos três instalados. Um `quality-gate.mjs` que chame `rtk` sem
+verificar quebra toda sessão cloud — e a economia de token não vale um ambiente que não roda.
+
+Isso não é zelo teórico. Dois obstáculos concretos para instalar as ferramentas no VM:
+
+- **Release assets do GitHub são escopados à sessão.** A documentação é explícita: requisições
+  a assets de release só alcançam os repositórios anexados à sessão, o resto recebe 403. O
+  instalador do rtk baixa o tarball de `rtk-ai/rtk` — que não é o repositório da sessão.
+- **`cargo install rtk` instala a ferramenta errada.** O nome `rtk` em crates.io é o *Rust Type
+  Kit*, outro projeto — é a colisão de nomes que o próprio `RTK.md` avisa. Só forks de terceiros
+  publicam o Rust Token Killer lá; nenhum é oficial.
+
+Conclusão honesta: **o rtk provavelmente não instala numa sessão cloud hospedada pela Anthropic**,
+e o `caveman setup --install` tem o mesmo risco (baixa binários Go de fora do npm). Testar uma
+vez com `docs/specs/cloud-setup.sh`; se der 403, aceitar que a compressão de contexto é um ganho
+**local**, e que a sessão cloud roda o pipeline sem ela. O plano não muda — fica só mais caro em
+token, que é exatamente o trade-off que a degradação graciosa existe para permitir.
+
+O `ponytail` tem chance melhor (marketplace declarada em settings, sem download de release), mas
+também precisa de confirmação na primeira sessão cloud. Enquanto não confirmado: os prompts dos
+agentes de escrita carregam a regra de diff mínimo **no texto**, não só na skill.
+
+### 9.6 O que muda no pipeline
+
+Nada estrutural. Subagentes do repositório funcionam igual, o fan-out das fases 1 e 3 também, e
+o VM não tem cobrança de compute separada — o custo continua sendo token e limite de uso. Duas
+diferenças que valem registrar:
+
+- O `gate-runner` fica **mais** valioso no cloud: sem rtk, o log bruto do Playwright é o maior
+  bloco de contexto do ciclo, e ele é a única coisa entre esse log e a sessão principal.
+- Sem `caveman`, não há medição no cloud. O baseline e a comparação continuam sendo trabalho
+  local — o que é aceitável, porque medir é atividade de ajuste, não de produção.
+
+---
+
+## 10. Referências
 
 - `docs/specs/HARNESS_AEO.md` — o contrato que este pipeline implementa
 - `apm.yml` — declaração de plugins, MCP e scripts
 - `docs/specs/TESTING_GUIDE.md` — regras de ouro de teste E2E
 - `docs/specs/STYLE_GUIDE.md` — voz e paleta que o `copy-writer` obedece
+- Claude Code: [cloud environments](https://code.claude.com/docs/en/cloud-environments) e [settings](https://code.claude.com/docs/en/settings-reference) — base do §9
 - Preços e IDs de modelo: Anthropic API (cache de 2026-06-24) — reconferir antes de usar os
   números para decisão financeira
