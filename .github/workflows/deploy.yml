@@ -61,18 +61,27 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy to S3
-        # O sync garante que o S3 seja um espelho exato da pasta dist/
+        # Dois syncs escopados: cada --delete só apaga dentro do seu próprio
+        # filtro, então não colidem. Cache-Control gravado já no upload.
         run: |
-          aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
+          BUCKET=s3://${{ secrets.S3_BUCKET_NAME }}
+          # assets/* têm hash no nome (Vite) → conteúdo imutável, cache de 1 ano
+          aws s3 sync dist/assets/ $BUCKET/assets/ --delete \
+            --cache-control "public, max-age=31536000, immutable"
+          # HTML, .md, favicon, sitemap, manifests → o navegador sempre revalida
+          aws s3 sync dist/ $BUCKET --delete --exclude "assets/*" \
+            --cache-control "public, max-age=0, must-revalidate"
 
       - name: Corrigir Content-Type dos companions Markdown
         # O sync sobe .md como binary/octet-stream, e um answer engine que baixa
         # o companion recebe download em vez de texto. HARNESS_AEO.md §B4.
+        # --metadata-directive REPLACE zera o Cache-Control, então re-aplica.
         run: |
           aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }} s3://${{ secrets.S3_BUCKET_NAME }} \
             --exclude "*" --include "*.md" --include "llms.txt" \
             --recursive --metadata-directive REPLACE \
-            --content-type "text/markdown; charset=utf-8"
+            --content-type "text/markdown; charset=utf-8" \
+            --cache-control "public, max-age=0, must-revalidate"
 
       - name: Invalidate CloudFront Cache
         # Limpa o cache para que as alterações reflitam imediatamente no domínio
