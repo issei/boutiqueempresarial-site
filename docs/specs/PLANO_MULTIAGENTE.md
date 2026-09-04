@@ -226,7 +226,7 @@ Ordem obrigatória, porque o pipeline sem o gate é um pipeline sem árbitro:
 - [ ] `scripts/bootstrap.sh` + hook `SessionStart` (§9)
 - [ ] `rtk` disponível no shell que o harness usa + hook instalado (`rtk init -g`) — local
 - [ ] baseline de custo: `caveman learn --json` **antes** da Fase 1, para que o ganho
-      seja medido e não afirmado
+      seja medido e não afirmado — **só local**: sem caveman no VM, não há medição no cloud (§9.5)
 
 ---
 
@@ -238,7 +238,7 @@ Ordem obrigatória, porque o pipeline sem o gate é um pipeline sem árbitro:
 | **`caveman`** | **resolvido.** `@caveman-ai/cli@1.3.1` + `caveman setup --install` (6 binários em `~/.caveman/bin`, checksum conferido, `ready: true`); handshake MCP testado. O erro anterior era o binário inexistente. Baseline inicial: Cave Score 75, sink `dumbzone` 413/512 turnos acima de 50% da janela |
 | **`apm` CLI** | não instalado nesta máquina; `apm.yml` do repositório irmão também não tem `apm.lock.yaml`. O manifesto é válido como documentação de contrato desde já, mas `apm install` ainda não foi exercido |
 | **Multi-agente pode custar mais** | se as regras do §6 não forem seguidas. O baseline da Fase 0 existe para detectar isso na primeira medição, não na décima |
-| **Ambiente cloud** | rtk e caveman podem não instalar no VM (403 em asset de release; ver §9.5). O pipeline roda sem eles, mais caro em token. `ponytail` via `extraKnownMarketplaces` precisa de confirmação na primeira sessão cloud |
+| **Ambiente cloud** | **verificado:** rtk não instala no VM (403 em asset de release). caveman alcança o npm, mas o `setup --install` não foi exercido. `ponytail` continua sem resposta até a Fase 0 criar `.claude/settings.json`. O pipeline roda sem os três, mais caro em token — ver §9.5 |
 | **Duas cópias do setup script** | o diálogo do ambiente não lê o repositório; `docs/specs/cloud-setup.sh` é a cópia canônica e o diálogo recebe uma cópia colada. Divergem se alguém editar só um lado |
 | **Escala do repositório** | 7 páginas. O pipeline se paga no fan-out das fases 1 e 3; abaixo de ~5 páginas, sessão única é mais barata. Se o site encolher, este plano deixa de valer |
 
@@ -268,12 +268,25 @@ O critério é simples: **se não está no repositório, não existe no cloud.**
 
 ### 9.2 O que o VM já traz
 
-Node 20/21/22 (22 no PATH, em `/opt/node22`), npm/pnpm/yarn, `gh` autenticado por proxy, git,
-jq, ripgrep, Docker, Postgres e Redis. Rede em nível **Trusted**: registries de pacote e GitHub,
-nada além disso.
+> **Verificado** em sessão cloud contra a branch `spec/harness-aeo`. O que segue é medido, não
+> presumido.
 
-Falta para este projeto: **os navegadores do Playwright** (o VM traz chromedriver, não os
-browsers que o `@playwright/test` baixa).
+Node 20/21/22 (22 no PATH, em `/opt/node22` — medido: **v22.22.2**, npm **10.9.7**),
+npm/pnpm/yarn, `gh` autenticado por proxy, git, jq, ripgrep, Docker, Postgres e Redis, e
+`cargo`. Rede em nível **Trusted**: registries de pacote e GitHub, nada além disso.
+`npm ci` resolve o `package-lock.json` deste projeto limpo (150 pacotes).
+
+**Os navegadores do Playwright já vêm no VM** — corrige a suposição original desta seção. Estão
+em `/opt/pw-browsers` (`chromium-1194`, `headless_shell-1194`, `ffmpeg-1011`), com
+`PLAYWRIGHT_BROWSERS_PATH` apontado para lá.
+
+**Mas há um descasamento de versão que o bootstrap precisa tratar:** os builds pré-instalados são
+da linha **1.56**, e o `package.json` pede `@playwright/test ^1.58.2`. Depois do `npm ci`, o
+1.58 procura um build de browser que não está no diretório. Como
+`PLAYWRIGHT_BROWSERS_PATH` já aponta para `/opt/pw-browsers`, um `npx playwright install chromium`
+grava o build correto **ao lado** do que já existe e resolve — sem `--with-deps`, porque as libs
+de sistema já estão instaladas e o hook não roda como root. Se a CDN do Playwright não estiver
+no allowlist Trusted, esse passo falha: é o item que a próxima sessão cloud precisa medir.
 
 ### 9.3 As três camadas, e o que vai em cada uma
 
@@ -297,8 +310,8 @@ ruim, uma cópia perdida é pior.
    - hook `SessionStart` → `bash "$CLAUDE_PROJECT_DIR"/scripts/bootstrap.sh`
    - `enabledPlugins: { "ponytail@ponytail": true }` + `extraKnownMarketplaces` com a origem
 2. **`scripts/bootstrap.sh`** — idempotente e `exit 0` sempre: `npm ci` quando faltar
-   `node_modules`, e `npx playwright install --with-deps chromium` só quando
-   `CLAUDE_CODE_REMOTE=true`.
+   `node_modules`, e `npx playwright install chromium` (sem `--with-deps`, ver §9.2) para
+   cobrir o descasamento de versão com os builds pré-instalados do VM.
 3. **`scripts/quality-gate.mjs`** — usa `rtk playwright test` **se `rtk` estiver no PATH**, e
    `playwright test` caso contrário. Resolve o aninhamento do §5 e a portabilidade de uma vez.
 4. **`.claude/agents/*.md`** — nenhum caminho absoluto, nenhum `.exe`, nenhum comando de
@@ -314,24 +327,30 @@ ruim, uma cópia perdida é pior.
 precisam funcionar com zero dos três instalados. Um `quality-gate.mjs` que chame `rtk` sem
 verificar quebra toda sessão cloud — e a economia de token não vale um ambiente que não roda.
 
-Isso não é zelo teórico. Dois obstáculos concretos para instalar as ferramentas no VM:
+Isso não é zelo teórico. **Medido em sessão cloud**, não deduzido:
 
-- **Release assets do GitHub são escopados à sessão.** A documentação é explícita: requisições
-  a assets de release só alcançam os repositórios anexados à sessão, o resto recebe 403. O
-  instalador do rtk baixa o tarball de `rtk-ai/rtk` — que não é o repositório da sessão.
-- **`cargo install rtk` instala a ferramenta errada.** O nome `rtk` em crates.io é o *Rust Type
-  Kit*, outro projeto — é a colisão de nomes que o próprio `RTK.md` avisa. Só forks de terceiros
-  publicam o Rust Token Killer lá; nenhum é oficial.
+| Caminho de instalação do rtk | Resultado |
+| :-- | :-- |
+| `api.github.com/repos/rtk-ai/rtk/releases/latest` | **HTTP 403** — assets de release só alcançam repositórios anexados à sessão |
+| `install.sh` via raw.githubusercontent | **HTTP 404** |
+| `brew` | não existe no VM |
+| `cargo install rtk` | `cargo` existe, mas o nome em crates.io é o *Rust Type Kit* — outro projeto (a colisão que o próprio `RTK.md` avisa). Só forks de terceiros publicam o Rust Token Killer lá |
 
-Conclusão honesta: **o rtk provavelmente não instala numa sessão cloud hospedada pela Anthropic**,
-e o `caveman setup --install` tem o mesmo risco (baixa binários Go de fora do npm). Testar uma
-vez com `docs/specs/cloud-setup.sh`; se der 403, aceitar que a compressão de contexto é um ganho
-**local**, e que a sessão cloud roda o pipeline sem ela. O plano não muda — fica só mais caro em
-token, que é exatamente o trade-off que a degradação graciosa existe para permitir.
+**Conclusão fechada: o rtk não tem caminho de instalação viável numa sessão cloud hospedada pela
+Anthropic.** Não é hipótese a testar; é resultado. A compressão de saída de comando é um ganho
+**local**, e a sessão cloud roda o pipeline sem ela — mais cara em token, que é exatamente o
+trade-off que a degradação graciosa existe para permitir.
 
-O `ponytail` tem chance melhor (marketplace declarada em settings, sem download de release), mas
-também precisa de confirmação na primeira sessão cloud. Enquanto não confirmado: os prompts dos
-agentes de escrita carregam a regra de diff mínimo **no texto**, não só na skill.
+**caveman é o caso melhor do que esta seção supunha:** `@caveman-ai/cli@1.3.1` está acessível no
+registry npm dentro do VM — mesma versão da máquina local. O risco remanescente é só o
+`caveman setup --install`, que baixa binários Go de fora do npm e não foi exercido (instalaria
+arquivos). É a única das três com chance real, e merece um teste dedicado.
+
+**ponytail continua em aberto, por ausência de arquivo e não por falha de mecanismo:** a sessão
+cloud reportou zero plugins carregados, o que era o esperado — `extraKnownMarketplaces` nunca foi
+exercido porque `.claude/settings.json` não existe em branch nenhuma. A pergunta só fica
+respondível depois da Fase 0. Até lá vale o fallback: os prompts dos agentes de escrita carregam
+a regra de diff mínimo **no texto**, não só na skill.
 
 ### 9.6 O que muda no pipeline
 
