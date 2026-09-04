@@ -48,7 +48,7 @@
     <meta name="description"
         content="Aplicação para a Sessão Estratégica de Análise Operacional da Boutique Empresarial. Vagas limitadas e sujeitas a aprovação de perfil.">
     <link rel="canonical" href="https://boutiqueempresarial.com.br/formulario.html">
-    <title>Aplicação | Sessão Estratégica</title>
+    <title>Aplicação | Sessão Estratégica — Boutique Empresarial</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap"
@@ -440,7 +440,8 @@
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=746637190095687&ev=PageView&noscript=1"
     /></noscript>
-    <div class="c">
+    <main class="c" id="conteudo">
+        <h1 class="vh">Aplicação para a Sessão Estratégica — Boutique Empresarial</h1>
         <div class="l-w"><img src="/boutiquelogo.webp" alt="Boutique Empresarial" class="l-img" width="200"
                 height="200"></div>
         <div class="p-c">
@@ -452,36 +453,36 @@
 
             <!-- 1 — Nome Completo -->
             <div class="step a" data-s="0">
-                <h2>Para começar, qual o seu nome completo?</h2>
+                <h2 id="q-nome_completo">Para começar, qual o seu nome completo?</h2>
                 <input type="text" name="nome_completo" id="nome_completo" autocomplete="name"
-                    placeholder="Digite sua resposta..." aria-describedby="err-nome_completo">
+                    placeholder="Digite sua resposta..." aria-labelledby="q-nome_completo" aria-describedby="err-nome_completo">
                 <p class="err" id="err-nome_completo" aria-live="polite">Informe seu nome completo.</p>
             </div>
 
             <!-- 2 — E-mail -->
             <div class="step" data-s="1">
-                <h2>Qual o seu melhor e-mail?</h2>
+                <h2 id="q-email">Qual o seu melhor e-mail?</h2>
                 <p class="hint">É por ele que enviaremos a confirmação da sua aplicação.</p>
                 <input type="email" name="email" id="email" autocomplete="email" inputmode="email"
-                    placeholder="nome@exemplo.com" aria-describedby="err-email">
+                    placeholder="nome@exemplo.com" aria-labelledby="q-email" aria-describedby="err-email">
                 <p class="err" id="err-email" aria-live="polite">Informe um e-mail válido.</p>
             </div>
 
             <!-- 3 — WhatsApp -->
             <div class="step" data-s="2">
-                <h2>Qual o seu WhatsApp com DDD?</h2>
+                <h2 id="q-whatsapp">Qual o seu WhatsApp com DDD?</h2>
                 <p class="hint">Priorizamos o contato por aqui.</p>
                 <input type="tel" name="whatsapp" id="whatsapp" autocomplete="tel" inputmode="numeric"
-                    placeholder="(DD) 99999-9999" aria-describedby="err-whatsapp">
+                    placeholder="(DD) 99999-9999" aria-labelledby="q-whatsapp" aria-describedby="err-whatsapp">
                 <p class="err" id="err-whatsapp" aria-live="polite">Informe um WhatsApp válido com DDD.</p>
             </div>
 
             <!-- 4 — Instagram / site (opcional) -->
             <div class="step" data-s="3">
-                <h2>Instagram e/ou site da empresa:</h2>
+                <h2 id="q-instagram_site">Instagram e/ou site da empresa:</h2>
                 <p class="hint">Opcional — mas nos ajuda a entender seu contexto antes da conversa.</p>
                 <input type="text" name="instagram_site" id="instagram_site" autocomplete="url"
-                    placeholder="@suaempresa ou suaempresa.com.br" aria-describedby="err-instagram_site">
+                    placeholder="@suaempresa ou suaempresa.com.br" aria-labelledby="q-instagram_site" aria-describedby="err-instagram_site">
                 <p class="err" id="err-instagram_site" aria-live="polite">Campo inválido.</p>
             </div>
 
@@ -660,7 +661,7 @@
                 concorda com nossa <a href="/privacidade.html" target="_blank" rel="noopener">Política de
                     Privacidade</a>.</div>
         </form>
-    </div>
+    </main>
 
     <script>
         (function () {
