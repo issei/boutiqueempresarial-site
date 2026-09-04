@@ -21,6 +21,9 @@
     --accent-color: #1C1C1C;
     --border-color: #E5E5E5;
     --gold-subtle: #C5A059;
+    /* Ouro para TEXTO: #C5A059 nao passa 4.5:1 sobre o creme (2.20).
+       O decorativo continua sendo --gold-subtle. HARNESS_AEO.md §B5. */
+    --gold-text: #886829;
 }
 
 /* Reset Minimalista e Estilos Recorrentes */

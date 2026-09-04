@@ -44,7 +44,7 @@
             /* Padronizado com o STYLE_GUIDE.md */
             --bg-color: #f5f2eb;
             --text-primary: #1f1f1f;
-            --text-secondary: #6b6b6b;
+            --text-secondary: #555555;
             --error-color: #b91c1c;
         }
 
@@ -199,6 +199,16 @@
             transform: scale(1)
         }
 
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            .step,
+            .shake {
+                animation: none !important;
+                transition: none !important
+            }
+        }
+
         .btns {
             margin-top: 2.5rem;
             display: flex;
@@ -278,8 +288,7 @@
 
         .prg-inf {
             text-align: center;
-            margin-top: 2rem;
-            opacity: .8
+            margin-top: 2rem
         }
 
         .prg-txt {
@@ -311,14 +320,25 @@
             margin-top: 3rem;
             font-size: .7rem;
             text-align: center;
-            color: #9ca3af;
+            color: var(--text-secondary);
             line-height: 1.4;
             border-top: 1px solid #e5e7eb;
             padding-top: 1rem
         }
 
         .leg a {
-            color: var(--text-secondary)
+            color: var(--text-secondary);
+            text-decoration: underline
+        }
+
+        .vh {
+            clip: rect(0 0 0 0);
+            clip-path: inset(50%);
+            height: 1px;
+            width: 1px;
+            overflow: hidden;
+            position: absolute;
+            white-space: nowrap
         }
 
         .h {
@@ -336,7 +356,8 @@
 </head>
 
 <body>
-    <div class="c">
+    <main class="c" id="conteudo">
+        <h1 class="vh">Diagnóstico Estratégico — Boutique Empresarial</h1>
         <div class="l-w"><img src="/boutiquelogo.webp" alt="Boutique Empresarial" class="l-img" width="200"
                 height="200"></div>
         <div class="p-c">
@@ -402,7 +423,7 @@
             <div class="leg">Ao enviar, você concorda com nossa <a href="/privacidade.html" target="_blank">Política
                     de Privacidade</a>.</div>
         </form>
-    </div>
+    </main>
     <script>const G_URL = "https://script.google.com/macros/s/AKfycbxRfDJx9yIZcS-fFVjVAVQuAY-qVWvYKMs9KCHSbMRRE78LPjYjrnb20KJrAPlj_NIo/exec", S = document.querySelectorAll(".step"), PB = document.getElementById("pb"), PV = document.getElementById("prev"), NX = document.getElementById("next"), DT = document.querySelectorAll(".dot"); let c = 0; document.getElementById("eid").value = eid; const mk = v => (v = v.replace(/\D/g, ""), v.length > 11 && (v = v.slice(0, 11)), v.length > 2 && (v = `(${v.substring(0, 2)}) ${v.substring(2)}`), v.length > 9 && (v = `${v.substring(0, 10)}-${v.substring(10)}`), v); document.getElementById("whatsapp").addEventListener("input", e => e.target.value = mk(e.target.value)); const ui = () => { S.forEach((s, i) => { s.classList.toggle("a", i === c), i === c && (s.style.animation = "none", s.offsetHeight, s.style.animation = null) }); DT.forEach((d, i) => d.classList.toggle("act", i === c)); PB.style.width = `${(c + 1) / 7 * 100}%`; PV.classList.toggle("h", 0 === c); NX.innerText = 6 === c ? "Solicitar Diagnóstico" : "Próximo" }, isEm = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e), val = i => { const s = S[i], t = s.querySelector("input[type=text],input[type=tel]"), m = s.querySelector("input[type=email]"), r = s.querySelectorAll("input[type=radio]"), e = s.querySelector(".err"); let k = !0; const sw = (o, x) => { o.classList.toggle("i-err", !x), e && (e.style.display = x ? "none" : "block") }; if (t && t.value.length < 3 && (k = !1, sw(t, 0)), r.length > 0 && ![...r].some(x => x.checked) && (k = !1, s.classList.add("shake"), setTimeout(() => s.classList.remove("shake"), 500)), 2 === i) { const z = document.getElementById("whatsapp").value.replace(/\D/g, ""), v = m.value.trim(); if (z.length < 10 && !v) { k = !1; document.getElementById("err-email").innerText = "Precisamos de pelo menos um contato."; sw(m, 0) } else if (v && !isEm(v)) { k = !1; document.getElementById("err-email").innerText = "E-mail inválido."; sw(m, 0) } else { sw(m, 1) } } return k }, nav = d => { if (1 === d && !val(c)) return; if (6 === c && 1 === d) { sub(); return } c += d, ui() }; document.querySelectorAll("input").forEach(i => { i.addEventListener("focus", e => { setTimeout(() => { e.target.scrollIntoView({ behavior: "smooth", block: "center" }) }, 300) }), i.addEventListener("input", function () { this.classList.remove("i-err"); const e = this.parentElement.querySelector(".err"); e && (e.style.display = "none") }), i.addEventListener("keypress", e => { "Enter" === e.key && nav(1) }) }); const sub = () => { NX.disabled = !0; NX.innerText = "Enviando..."; document.getElementById("l-msg").classList.remove("h"); const f = new FormData(document.getElementById("f")), d = Object.fromEntries(f.entries()); d.user_agent = navigator.userAgent; const u = new URLSearchParams(window.location.search);["utm_source", "utm_campaign", "fbclid"].forEach(k => d[k] = u.get(k) || ""); d.lgpd_consent = "on"; const h = { em: d.email.trim().toLowerCase(), ph: d.whatsapp.replace(/\D/g, ""), eid: eid }; localStorage.setItem("ld", JSON.stringify(h)); fetch(G_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(d) }).then(() => { setTimeout(() => window.location.href = "obrigada.html" + window.location.search, 500) }).catch(() => { alert("Erro. Tente novamente."), NX.disabled = !1, NX.innerText = "Solicitar Diagnóstico" }) }; ui();</script>
 </body>
 
