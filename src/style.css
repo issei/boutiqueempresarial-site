@@ -21,6 +21,9 @@
     --accent-color: #1C1C1C;
     --border-color: #E5E5E5;
     --gold-subtle: #C5A059;
+    /* Ouro para TEXTO: #C5A059 nao passa 4.5:1 sobre o creme (2.20).
+       O decorativo continua sendo --gold-subtle. HARNESS_AEO.md §B5. */
+    --gold-text: #886829;
 }
 
 /* Reset Minimalista e Estilos Recorrentes */
@@ -70,4 +73,62 @@ section {
 
 .skip-link:focus {
     top: 0;
+}
+
+/* Bloco AEO — "Em síntese" + FAQ. HARNESS_AEO.md §B3.
+   Conteúdo editorial, não apêndice técnico: mesmo respiro e tipografia das
+   demais seções. <details> nativo, sem JavaScript. */
+.aeo {
+    border-top: 1px solid var(--border-color);
+}
+
+.aeo-tldr h2 {
+    font-family: var(--font-playfair);
+    font-weight: 400;
+}
+
+.aeo-tldr p {
+    color: var(--text-secondary);
+    max-width: 68ch;
+}
+
+.aeo-tldr::after {
+    content: "";
+    display: block;
+    width: 64px;
+    height: 1px;
+    background: var(--gold-subtle);
+    margin: 40px 0 8px;
+}
+
+.aeo-faq details {
+    border-bottom: 1px solid var(--border-color);
+    padding: 20px 0;
+}
+
+.aeo-faq summary {
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 1.125rem;
+    list-style: none;
+}
+
+.aeo-faq summary::-webkit-details-marker {
+    display: none;
+}
+
+.aeo-faq summary::after {
+    content: "+";
+    float: right;
+    color: var(--gold-text, #886829);
+}
+
+.aeo-faq details[open] summary::after {
+    content: "–";
+}
+
+.aeo-faq details p {
+    color: var(--text-secondary);
+    margin-top: 12px;
+    max-width: 68ch;
 }

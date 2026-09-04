@@ -61,7 +61,7 @@
             /* Padronizado com o STYLE_GUIDE.md */
             --bg-color: #f5f2eb;
             --text-primary: #1f1f1f;
-            --text-secondary: #6b6b6b;
+            --text-secondary: #555555;
             --error-color: #b91c1c;
         }
 
@@ -358,8 +358,7 @@
 
         .prg-inf {
             text-align: center;
-            margin-top: 2rem;
-            opacity: .8
+            margin-top: 2rem
         }
 
         .prg-txt {
@@ -392,14 +391,25 @@
             margin-top: 3rem;
             font-size: .7rem;
             text-align: center;
-            color: #9ca3af;
+            color: var(--text-secondary);
             line-height: 1.4;
             border-top: 1px solid #e5e7eb;
             padding-top: 1rem
         }
 
         .leg a {
-            color: var(--text-secondary)
+            color: var(--text-secondary);
+            text-decoration: underline
+        }
+
+        .vh {
+            clip: rect(0 0 0 0);
+            clip-path: inset(50%);
+            height: 1px;
+            width: 1px;
+            overflow: hidden;
+            position: absolute;
+            white-space: nowrap
         }
 
         .h {
