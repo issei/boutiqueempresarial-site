@@ -27,9 +27,27 @@
     </script>
     <!-- End Meta Pixel Code -->
 
-    <!-- Conversao: Lead -->
+    <!-- Conversao: Lead (deduplicada com a Conversions API via eventID) -->
     <script>
-      fbq('track', 'Lead');
+      (function () {
+        // O mesmo event_id gerado em formulario.html e enviado ao CAPI precisa
+        // acompanhar o Pixel; sem ele, Meta contabiliza o lead duas vezes.
+        var eid = '';
+        try {
+          eid = new URLSearchParams(window.location.search).get('eid') || '';
+        } catch (e) { /* URL malformada */ }
+        if (!eid) {
+          try {
+            var ld = JSON.parse(localStorage.getItem('ld') || '{}');
+            eid = ld.eid || '';
+          } catch (e) { /* modo privado ou payload invalido */ }
+        }
+        if (eid) {
+          fbq('track', 'Lead', {}, { eventID: eid });
+        } else {
+          fbq('track', 'Lead');
+        }
+      })();
     </script>
 
     <meta charset="UTF-8">
