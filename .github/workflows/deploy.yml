@@ -65,6 +65,15 @@ jobs:
         run: |
           aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
 
+      - name: Corrigir Content-Type dos companions Markdown
+        # O sync sobe .md como binary/octet-stream, e um answer engine que baixa
+        # o companion recebe download em vez de texto. HARNESS_AEO.md §B4.
+        run: |
+          aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }} s3://${{ secrets.S3_BUCKET_NAME }} \
+            --exclude "*" --include "*.md" --include "llms.txt" \
+            --recursive --metadata-directive REPLACE \
+            --content-type "text/markdown; charset=utf-8"
+
       - name: Invalidate CloudFront Cache
         # Limpa o cache para que as alterações reflitam imediatamente no domínio
         run: |

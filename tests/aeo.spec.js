@@ -103,3 +103,35 @@ for (const { slug, url } of pages) {
     });
   });
 }
+
+// Camada para máquinas — HARNESS_AEO.md §B4.
+// Fora do laço por página: são artefatos do site, não de uma página.
+test.describe('camada para máquinas', () => {
+  test('todo link de llms.txt resolve 200', async ({ request }) => {
+    const res = await request.get('/llms.txt');
+    expect(res.status(), 'llms.txt não encontrado').toBe(200);
+
+    const urls = [...(await res.text()).matchAll(/\((https?:\/\/[^)]+)\)/g)].map((m) => m[1]);
+    expect(urls.length, 'llms.txt sem links').toBeGreaterThan(0);
+
+    const quebrados = [];
+    for (const url of urls) {
+      // O arquivo aponta para produção; em teste vale o caminho equivalente local.
+      const caminho = new URL(url).pathname;
+      const r = await request.get(caminho);
+      if (r.status() >= 400) quebrados.push(`${caminho} → ${r.status()}`);
+    }
+    expect(quebrados.join(', '), 'links quebrados em llms.txt').toBe('');
+  });
+
+  test('companion Markdown existe e está declarado na página', async ({ page, request }) => {
+    await page.goto('/');
+    const href = await page.evaluate(
+      () => document.querySelector('link[rel="alternate"][type="text/markdown"]')?.href ?? null,
+    );
+    expect(href, 'home sem <link rel=alternate type=text/markdown>').toBeTruthy();
+
+    const res = await request.get(new URL(href).pathname);
+    expect(res.status(), `companion ${href} não encontrado`).toBe(200);
+  });
+});
