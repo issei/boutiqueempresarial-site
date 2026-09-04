@@ -1,9 +1,26 @@
 # SDD — Plano de Desenvolvimento Multi-Agente (modelos econômicos)
 
-**Status:** Proposta (aguardando implementação)
+**Status:** Fase 0 implementada (os cinco subagentes existem em `.claude/agents/`); fases 1–5 executadas na sessão principal — ver nota abaixo
 **Branch de origem:** `spec/harness-aeo`
 **Implementa:** `docs/specs/HARNESS_AEO.md` (Parte A — Harness)
 **Configuração:** `apm.yml` na raiz
+
+---
+
+## 0. Nota de execução
+
+As fases 1 a 5 foram executadas **na sessão principal**, não pelo fan-out de subagentes. Não é
+desvio do plano: é a regra 5 do §6 aplicada. A sessão que implementou já tinha lido as 7 páginas
+e os specs inteiros; despachar um subagente por página faria cada um partir frio e **re-derivar**
+esse contexto — o oposto da economia que o pipeline existe para produzir.
+
+Os cinco agentes estão criados e valem para o trabalho recorrente, quando o contexto da sessão
+principal não contém o que a tarefa precisa: adicionar a oitava página, auditar o site inteiro
+depois de meses, rodar o gate sem trazer o log para dentro da conversa.
+
+**O ganho maior já está capturado de outro jeito:** o `quality-gate.mjs` detecta o rtk e roda o
+Playwright através dele, o que comprimiu 276 testes numa linha (`PASS (276) FAIL (0)`). Era esse
+o papel do `gate-runner`.
 
 ---
 

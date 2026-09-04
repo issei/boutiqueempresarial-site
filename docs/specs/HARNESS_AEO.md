@@ -1,6 +1,6 @@
 # SDD — Harness Agêntico e Contrato AEO/SEO
 
-**Status:** Proposta (aguardando implementação)
+**Status:** Implementado na branch `spec/harness-aeo` — fases 0 a 5 concluídas, gate verde (276 testes)
 **Branch de origem:** `spec/harness-aeo`
 **Escopo:** repositório inteiro (`src/`, `public/`, `docs/specs/`, `tests/`, `.github/`)
 
@@ -130,10 +130,10 @@ o gatilho de reavaliação está em §A5.
 
 ### B0. Correções imediatas (pré-requisito, sem código novo)
 
-- [ ] `public/llms.txt`: `privacidade.hmtl` → `privacidade.html`; `termos.hmtl` → `termos.html`.
-- [ ] Gerar `public/og-image.jpg` 1200×630 conforme `ASSETS_GUIDE.md`; apontar `og:image` para
+- [x] `public/llms.txt`: `privacidade.hmtl` → `privacidade.html`; `termos.hmtl` → `termos.html`.
+- [x] Gerar `public/og-image.jpg` 1200×630 conforme `ASSETS_GUIDE.md`; apontar `og:image` para
       ele em todas as páginas indexáveis, com `og:image:width`/`height` corretos.
-- [ ] Adicionar `twitter:card=summary_large_image`, `twitter:title`, `twitter:description` e
+- [x] Adicionar `twitter:card=summary_large_image`, `twitter:title`, `twitter:description` e
       `twitter:image` às páginas indexáveis.
 
 ### B1. Contrato do `<head>` — obrigatório em toda página de `src/*.html`
@@ -143,7 +143,7 @@ o gatilho de reavaliação está em §A5.
 | `<title>` | 10–60 caracteres, sufixo `\| Boutique Empresarial` | `tests/seo.spec.js` |
 | `meta description` | 50–160 caracteres, com a palavra-chave da página | `tests/seo.spec.js` |
 | `link canonical` | URL absoluta, sem `.html`, sem barra final (exceto a raiz) | `tests/seo.spec.js` |
-| `meta robots` | `index, follow, max-image-preview:large, max-snippet:-1` — ou `noindex` deliberado (`obrigada`, `formulario`, `identidade-visual`, `404`) | `tests/seo.spec.js` |
+| `meta robots` | `index, follow, max-image-preview:large, max-snippet:-1` — ou `noindex` deliberado. **Hoje só `index` é indexável** — `privacidade` e `termos` também estão `noindex`, decisão anterior a este spec que a implementação preservou (ver §7) | `tests/seo.spec.js` |
 | OG | `og:type`, `og:site_name`, `og:locale=pt_BR`, `og:title`, `og:description`, `og:url`, `og:image` (1200×630) | `tests/seo.spec.js` |
 | Twitter | `twitter:card=summary_large_image` + title/description/image | `tests/seo.spec.js` |
 | GA4 | `G-8HNXV7KTY9` imediatamente após `<head>` | `tests/seo.spec.js` |
@@ -240,16 +240,16 @@ Contradiz a filosofia "autoridade sem gritar" do `STYLE_GUIDE.md`.
 
 A implementação está completa quando **todos** os itens abaixo são verdadeiros:
 
-- [ ] `AGENTS.md` existe na raiz, com ≤ 200 linhas, e referencia todos os specs de `docs/specs/`.
-- [ ] `npm run gate` existe, roda build + Playwright e falha no primeiro erro.
-- [ ] `tests/seo.spec.js`, `tests/aeo.spec.js` e `tests/a11y.spec.js` existem e iteram por glob.
-- [ ] `npm run gate` retorna verde no estado atual do repositório (com §B0 aplicado).
-- [ ] A CI (`playwright.yml`) executa `npm run gate`.
-- [ ] Zero violações axe `serious`/`critical` em todas as páginas.
-- [ ] Todas as páginas indexáveis têm `<head>` conforme §B1 e JSON-LD conforme §B2.
-- [ ] Todas as perguntas do `FAQPage` têm contraparte visível idêntica no DOM.
-- [ ] `public/llms.txt` sem links quebrados; companions `.md` existem e são referenciados.
-- [ ] `SEO_ANALYTICS.md` e `TESTING_GUIDE.md` atualizados para apontar para este contrato —
+- [x] `AGENTS.md` existe na raiz, com ≤ 200 linhas, e referencia todos os specs de `docs/specs/`.
+- [x] `npm run gate` existe, roda build + Playwright e falha no primeiro erro.
+- [x] `tests/seo.spec.js`, `tests/aeo.spec.js` e `tests/a11y.spec.js` existem e iteram por glob.
+- [x] `npm run gate` retorna verde no estado atual do repositório (com §B0 aplicado).
+- [x] A CI (`playwright.yml`) executa `npm run gate`.
+- [x] Zero violações axe `serious`/`critical` em todas as páginas.
+- [x] Todas as páginas indexáveis têm `<head>` conforme §B1 e JSON-LD conforme §B2.
+- [x] Todas as perguntas do `FAQPage` têm contraparte visível idêntica no DOM.
+- [x] `public/llms.txt` sem links quebrados; companions `.md` existem e são referenciados.
+- [x] `SEO_ANALYTICS.md` e `TESTING_GUIDE.md` atualizados para apontar para este contrato —
       spec não pode contradizer spec.
 
 ---
@@ -269,6 +269,17 @@ Cada fase é um PR independente e mantém o repositório verde.
 
 **A ordem é vinculante:** a fase 2 entrega o mecanismo que cobra as fases 4–6. Inverter a ordem
 produz conformidade que apodrece na primeira página nova.
+
+---
+
+## 6.1 Decisão registrada durante a implementação
+
+**`privacidade` e `termos` continuam `noindex`.** O §B2 previa nó `WebPage` para elas, mas as
+duas já estavam marcadas `noindex, follow` antes deste spec. Mudar a indexação de uma página é
+decisão de negócio, não correção mecânica — a implementação preservou o estado atual e as tratou
+como isentas. **Se a intenção era que fossem indexáveis** (páginas legais linkadas no rodapé
+costumam ser), é uma linha de `meta robots` em cada uma e o restante do contrato passa a valer
+automaticamente, porque a suíte lê a indexabilidade da própria página.
 
 ---
 
