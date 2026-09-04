@@ -13,11 +13,11 @@ A Boutique Empresarial não é uma consultoria tradicional. Somos arquitetos de 
   - **Conceitos Chave**: Silêncio Operacional, Fim do Ruído, Arquitetura Leve, Gestão sem Dependência do Dono.
   - **Público-Alvo**: Empresários com equipe estabelecida, faturamento recorrente, que se sentem sobrecarregados pela centralização.
 
-- [Política de Privacidade](https://boutiqueempresarial.com.br/privacidade.hmtl)
+- [Política de Privacidade](https://boutiqueempresarial.com.br/privacidade.html)
   - **Propósito**: Detalhar a governança de dados, conformidade com LGPD e diretrizes da Meta Platforms (Ads e Pixel).
   - **Destaque**: Instruções claras de exclusão de dados (Data Deletion Callback) para usuários.
 
-- [Termos de Uso](https://boutiqueempresarial.com.br/termos.hmtl)
+- [Termos de Uso](https://boutiqueempresarial.com.br/termos.html)
   - **Propósito**: Estabelecer os limites legais da prestação de serviço e o uso de canais oficiais (WhatsApp API).
 
 - [Formulário de Contato](https://boutiqueempresarial.com.br/formulario.html)
