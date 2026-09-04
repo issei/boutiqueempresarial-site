@@ -174,8 +174,14 @@ medição seja um comando, não um ritual.
 **rtk e `gate-runner` não são redundantes, são camadas:** rtk comprime o log do Playwright
 sintaticamente (descarta ruído); o `gate-runner` o converte semanticamente em uma decisão
 (`green` / lista de asserções). Com rtk ligado o `gate-runner` fica mais barato — não
-desnecessário. Verificar na Fase 0 se os filtros do rtk cobrem Playwright; a documentação cita
-Jest, pytest, cargo e Go test nominalmente.
+desnecessário.
+
+**Playwright é coberto:** `rtk playwright` está entre os filtros nativos ("Playwright E2E tests
+with compact output"), assim como `npm`, `npx` e `vitest`. Detalhe de implementação da Fase 0:
+o hook do rtk reescreve o comando de **topo** que o agente executa, e o gate roda o Playwright
+de dentro do `quality-gate.mjs` — para o filtro alcançar a saída real, o `quality-gate.mjs`
+deve invocar `rtk playwright test`, não `playwright test`. Medir com `rtk gain` antes e depois:
+se a economia no gate ficar perto de zero, é este aninhamento, não o filtro.
 
 **Ordem de aplicação, do maior retorno para o menor:**
 
@@ -226,10 +232,9 @@ Ordem obrigatória, porque o pipeline sem o gate é um pipeline sem árbitro:
 
 | Item | Situação |
 | :-- | :-- |
-| **`rtk`** | identificado: [rtk-ai/rtk](https://github.com/rtk-ai/rtk), declarado em `apm.yml`. **Não está no PATH desta máquina Windows** (nem em `~/.rtk`, `~/.cargo/bin` ou no PATH do PowerShell), e o hook `rtk init -g` não aparece em `~/.claude/settings.json`. A instalação documentada é Homebrew ou `install.sh` (macOS/Linux) — confirmar em que ambiente ele roda aqui antes da Fase 0 |
-| **Cobertura do rtk** | os filtros citados nominalmente são Jest, pytest, cargo test e Go test. Se Playwright não estiver entre os 100+ comandos suportados, o ganho na Fase 2+ vem do `gate-runner`, não do rtk. Medir com `rtk gain`, não presumir |
+| **`rtk`** | **resolvido.** [rtk-ai/rtk](https://github.com/rtk-ai/rtk) v0.47.0 em `D:\tools\rtk-x86_64-pc-windows-msvc`, adicionado ao PATH do usuário; hook global instalado (`rtk init -g` → `rtk hook claude` em `~/.claude/settings.json`, `~/.claude/RTK.md`). Verificado com `rtk git status` e `rtk gain` |
+| **`caveman`** | **resolvido.** `@caveman-ai/cli@1.3.1` + `caveman setup --install` (6 binários em `~/.caveman/bin`, checksum conferido, `ready: true`); handshake MCP testado. O erro anterior era o binário inexistente. Baseline inicial: Cave Score 75, sink `dumbzone` 413/512 turnos acima de 50% da janela |
 | **`apm` CLI** | não instalado nesta máquina; `apm.yml` do repositório irmão também não tem `apm.lock.yaml`. O manifesto é válido como documentação de contrato desde já, mas `apm install` ainda não foi exercido |
-| **MCP `caveman`** | o servidor está configurado em `~/.claude.json` e falhou ao conectar na sessão em que este spec foi escrito. Verificar antes de depender dele na Fase 0 |
 | **Multi-agente pode custar mais** | se as regras do §6 não forem seguidas. O baseline da Fase 0 existe para detectar isso na primeira medição, não na décima |
 | **Escala do repositório** | 7 páginas. O pipeline se paga no fan-out das fases 1 e 3; abaixo de ~5 páginas, sessão única é mais barata. Se o site encolher, este plano deixa de valer |
 
