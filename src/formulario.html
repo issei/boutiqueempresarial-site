@@ -28,7 +28,7 @@
     <!-- End Meta Pixel Code -->
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -44,19 +44,11 @@
         gtag('config', 'G-8HNXV7KTY9');
     </script>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="BoutiqueEmpresarial" />
-    <link rel="manifest" href="/site.webmanifest" />
     <meta name="robots" content="noindex, follow">
     <meta name="description"
-        content="Solicite seu Diagnóstico Estratégico. Consultoria especializada para escalar seu negócio.">
+        content="Aplicação para a Sessão Estratégica de Análise Operacional da Boutique Empresarial. Vagas limitadas e sujeitas a aprovação de perfil.">
     <link rel="canonical" href="https://boutiqueempresarial.com.br/formulario.html">
-    <title>Diagnóstico Estratégico</title>
+    <title>Aplicação | Sessão Estratégica</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap"
@@ -93,7 +85,8 @@
         }
 
         input,
-        button {
+        button,
+        textarea {
             font-family: inherit
         }
 
@@ -130,7 +123,7 @@
         .bar {
             background: var(--text-primary);
             height: 100%;
-            width: 14%;
+            width: 9%;
             transition: width .4s ease
         }
 
@@ -162,7 +155,23 @@
             line-height: 1.2
         }
 
-        input:not([type=radio]):not([type=checkbox]) {
+        fieldset {
+            border: 0;
+            padding: 0;
+            margin: 0;
+            min-width: 0
+        }
+
+        legend {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            padding: 0
+        }
+
+        input:not([type=radio]):not([type=checkbox]),
+        textarea {
             width: 100%;
             background: 0 0;
             border: 0;
@@ -174,7 +183,14 @@
             transition: .3s
         }
 
-        input:focus {
+        textarea {
+            resize: vertical;
+            min-height: 5.5rem;
+            line-height: 1.5
+        }
+
+        input:focus,
+        textarea:focus {
             outline: 0;
             border-bottom: 2px solid var(--text-primary)
         }
@@ -222,6 +238,45 @@
 
         .rl input:checked::before {
             transform: scale(1)
+        }
+
+        /* Múltipla escolha: mesma anatomia do radio, com cantos retos (convenção quadrado = várias opções) */
+        .rl input[type=checkbox],
+        .rl input[type=checkbox]::before {
+            border-radius: 3px
+        }
+
+        .rl.dis {
+            opacity: .45;
+            cursor: not-allowed
+        }
+
+        /* Alinhamento superior para rótulos longos (multilinha) */
+        .rl.top {
+            align-items: flex-start
+        }
+
+        .rl.top input {
+            margin-top: .25em
+        }
+
+        /* Campo condicional "Outro": recuado sob a opção correspondente */
+        .oth {
+            margin: .2rem 0 .4rem 2rem;
+            max-width: calc(100% - 2rem)
+        }
+
+        .hint {
+            font-size: .9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5
+        }
+
+        .cnt {
+            font-size: .8rem;
+            color: var(--text-secondary);
+            margin-top: .8rem
         }
 
         .btns {
@@ -317,7 +372,8 @@
         .dots {
             justify-content: center;
             gap: .4rem;
-            display: flex
+            display: flex;
+            flex-wrap: wrap
         }
 
         .dot {
@@ -356,6 +412,16 @@
                 padding-top: 2rem
             }
         }
+
+        @media(prefers-reduced-motion:reduce) {
+
+            .step,
+            .shake,
+            .bar {
+                animation: none !important;
+                transition: none !important
+            }
+        }
     </style>
 
 </head>
@@ -368,70 +434,587 @@
         <div class="l-w"><img src="/boutiquelogo.webp" alt="Boutique Empresarial" class="l-img" width="200"
                 height="200"></div>
         <div class="p-c">
-            <div class="bar" id="pb"></div>
+            <div class="bar" id="pb" role="progressbar" aria-label="Progresso da aplicação" aria-valuemin="0"
+                aria-valuemax="100" aria-valuenow="9"></div>
         </div>
-        <form id="f" onsubmit="return!1"><input type="hidden" name="event_id" id="eid">
+        <form id="f" onsubmit="return!1" novalidate>
+            <input type="hidden" name="event_id" id="eid">
+
+            <!-- 1 — Nome Completo -->
             <div class="step a" data-s="0">
-                <h2>Para começar, qual seu nome?</h2><input type="text" name="nome" id="nome" autocomplete="name"
-                    placeholder="Digite sua resposta..." class="req">
-                <p class="err">Campo obrigatório.</p>
+                <h2>Para começar, qual o seu nome completo?</h2>
+                <input type="text" name="nome_completo" id="nome_completo" autocomplete="name"
+                    placeholder="Digite sua resposta..." aria-describedby="err-nome_completo">
+                <p class="err" id="err-nome_completo" aria-live="polite">Informe seu nome completo.</p>
             </div>
+
+            <!-- 2 — E-mail -->
             <div class="step" data-s="1">
-                <h2>Qual seu WhatsApp?</h2>
-                <p style="font-size:.9rem;color:#666;margin-bottom:1rem">Priorizamos o contato por aqui.</p><input
-                    type="tel" name="whatsapp" id="whatsapp" autocomplete="tel" inputmode="numeric"
-                    placeholder="(DD) 99999-9999" class="req">
-                <p class="err">Informe um WhatsApp válido.</p>
+                <h2>Qual o seu melhor e-mail?</h2>
+                <p class="hint">É por ele que enviaremos a confirmação da sua aplicação.</p>
+                <input type="email" name="email" id="email" autocomplete="email" inputmode="email"
+                    placeholder="nome@exemplo.com" aria-describedby="err-email">
+                <p class="err" id="err-email" aria-live="polite">Informe um e-mail válido.</p>
             </div>
+
+            <!-- 3 — WhatsApp -->
             <div class="step" data-s="2">
-                <h2>Qual seu melhor e-mail?</h2><input type="email" name="email" id="email" autocomplete="email"
-                    inputmode="email" placeholder="nome@exemplo.com">
-                <p class="err" id="err-email">E-mail inválido ou obrigatório.</p>
+                <h2>Qual o seu WhatsApp com DDD?</h2>
+                <p class="hint">Priorizamos o contato por aqui.</p>
+                <input type="tel" name="whatsapp" id="whatsapp" autocomplete="tel" inputmode="numeric"
+                    placeholder="(DD) 99999-9999" aria-describedby="err-whatsapp">
+                <p class="err" id="err-whatsapp" aria-live="polite">Informe um WhatsApp válido com DDD.</p>
             </div>
+
+            <!-- 4 — Instagram / site (opcional) -->
             <div class="step" data-s="3">
-                <h2>Qual o faturamento médio mensal?</h2>
-                <div class="rg"><label class="rl"><input type="radio" name="faturamento" value="Até 50k">Até
-                        50k</label><label class="rl"><input type="radio" name="faturamento" value="50k a 100k">50k a
-                        100k</label><label class="rl"><input type="radio" name="faturamento" value="100k a 300k">100k a
-                        300k</label><label class="rl"><input type="radio" name="faturamento" value="Acima de 300k">Acima
-                        de 300k</label></div>
+                <h2>Instagram e/ou site da empresa:</h2>
+                <p class="hint">Opcional — mas nos ajuda a entender seu contexto antes da conversa.</p>
+                <input type="text" name="instagram_site" id="instagram_site" autocomplete="url"
+                    placeholder="@suaempresa ou suaempresa.com.br" aria-describedby="err-instagram_site">
+                <p class="err" id="err-instagram_site" aria-live="polite">Campo inválido.</p>
             </div>
+
+            <!-- 5 — Modelo de negócio -->
             <div class="step" data-s="4">
-                <h2>Tamanho do Time (fixos e freelancers):</h2>
-                <div class="rg"><label class="rl"><input type="radio" name="time" value="1-5">1 a 5
-                        pessoas</label><label class="rl"><input type="radio" name="time" value="6-15">6 a 15
-                        pessoas</label><label class="rl"><input type="radio" name="time" value="16-30">16 a 30
-                        pessoas</label><label class="rl"><input type="radio" name="time" value="+31">Mais de 31
-                        pessoas</label></div>
+                <fieldset>
+                    <legend>Qual o modelo de negócio da sua empresa?</legend>
+                    <div class="rg">
+                        <label class="rl top"><input type="radio" name="modelo_negocio"
+                                value="Serviços (consultoria, agência, prestação de serviço)">Serviços (consultoria,
+                            agência, prestação de serviço)</label>
+                        <label class="rl top"><input type="radio" name="modelo_negocio"
+                                value="Produtos físicos (fabricação, varejo, distribuição)">Produtos físicos
+                            (fabricação, varejo, distribuição)</label>
+                        <label class="rl"><input type="radio" name="modelo_negocio"
+                                value="E-commerce">E-commerce</label>
+                        <label class="rl top"><input type="radio" name="modelo_negocio"
+                                value="Infoprodutos / negócio digital">Infoprodutos / negócio digital</label>
+                        <label class="rl top"><input type="radio" name="modelo_negocio"
+                                value="Misto (produto + serviço)">Misto (produto + serviço)</label>
+                        <label class="rl"><input type="radio" name="modelo_negocio" data-other="modelo_negocio_outro"
+                                value="Outro">Outro</label>
+                        <input type="text" class="oth h" name="modelo_negocio_outro" id="modelo_negocio_outro"
+                            placeholder="Qual?" aria-label="Especifique o modelo de negócio">
+                    </div>
+                </fieldset>
+                <p class="err" id="err-modelo_negocio" aria-live="polite">Selecione uma opção.</p>
             </div>
+
+            <!-- 6 — Tamanho da equipe -->
             <div class="step" data-s="5">
-                <h2>Se ausentar por 7 dias, a operação continua?</h2>
-                <div class="rg"><label class="rl"><input type="radio" name="operacao" value="Sim">Sim, roda
-                        sozinha.</label><label class="rl"><input type="radio" name="operacao" value="Falhas">Roda, mas
-                        com falhas.</label><label class="rl"><input type="radio" name="operacao" value="Trava">Não, a
-                        operação trava.</label></div>
+                <fieldset>
+                    <legend>Quantas pessoas trabalham com você hoje? (CLT, PJ e fixos)</legend>
+                    <div class="rg">
+                        <label class="rl"><input type="radio" name="tamanho_equipe" value="1 a 3 pessoas">1 a 3
+                            pessoas</label>
+                        <label class="rl"><input type="radio" name="tamanho_equipe" value="4 a 8 pessoas">4 a 8
+                            pessoas</label>
+                        <label class="rl"><input type="radio" name="tamanho_equipe" value="9 a 20 pessoas">9 a 20
+                            pessoas</label>
+                        <label class="rl"><input type="radio" name="tamanho_equipe" value="21 a 50 pessoas">21 a 50
+                            pessoas</label>
+                        <label class="rl"><input type="radio" name="tamanho_equipe" value="Mais de 50 pessoas">Mais de
+                            50 pessoas</label>
+                    </div>
+                </fieldset>
+                <p class="err" id="err-tamanho_equipe" aria-live="polite">Selecione uma opção.</p>
             </div>
+
+            <!-- 7 — Faturamento -->
             <div class="step" data-s="6">
-                <h2>Disposta a investir na estruturação?</h2>
-                <div class="rg"><label class="rl"><input type="radio" name="investimento" value="Sim">Sim, pronta para
-                        investir.</label><label class="rl"><input type="radio" name="investimento"
-                            value="Entender">Quero entender valores.</label></div>
+                <fieldset>
+                    <legend>Qual o faturamento médio mensal da empresa?</legend>
+                    <div class="rg">
+                        <label class="rl"><input type="radio" name="faturamento_mensal" value="Até R$ 30 mil">Até R$ 30
+                            mil</label>
+                        <label class="rl"><input type="radio" name="faturamento_mensal"
+                                value="R$ 30 mil a R$ 80 mil">R$ 30 mil a R$ 80 mil</label>
+                        <label class="rl"><input type="radio" name="faturamento_mensal"
+                                value="R$ 80 mil a R$ 150 mil">R$ 80 mil a R$ 150 mil</label>
+                        <label class="rl"><input type="radio" name="faturamento_mensal"
+                                value="R$ 150 mil a R$ 300 mil">R$ 150 mil a R$ 300 mil</label>
+                        <label class="rl"><input type="radio" name="faturamento_mensal"
+                                value="R$ 300 mil a R$ 500 mil">R$ 300 mil a R$ 500 mil</label>
+                        <label class="rl"><input type="radio" name="faturamento_mensal"
+                                value="Acima de R$ 500 mil">Acima de R$ 500 mil</label>
+                    </div>
+                </fieldset>
+                <p class="err" id="err-faturamento_mensal" aria-live="polite">Selecione uma opção.</p>
             </div>
-            <div class="btns"><button type="button" id="prev" class="btn b-bk h"
-                    onclick="nav(-1)">Voltar</button><button type="button" id="next" class="btn"
-                    onclick="nav(1)">Próximo</button></div>
+
+            <!-- 8 — Autonomia operacional -->
+            <div class="step" data-s="7">
+                <fieldset>
+                    <legend>Hoje, como a empresa funciona quando você se afasta da rotina?</legend>
+                    <div class="rg">
+                        <label class="rl top"><input type="radio" name="autonomia_operacional"
+                                value="A empresa para de executar as tarefas se eu me ausentar.">A empresa para de
+                            executar as tarefas se eu me ausentar.</label>
+                        <label class="rl top"><input type="radio" name="autonomia_operacional"
+                                value="Os funcionários executam as tarefas, mas eu preciso autorizar e corrigir o trabalho.">Os
+                            funcionários executam as tarefas, mas eu preciso autorizar e corrigir o trabalho.</label>
+                        <label class="rl top"><input type="radio" name="autonomia_operacional"
+                                value="Os funcionários executam e autorizam as tarefas sem precisar da minha validação.">Os
+                            funcionários executam e autorizam as tarefas sem precisar da minha validação.</label>
+                        <label class="rl"><input type="radio" name="autonomia_operacional"
+                                data-other="autonomia_operacional_outro" value="Outro">Outro</label>
+                        <input type="text" class="oth h" name="autonomia_operacional_outro"
+                            id="autonomia_operacional_outro" placeholder="Qual?"
+                            aria-label="Especifique como a empresa funciona sem você">
+                    </div>
+                </fieldset>
+                <p class="err" id="err-autonomia_operacional" aria-live="polite">Selecione uma opção.</p>
+            </div>
+
+            <!-- 9 — Maior problema de gestão (até 2) -->
+            <div class="step" data-s="8" data-max="2">
+                <fieldset>
+                    <legend>Qual é o maior problema da sua gestão hoje?</legend>
+                    <p class="hint">Escolha até 2 opções.</p>
+                    <div class="rg">
+                        <label class="rl top"><input type="checkbox" name="maior_problema_gestao"
+                                value="Muitas decisões e autorizações dependem exclusivamente de mim">Muitas decisões e
+                            autorizações dependem exclusivamente de mim</label>
+                        <label class="rl top"><input type="checkbox" name="maior_problema_gestao"
+                                value="O time entrega tarefas com erros ou fora do padrão esperado">O time entrega
+                            tarefas com erros ou fora do padrão esperado</label>
+                        <label class="rl top"><input type="checkbox" name="maior_problema_gestao"
+                                value="Falta de rotina de acompanhamento e de cobrança de prazos">Falta de rotina de
+                            acompanhamento e de cobrança de prazos</label>
+                        <label class="rl top"><input type="checkbox" name="maior_problema_gestao"
+                                value="Gerentes ou supervisores que não assumem a responsabilidade pelas metas">Gerentes
+                            ou supervisores que não assumem a responsabilidade pelas metas</label>
+                        <label class="rl top"><input type="checkbox" name="maior_problema_gestao"
+                                value="A empresa aumentou o volume de clientes, mas a rotina ficou desorganizada">A
+                            empresa aumentou o volume de clientes, mas a rotina ficou desorganizada</label>
+                        <label class="rl"><input type="checkbox" name="maior_problema_gestao"
+                                data-other="maior_problema_gestao_outro" value="Outro">Outro</label>
+                        <input type="text" class="oth h" name="maior_problema_gestao_outro"
+                            id="maior_problema_gestao_outro" placeholder="Qual?"
+                            aria-label="Especifique o maior problema da sua gestão">
+                    </div>
+                </fieldset>
+                <p class="cnt" id="cnt-problema" aria-live="polite">0 de 2 selecionadas</p>
+                <p class="err" id="err-maior_problema_gestao" aria-live="polite">Selecione ao menos 1 opção (máximo 2).
+                </p>
+            </div>
+
+            <!-- 10 — Prioridade -->
+            <div class="step" data-s="9">
+                <fieldset>
+                    <legend>Qual é a sua prioridade para resolver esse problema?</legend>
+                    <div class="rg">
+                        <label class="rl top"><input type="radio" name="prioridade_resolucao"
+                                value="Quero implementar as melhorias na minha empresa nos próximos 30 dias.">Quero
+                            implementar as melhorias na minha empresa nos próximos 30 dias.</label>
+                        <label class="rl top"><input type="radio" name="prioridade_resolucao"
+                                value="Pretendo fazer essas mudanças nos próximos 3 a 6 meses.">Pretendo fazer essas
+                            mudanças nos próximos 3 a 6 meses.</label>
+                        <label class="rl top"><input type="radio" name="prioridade_resolucao"
+                                value="Estou apenas buscando entender meus pontos de melhoria, sem pressa para aplicar.">Estou
+                            apenas buscando entender meus pontos de melhoria, sem pressa para aplicar.</label>
+                    </div>
+                </fieldset>
+                <p class="err" id="err-prioridade_resolucao" aria-live="polite">Selecione uma opção.</p>
+            </div>
+
+            <!-- 11 — Informações adicionais + Consentimento -->
+            <div class="step" data-s="10">
+                <h2>Descreva brevemente qualquer informação relevante sobre a sua equipe antes da reunião</h2>
+                <p class="hint">Opcional. Quanto mais contexto, mais preparada será a sessão.</p>
+                <textarea name="informacoes_adicionais" id="informacoes_adicionais" rows="4"
+                    placeholder="Digite sua resposta..."></textarea>
+                <div class="rg" style="margin-top:2rem">
+                    <label class="rl top"><input type="checkbox" name="consentimento" id="consentimento"
+                            value="Sim"><span><strong>Termo de Consentimento.</strong> Concordo em ser contatado e
+                            autorizo o uso dos dados apenas para avaliação desta aplicação.</span></label>
+                </div>
+                <p class="err" id="err-consentimento" aria-live="polite">É necessário aceitar o termo para enviar a
+                    aplicação.</p>
+            </div>
+
+            <div class="btns">
+                <button type="button" id="prev" class="btn b-bk h" onclick="nav(-1)">Voltar</button>
+                <button type="button" id="next" class="btn" onclick="nav(1)">Próximo</button>
+            </div>
+
             <div class="prg-inf">
-                <p class="prg-txt">Leva menos de 1 minuto. Apenas 7 perguntas.</p>
-                <div class="dots" id="dots"><span class="dot act"></span><span class="dot"></span><span
-                        class="dot"></span><span class="dot"></span><span class="dot"></span><span
-                        class="dot"></span><span class="dot"></span></div>
+                <p class="prg-txt">Leva cerca de 2 minutos. Apenas 11 perguntas.</p>
+                <div class="dots" id="dots"></div>
             </div>
-            <p id="l-msg" class="leg h" style="color:var(--txt);font-weight:600">Processando...</p>
-            <div class="leg">Ao enviar, você concorda com nossa <a href="/privacidade.html" target="_blank">Política
-                    de Privacidade</a>.</div>
+
+            <p id="l-msg" class="leg h" style="color:var(--text-primary);font-weight:600">Processando...</p>
+
+            <div class="leg">Esta é uma aplicação e não garante o agendamento. As vagas são limitadas. Ao enviar, você
+                concorda com nossa <a href="/privacidade.html" target="_blank" rel="noopener">Política de
+                    Privacidade</a>.</div>
         </form>
     </div>
-    <script>const G_URL = "https://script.google.com/macros/s/AKfycbxRfDJx9yIZcS-fFVjVAVQuAY-qVWvYKMs9KCHSbMRRE78LPjYjrnb20KJrAPlj_NIo/exec", S = document.querySelectorAll(".step"), PB = document.getElementById("pb"), PV = document.getElementById("prev"), NX = document.getElementById("next"), DT = document.querySelectorAll(".dot"); let c = 0; document.getElementById("eid").value = eid; const mk = v => (v = v.replace(/\D/g, ""), v.length > 11 && (v = v.slice(0, 11)), v.length > 2 && (v = `(${v.substring(0, 2)}) ${v.substring(2)}`), v.length > 9 && (v = `${v.substring(0, 10)}-${v.substring(10)}`), v); document.getElementById("whatsapp").addEventListener("input", e => e.target.value = mk(e.target.value)); const ui = () => { S.forEach((s, i) => { s.classList.toggle("a", i === c), i === c && (s.style.animation = "none", s.offsetHeight, s.style.animation = null) }); DT.forEach((d, i) => d.classList.toggle("act", i === c)); PB.style.width = `${(c + 1) / 7 * 100}%`; PV.classList.toggle("h", 0 === c); NX.innerText = 6 === c ? "Solicitar Diagnóstico" : "Próximo" }, isEm = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e), val = i => { const s = S[i], t = s.querySelector("input[type=text],input[type=tel]"), m = s.querySelector("input[type=email]"), r = s.querySelectorAll("input[type=radio]"), e = s.querySelector(".err"); let k = !0; const sw = (o, x) => { o.classList.toggle("i-err", !x), e && (e.style.display = x ? "none" : "block") }; if (t && t.value.length < 3 && (k = !1, sw(t, 0)), r.length > 0 && ![...r].some(x => x.checked) && (k = !1, s.classList.add("shake"), setTimeout(() => s.classList.remove("shake"), 500)), 2 === i) { const z = document.getElementById("whatsapp").value.replace(/\D/g, ""), v = m.value.trim(); if (z.length < 10 && !v) { k = !1; document.getElementById("err-email").innerText = "Precisamos de pelo menos um contato."; sw(m, 0) } else if (v && !isEm(v)) { k = !1; document.getElementById("err-email").innerText = "E-mail inválido."; sw(m, 0) } else { sw(m, 1) } } return k }, nav = d => { if (1 === d && !val(c)) return; if (6 === c && 1 === d) { sub(); return } c += d, ui() }; document.querySelectorAll("input").forEach(i => { i.addEventListener("focus", e => { setTimeout(() => { e.target.scrollIntoView({ behavior: "smooth", block: "center" }) }, 300) }), i.addEventListener("input", function () { this.classList.remove("i-err"); const e = this.parentElement.querySelector(".err"); e && (e.style.display = "none") }), i.addEventListener("keypress", e => { "Enter" === e.key && nav(1) }) }); const sub = () => { NX.disabled = !0; NX.innerText = "Enviando..."; document.getElementById("l-msg").classList.remove("h"); const f = new FormData(document.getElementById("f")), d = Object.fromEntries(f.entries()); d.user_agent = navigator.userAgent; const u = new URLSearchParams(window.location.search);["utm_source", "utm_campaign", "fbclid"].forEach(k => d[k] = u.get(k) || ""); d.lgpd_consent = "on"; const h = { em: d.email.trim().toLowerCase(), ph: d.whatsapp.replace(/\D/g, ""), eid: eid }; localStorage.setItem("ld", JSON.stringify(h)); fetch(G_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(d) }).then(() => { setTimeout(() => window.location.href = "obrigada.html" + window.location.search, 500) }).catch(() => { alert("Erro. Tente novamente."), NX.disabled = !1, NX.innerText = "Solicitar Diagnóstico" }) }; ui();</script>
+
+    <script>
+        (function () {
+            "use strict";
+
+            var G_URL = "https://script.google.com/macros/s/AKfycbxRfDJx9yIZcS-fFVjVAVQuAY-qVWvYKMs9KCHSbMRRE78LPjYjrnb20KJrAPlj_NIo/exec";
+            var IP_URL = "https://api.ipify.org?format=json";
+
+            var form = document.getElementById("f");
+            var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
+            var TOTAL = steps.length;
+            var bar = document.getElementById("pb");
+            var btnPrev = document.getElementById("prev");
+            var btnNext = document.getElementById("next");
+            var dotsWrap = document.getElementById("dots");
+            var current = 0;
+            var sending = false;
+
+            /* ---------------------------------------------------------------
+             * 1. RASTREAMENTO — event_id, UTMs, fbc/fbp, IP
+             * ------------------------------------------------------------- */
+
+            // event_id real (UUID v4). O código legado atribuía o próprio elemento
+            // do DOM, gravando "[object HTMLInputElement]" e quebrando a
+            // deduplicação Pixel <-> CAPI.
+            function uuid() {
+                try {
+                    if (window.crypto && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+                    if (window.crypto && crypto.getRandomValues) {
+                        var b = crypto.getRandomValues(new Uint8Array(16));
+                        b[6] = (b[6] & 0x0f) | 0x40;
+                        b[8] = (b[8] & 0x3f) | 0x80;
+                        var h = [];
+                        for (var i = 0; i < 16; i++) h.push((b[i] + 0x100).toString(16).slice(1));
+                        return h.slice(0, 4).join("") + "-" + h.slice(4, 6).join("") + "-" +
+                            h.slice(6, 8).join("") + "-" + h.slice(8, 10).join("") + "-" + h.slice(10).join("");
+                    }
+                } catch (e) { /* ambiente sem crypto: cai no fallback */ }
+                return "lead-" + Date.now() + "-" + Math.random().toString(16).slice(2, 10);
+            }
+
+            var EVENT_ID = uuid();
+            document.getElementById("eid").value = EVENT_ID;
+
+            function qp(name) {
+                try { return new URLSearchParams(window.location.search).get(name) || ""; }
+                catch (e) { return ""; }
+            }
+
+            function cookie(name) {
+                var m = document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)");
+                return m ? decodeURIComponent(m[2]) : "";
+            }
+
+            function store(key, value) {
+                try { if (value) sessionStorage.setItem(key, value); } catch (e) { /* modo privado */ }
+            }
+            function recall(key) {
+                try { return sessionStorage.getItem(key) || ""; } catch (e) { return ""; }
+            }
+
+            // First-touch: a URL atual tem precedência; sem parâmetro, recupera o
+            // valor guardado no início da sessão (lead que passou pela home antes).
+            var TRACK_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid"];
+            var tracking = {};
+            TRACK_KEYS.forEach(function (k) {
+                var v = qp(k);
+                if (v) store("be_" + k, v); else v = recall("be_" + k);
+                tracking[k] = v;
+            });
+
+            // fbc: usa o cookie do Pixel; se ausente, sintetiza no formato oficial
+            // fb.<subdomain_index>.<timestamp_ms>.<fbclid>
+            function resolveFbc() {
+                var c = cookie("_fbc");
+                if (c) return c;
+                if (tracking.fbclid) return "fb.1." + Date.now() + "." + tracking.fbclid;
+                return "";
+            }
+
+            // IP público: best-effort e assíncrono. Nunca bloqueia o envio do lead.
+            var clientIp = "";
+            (function fetchIp() {
+                if (!window.fetch || !window.AbortController) return;
+                var ctrl = new AbortController();
+                var timer = setTimeout(function () { ctrl.abort(); }, 2500);
+                fetch(IP_URL, { signal: ctrl.signal, cache: "no-store" })
+                    .then(function (r) { return r.ok ? r.json() : null; })
+                    .then(function (j) { if (j && j.ip) clientIp = j.ip; })
+                    .catch(function () { /* silencioso: IP é opcional para o CAPI */ })
+                    .then(function () { clearTimeout(timer); });
+            })();
+
+            /* ---------------------------------------------------------------
+             * 2. NAVEGAÇÃO — derivada de steps.length (sem índices fixos)
+             * ------------------------------------------------------------- */
+
+            steps.forEach(function (_, i) {
+                var d = document.createElement("span");
+                d.className = "dot" + (i === 0 ? " act" : "");
+                dotsWrap.appendChild(d);
+            });
+            var dots = dotsWrap.querySelectorAll(".dot");
+
+            function ui() {
+                steps.forEach(function (s, i) {
+                    s.classList.toggle("a", i === current);
+                    if (i === current) { s.style.animation = "none"; void s.offsetHeight; s.style.animation = null; }
+                });
+                Array.prototype.forEach.call(dots, function (d, i) { d.classList.toggle("act", i === current); });
+                var pct = Math.round((current + 1) / TOTAL * 100);
+                bar.style.width = pct + "%";
+                bar.setAttribute("aria-valuenow", String(pct));
+                btnPrev.classList.toggle("h", current === 0);
+                btnNext.innerText = current === TOTAL - 1 ? "Enviar aplicação" : "Próximo";
+            }
+
+            function showError(step, msg) {
+                var e = step.querySelector(".err");
+                if (e) { if (msg) e.innerText = msg; e.style.display = "block"; }
+                step.classList.add("shake");
+                setTimeout(function () { step.classList.remove("shake"); }, 500);
+            }
+
+            function clearError(step) {
+                var e = step.querySelector(".err");
+                if (e) e.style.display = "none";
+                Array.prototype.forEach.call(step.querySelectorAll(".i-err"), function (el) {
+                    el.classList.remove("i-err");
+                    el.setAttribute("aria-invalid", "false");
+                });
+            }
+
+            function markInvalid(field) {
+                if (!field) return;
+                field.classList.add("i-err");
+                field.setAttribute("aria-invalid", "true");
+            }
+
+            var isEmail = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); };
+            var digits = function (v) { return (v || "").replace(/\D/g, ""); };
+
+            /* ---------------------------------------------------------------
+             * 3. VALIDAÇÃO declarativa por etapa
+             * ------------------------------------------------------------- */
+
+            function validate(index) {
+                var step = steps[index];
+                clearError(step);
+
+                var text = step.querySelector('input[type=text]:not(.oth), input[type=email], input[type=tel]');
+                var radios = step.querySelectorAll("input[type=radio]");
+                var boxes = step.querySelectorAll('input[type=checkbox]');
+                var name = text ? text.name : "";
+
+                if (name === "nome_completo") {
+                    if (text.value.trim().length < 3) { markInvalid(text); showError(step, "Informe seu nome completo."); return false; }
+                }
+
+                // E-mail passa a ser obrigatório: é a entrada primária do Meta CAPI.
+                if (name === "email") {
+                    if (!isEmail(text.value.trim())) { markInvalid(text); showError(step, "Informe um e-mail válido."); return false; }
+                }
+
+                if (name === "whatsapp") {
+                    var d = digits(text.value);
+                    if (d.length < 10 || d.length > 11) { markInvalid(text); showError(step, "Informe um WhatsApp válido com DDD."); return false; }
+                }
+
+                if (radios.length) {
+                    var picked = null;
+                    Array.prototype.forEach.call(radios, function (r) { if (r.checked) picked = r; });
+                    if (!picked) { showError(step, "Selecione uma opção."); return false; }
+                    if (picked.dataset.other) {
+                        var extra = document.getElementById(picked.dataset.other);
+                        if (extra && extra.value.trim().length < 2) { markInvalid(extra); showError(step, "Descreva a opção “Outro”."); return false; }
+                    }
+                }
+
+                if (boxes.length) {
+                    var checked = Array.prototype.filter.call(boxes, function (b) { return b.checked; });
+
+                    if (step.dataset.max) {
+                        var max = parseInt(step.dataset.max, 10);
+                        if (checked.length < 1) { showError(step, "Selecione ao menos 1 opção."); return false; }
+                        if (checked.length > max) { showError(step, "Selecione no máximo " + max + " opções."); return false; }
+                        var other = checked.filter(function (b) { return b.dataset.other; })[0];
+                        if (other) {
+                            var oIn = document.getElementById(other.dataset.other);
+                            if (oIn && oIn.value.trim().length < 2) { markInvalid(oIn); showError(step, "Descreva a opção “Outro”."); return false; }
+                        }
+                    } else if (boxes.length === 1 && boxes[0].name === "consentimento" && !boxes[0].checked) {
+                        showError(step, "É necessário aceitar o termo para enviar a aplicação.");
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            function nav(dir) {
+                if (sending) return;
+                if (dir === 1 && !validate(current)) return;
+                if (dir === 1 && current === TOTAL - 1) { submit(); return; }
+                var next = current + dir;
+                if (next < 0 || next >= TOTAL) return;
+                current = next;
+                ui();
+            }
+            window.nav = nav;
+
+            /* ---------------------------------------------------------------
+             * 4. INTERAÇÕES — máscara, "Outro", limite de 2 seleções
+             * ------------------------------------------------------------- */
+
+            var mask = function (v) {
+                v = digits(v).slice(0, 11);
+                if (v.length > 2) v = "(" + v.substring(0, 2) + ") " + v.substring(2);
+                if (v.length > 9) v = v.substring(0, 10) + "-" + v.substring(10);
+                return v;
+            };
+            document.getElementById("whatsapp").addEventListener("input", function (e) {
+                e.target.value = mask(e.target.value);
+            });
+
+            // Campo "Outro" aparece somente quando a opção correspondente é marcada.
+            function syncOther(scope) {
+                Array.prototype.forEach.call(scope.querySelectorAll("[data-other]"), function (opt) {
+                    var field = document.getElementById(opt.dataset.other);
+                    if (!field) return;
+                    field.classList.toggle("h", !opt.checked);
+                    if (!opt.checked) field.value = "";
+                });
+            }
+
+            // Regra "Escolha até 2": a terceira marcação é bloqueada na origem.
+            function syncMax(step) {
+                var max = parseInt(step.dataset.max, 10);
+                if (!max) return;
+                var boxes = step.querySelectorAll('input[type=checkbox]');
+                var n = Array.prototype.filter.call(boxes, function (b) { return b.checked; }).length;
+                Array.prototype.forEach.call(boxes, function (b) {
+                    var lock = !b.checked && n >= max;
+                    b.disabled = lock;
+                    b.closest(".rl").classList.toggle("dis", lock);
+                });
+                var counter = step.querySelector(".cnt");
+                if (counter) counter.innerText = n + " de " + max + " selecionadas";
+            }
+
+            form.addEventListener("change", function (e) {
+                var step = e.target.closest(".step");
+                if (!step) return;
+                syncOther(step);
+                syncMax(step);
+                clearError(step);
+            });
+
+            form.addEventListener("input", function (e) {
+                var step = e.target.closest(".step");
+                if (step) clearError(step);
+            });
+
+            Array.prototype.forEach.call(form.querySelectorAll("input, textarea"), function (el) {
+                // Rolagem assistida só nos campos de digitação: em mobile o teclado
+                // cobre o input. Aplicá-la a radio/checkbox faria a lista tremer
+                // a cada seleção.
+                if (el.type !== "radio" && el.type !== "checkbox" && el.type !== "hidden") {
+                    el.addEventListener("focus", function (ev) {
+                        setTimeout(function () { ev.target.scrollIntoView({ behavior: "smooth", block: "center" }); }, 300);
+                    });
+                }
+                el.addEventListener("keypress", function (ev) {
+                    if (ev.key === "Enter" && el.tagName !== "TEXTAREA") { ev.preventDefault(); nav(1); }
+                });
+            });
+
+            /* ---------------------------------------------------------------
+             * 5. ENVIO
+             * ------------------------------------------------------------- */
+
+            function collect() {
+                var d = {};
+
+                // Respostas: FormData preserva a ordem e agrupa os checkboxes.
+                var fd = new FormData(form);
+                fd.forEach(function (value, key) {
+                    if (key === "maior_problema_gestao") {
+                        (d[key] = d[key] || []).push(value);
+                    } else {
+                        d[key] = typeof value === "string" ? value.trim() : value;
+                    }
+                });
+                if (!d.maior_problema_gestao) d.maior_problema_gestao = [];
+
+                // Chaves opcionais ausentes precisam existir para o backend alinhar colunas.
+                ["instagram_site", "modelo_negocio_outro", "autonomia_operacional_outro",
+                    "maior_problema_gestao_outro", "informacoes_adicionais"].forEach(function (k) {
+                        if (!d[k]) d[k] = "";
+                    });
+
+                d.event_id = EVENT_ID;
+                d.consentimento = document.getElementById("consentimento").checked;
+
+                // Rastreamento — preservado do fluxo original e ampliado.
+                TRACK_KEYS.forEach(function (k) { d[k] = tracking[k] || ""; });
+                d.user_agent = navigator.userAgent;
+                d.page_url = window.location.href;
+                d.referrer = document.referrer || "";
+                d.ip_address = clientIp;
+                d.fbc = resolveFbc();
+                d.fbp = cookie("_fbp");
+                d.submitted_at = new Date().toISOString();
+
+                return d;
+            }
+
+            function submit() {
+                if (sending) return;
+                sending = true;
+                btnNext.disabled = true;
+                btnNext.innerText = "Enviando...";
+                document.getElementById("l-msg").classList.remove("h");
+
+                var payload = collect();
+
+                // Repassa o event_id para obrigada.html deduplicar o Pixel com o CAPI.
+                try {
+                    localStorage.setItem("ld", JSON.stringify({
+                        em: payload.email.toLowerCase(),
+                        ph: digits(payload.whatsapp),
+                        eid: EVENT_ID
+                    }));
+                } catch (e) { /* modo privado: dedup por URL abaixo ainda funciona */ }
+
+                function done() {
+                    var sep = window.location.search ? window.location.search + "&" : "?";
+                    setTimeout(function () {
+                        window.location.href = "obrigada.html" + sep + "eid=" + encodeURIComponent(EVENT_ID);
+                    }, 400);
+                }
+
+                function fail() {
+                    sending = false;
+                    btnNext.disabled = false;
+                    btnNext.innerText = "Enviar aplicação";
+                    document.getElementById("l-msg").classList.add("h");
+                    alert("Não foi possível enviar sua aplicação. Verifique sua conexão e tente novamente.");
+                }
+
+                // text/plain evita preflight CORS; no-cors garante a entrega mesmo com
+                // resposta opaca; keepalive mantém o POST vivo durante a navegação.
+                fetch(G_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "text/plain;charset=UTF-8" },
+                    body: JSON.stringify(payload),
+                    keepalive: true
+                }).then(done).catch(fail);
+            }
+
+            ui();
+        })();
+    </script>
 </body>
 
 </html>
