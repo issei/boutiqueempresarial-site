@@ -6,6 +6,7 @@
  *   1. Receber o POST (text/plain) de src/formulario.html
  *   2. Gravar o lead na planilha, com proteção contra injeção de fórmula
  *   3. Enviar o evento "Lead" para a Meta Conversions API (server-side)
+ *   4. Avisar a equipe por e-mail (docs/specs/notificacao-email-lead.md)
  *
  * ----------------------------------------------------------------------------
  * SETUP OBRIGATÓRIO (uma única vez, antes do primeiro deploy)
@@ -20,6 +21,21 @@
  *
  * Alternativa: rode setupCredentials() uma vez, com os valores preenchidos,
  * e APAGUE os valores do corpo da função em seguida.
+ *
+ * ----------------------------------------------------------------------------
+ * NOTIFICAÇÃO POR E-MAIL (opcional — sem isto, o fluxo é o de sempre)
+ * ----------------------------------------------------------------------------
+ *     LEAD_NOTIFY_TO             = destino(s) do aviso, separados por vírgula
+ *     LEAD_NOTIFY_SUBJECT_PREFIX = <opcional, ex.: [Boutique]>
+ *
+ * Lidas a cada execução: trocar o destinatário NÃO exige republicar o Web App.
+ * Ausentes/vazias, a notificação é pulada em silêncio.
+ *
+ * ATENÇÃO AO DEPLOY: MailApp introduz um escopo OAuth novo. Rode
+ * testNotifyNewLead() uma vez no editor para autorizar e publique em
+ * "Gerenciar implantações > editar a implantação existente > Nova versão".
+ * Criar uma implantação NOVA geraria outra URL /exec, e a atual está fixa em
+ * src/formulario.html.
  * ----------------------------------------------------------------------------
  */
 
@@ -28,7 +44,8 @@ const CONFIG = {
   API_VERSION: 'v21.0',
   LOCK_TIMEOUT_MS: 10000,
   DEFAULT_COUNTRY: 'br',
-  CONTENT_NAME: 'Sessão Estratégica de Análise Operacional'
+  CONTENT_NAME: 'Sessão Estratégica de Análise Operacional',
+  NOTIFY_CACHE_TTL_S: 21600
 };
 
 /** Ordem canônica das colunas. Alterar aqui exige republicar o Web App. */
@@ -70,6 +87,15 @@ function doPost(e) {
     }
 
     saveToSheet(data, capiStatus);
+
+    // O aviso é efeito colateral: o lead já está salvo. Qualquer falha aqui é
+    // registrada e descartada — nunca transforma um registro válido em erro.
+    try {
+      notifyNewLead(data, capiStatus);
+    } catch (mailError) {
+      console.error('Erro notificação', mailError);
+    }
+
     return jsonOut({ result: 'success', event_id: data.event_id || '' });
   } catch (ex) {
     console.error('Erro doPost', ex);
@@ -173,6 +199,120 @@ function saveToSheet(data, capiStatus) {
     sanitizeInput(data.user_agent),
     sanitizeInput(capiStatus)
   ]);
+}
+
+/* ========================================================================== */
+/* NOTIFICAÇÃO POR E-MAIL                                                     */
+/* ========================================================================== */
+
+/**
+ * Aviso interno de novo lead, chamado por doPost DEPOIS de saveToSheet.
+ * Sem LEAD_NOTIFY_TO configurada não faz nada — ausência de destinatário é
+ * configuração, não erro.
+ */
+function notifyNewLead(data, capiStatus) {
+  const props = PropertiesService.getScriptProperties();
+  const to = String(props.getProperty('LEAD_NOTIFY_TO') || '')
+    .split(',')
+    .map(function (address) { return address.trim(); })
+    .filter(String)
+    .join(',');
+  if (!to) return;
+
+  // Guarda contra aviso duplicado: um reenvio manual após falha de rede repete
+  // o mesmo event_id (a página não recarregou). Gravada ANTES do envio — assim
+  // uma falha do MailApp custa um aviso perdido, e não um aviso repetido a cada
+  // erro transitório. Sem event_id a guarda fica desligada: falta de chave
+  // nunca pode ser motivo para não notificar.
+  // ponytail: CacheService evicta sem garantia, então a proteção é best-effort.
+  // Chave persistente só se avisos duplicados virarem problema real.
+  const eventId = String(data.event_id || '');
+  if (eventId) {
+    const cache = CacheService.getScriptCache();
+    if (cache.get('notify_' + eventId)) {
+      console.log('Notificação já enviada para ' + eventId + ' — pulando.');
+      return;
+    }
+    cache.put('notify_' + eventId, '1', CONFIG.NOTIFY_CACHE_TTL_S);
+  }
+
+  const mail = buildLeadEmail(data, capiStatus);
+  MailApp.sendEmail(to, mail.subject, mail.body);
+}
+
+/**
+ * Monta assunto e corpo em texto puro. Sem efeito colateral: pode rodar no
+ * editor quantas vezes quiser sem consumir quota de e-mail.
+ *
+ * Texto puro é deliberado — campos livres do lead entram sem escaping algum.
+ * Migrar para htmlBody exige escapar TODOS os valores vindos de `data`.
+ */
+function buildLeadEmail(data, capiStatus) {
+  const prefix = String(
+    PropertiesService.getScriptProperties().getProperty('LEAD_NOTIFY_SUBJECT_PREFIX') || ''
+  ).trim();
+
+  const nome = plainText(data.nome_completo);
+  const faturamento = plainText(data.faturamento_mensal);
+  const subject = (prefix ? prefix + ' ' : '') +
+    'Novo lead — ' + (nome || 'sem nome') +
+    (faturamento ? ' (' + faturamento + ')' : '');
+
+  const origem = [
+    plainText(data.utm_source), plainText(data.utm_medium), plainText(data.utm_campaign)
+  ].filter(String).join(' / ');
+
+  const body = [
+    'Recebido em: ' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm'),
+    '',
+    'Nome: ' + nome,
+    'E-mail: ' + plainText(data.email),
+    'WhatsApp: ' + plainText(data.whatsapp),
+    optionalLine('Instagram/site', plainText(data.instagram_site)),
+    '',
+    'Modelo de negócio: ' + withOther(data.modelo_negocio, data.modelo_negocio_outro),
+    'Tamanho da equipe: ' + plainText(data.tamanho_equipe),
+    'Faturamento mensal: ' + faturamento,
+    'Autonomia operacional: ' + withOther(data.autonomia_operacional, data.autonomia_operacional_outro),
+    'Maior problema: ' + withOther(data.maior_problema_gestao, data.maior_problema_gestao_outro),
+    'Prioridade: ' + plainText(data.prioridade_resolucao),
+    optionalLine('Informações adicionais', plainText(data.informacoes_adicionais)),
+    '',
+    // Mesma regra de saveToSheet, repetida em vez de extraída: unificar exigiria
+    // tocar no caminho de gravação, que esta mudança se comprometeu a não alterar.
+    'Consentimento: ' + ((data.consentimento === true || data.consentimento === 'Sim') ? 'Sim' : 'Não'),
+    'Origem: ' + (origem || '—'),
+    'Página: ' + plainText(data.page_url),
+    'Status CAPI: ' + plainText(capiStatus),
+    'ID do evento: ' + plainText(data.event_id)
+  ].filter(function (line) { return line !== null; }).join('\n');
+
+  return { subject: subject, body: body };
+}
+
+/**
+ * Valor cru, para leitura humana. NÃO usa sanitizeInput(): o apóstrofo que ele
+ * prefixa é artefato do Sheets e no e-mail apareceria como "'=Fulano".
+ */
+function plainText(value) {
+  if (value === null || value === undefined) return '';
+  if (Array.isArray(value)) {
+    return value.map(function (item) { return plainText(item); }).filter(String).join('; ');
+  }
+  return String(value).trim();
+}
+
+/** Linha omitida por completo quando o campo opcional veio vazio. */
+function optionalLine(label, value) {
+  return value ? label + ': ' + value : null;
+}
+
+/** "Opção" ou "Opção — texto do campo Outro". */
+function withOther(value, other) {
+  const base = plainText(value);
+  const extra = plainText(other);
+  if (base && extra) return base + ' — ' + extra;
+  return base || extra;
 }
 
 /* ========================================================================== */
@@ -304,7 +444,8 @@ function hashSHA256(input) {
 function setupCredentials() {
   PropertiesService.getScriptProperties().setProperties({
     META_PIXEL_ID: '',      // ex.: 746637190095687
-    META_ACCESS_TOKEN: ''   // token da Conversions API
+    META_ACCESS_TOKEN: '',  // token da Conversions API
+    LEAD_NOTIFY_TO: ''      // destino(s) do aviso de novo lead, separados por vírgula
   });
 }
 
@@ -312,4 +453,53 @@ function setupCredentials() {
 function testEnsureSheet() {
   const sheet = ensureSheet();
   console.log('Aba pronta: ' + sheet.getName() + ' (' + sheet.getLastColumn() + ' colunas)');
+}
+
+/** Lead fictício com todos os campos do contrato, para os testes manuais. */
+function leadFixture() {
+  return {
+    event_id: 'teste-' + Date.now(),
+    nome_completo: 'Fulana de Teste',
+    email: 'fulana@exemplo.com.br',
+    whatsapp: '(11) 98888-7777',
+    instagram_site: '@exemplo',
+    modelo_negocio: 'Outro',
+    modelo_negocio_outro: 'Consultoria de nicho',
+    tamanho_equipe: '4 a 8 pessoas',
+    faturamento_mensal: 'De R$ 100 mil a R$ 300 mil',
+    autonomia_operacional: 'Depende de mim para quase tudo',
+    autonomia_operacional_outro: '',
+    maior_problema_gestao: ['Processos indefinidos', 'Equipe sem autonomia'],
+    maior_problema_gestao_outro: '',
+    prioridade_resolucao: 'Imediata',
+    informacoes_adicionais: '',
+    consentimento: true,
+    utm_source: 'instagram',
+    utm_medium: 'cpc',
+    utm_campaign: 'teste',
+    page_url: 'https://exemplo.com.br/formulario.html'
+  };
+}
+
+/** Mostra o e-mail que SERIA enviado. Não envia nada, não consome quota. */
+function testBuildLeadEmail() {
+  const mail = buildLeadEmail(leadFixture(), 'enviado (200)');
+  console.log(mail.subject);
+  console.log('---');
+  console.log(mail.body);
+}
+
+/**
+ * Envia um aviso de teste para LEAD_NOTIFY_TO. Rode UMA vez no editor antes do
+ * deploy: é o que dispara o consentimento do escopo de e-mail.
+ */
+function testNotifyNewLead() {
+  const to = PropertiesService.getScriptProperties().getProperty('LEAD_NOTIFY_TO');
+  if (!to) {
+    console.log('LEAD_NOTIFY_TO não configurada — a notificação está desligada.');
+    return;
+  }
+  notifyNewLead(leadFixture(), 'enviado (200)');
+  console.log('Aviso de teste enviado para: ' + to);
+  console.log('Cota restante hoje: ' + MailApp.getRemainingDailyQuota());
 }
