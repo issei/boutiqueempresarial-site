@@ -2,6 +2,54 @@
 <html lang="pt-BR">
 
 <head>
+    <!-- Facebook Domain Verification -->
+    <meta name="facebook-domain-verification" content="mwj9leq8r1nzwxtlmfc5ntempn8wst" />
+
+    <!-- Meta Pixel Code 2026 Implementation -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+
+    // Previne disparos fantasmas de rotas virtuais (Padrão 2026)
+    fbq.disablePushState = true;
+
+    // Ativa o Processamento Limitado de Dados (LDU) para LGPD/CCPA
+    fbq('dataProcessingOptions', ['LDU'], 1, 1000);
+
+    fbq('init', '746637190095687');
+    fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
+
+    <!-- Conversao: Lead (deduplicada com a Conversions API via eventID) -->
+    <script>
+      (function () {
+        // O mesmo event_id gerado em formulario.html e enviado ao CAPI precisa
+        // acompanhar o Pixel; sem ele, Meta contabiliza o lead duas vezes.
+        var eid = '';
+        try {
+          eid = new URLSearchParams(window.location.search).get('eid') || '';
+        } catch (e) { /* URL malformada */ }
+        if (!eid) {
+          try {
+            var ld = JSON.parse(localStorage.getItem('ld') || '{}');
+            eid = ld.eid || '';
+          } catch (e) { /* modo privado ou payload invalido */ }
+        }
+        if (eid) {
+          fbq('track', 'Lead', {}, { eventID: eid });
+        } else {
+          fbq('track', 'Lead');
+        }
+      })();
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -87,6 +135,10 @@
 
 <body>
     <main class="c" id="conteudo"><img src="/boutiquelogo.webp" alt="Logo" class="l-img" width="200" height="200">
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=746637190095687&ev=PageView&noscript=1"
+    /></noscript>
+    <div class="c"><img src="/boutiquelogo.webp" alt="Logo" class="l-img" width="200" height="200">
         <h1>Solicitação Recebida</h1>
         <div class="s"></div>
         <p>Suas informações são confidenciais. Retornaremos em até 48h úteis via WhatsApp/E-mail caso sua aplicação seja
