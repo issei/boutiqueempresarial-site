@@ -50,3 +50,6 @@ desktop.ini
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# APM — pacotes instalados a partir de apm.yml, reinstaláveis. Como node_modules.
+apm_modules/
