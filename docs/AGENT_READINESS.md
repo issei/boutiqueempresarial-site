@@ -131,7 +131,7 @@ O formulário em `/formulario.html` coleta dado pessoal sob consentimento LGPD e
 ./scripts/setup-agent-discovery-aws.sh link-headers
 ```
 
-Cria ou atualiza a Response Headers Policy `RFC8288-Link-Headers-AgentDiscovery`. O script
+Cria ou atualiza a Response Headers Policy **`Boutique-AgentDiscovery-Headers`**. O script
 **não anexa sozinho** à distribuição: anexar exige reescrever o `DistributionConfig`
 inteiro, e um `update-distribution` malformado derruba o site. O script imprime o passo
 manual. Conferência depois do deploy:
@@ -142,6 +142,19 @@ curl -sI https://boutiqueempresarial.com.br/ | grep -i '^link:'
 
 > O valor do header e os `<link rel>` do `<head>` são o mesmo conjunto. Se um mudar sem o
 > outro, a descoberta diverge conforme a porta de entrada do agente.
+
+> 🔴 **A conta AWS é compartilhada com `mauricio.issei.com.br`.** Todo recurso global —
+> response headers policy, CloudFront Function, cache policy — precisa de nome com o
+> domínio no meio. A primeira versão deste script usava o nome genérico
+> `RFC8288-Link-Headers-AgentDiscovery`, que é o da policy **do outro site**: a busca por
+> nome encontrou a dele e a sobrescreveu, e `mauricio.issei.com.br` passou a anunciar os
+> manifestos do boutique. Ninguém percebe um header errado sem procurar por ele. Antes de
+> criar qualquer recurso global, confira quem já o usa:
+>
+> ```bash
+> aws cloudfront list-distributions \
+>   --query "DistributionList.Items[].{Alias:Aliases.Items[0],Policy:DefaultCacheBehavior.ResponseHeadersPolicyId}"
+> ```
 
 ### DNS-AID
 
