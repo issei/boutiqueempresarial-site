@@ -42,73 +42,54 @@ DOMINIO="boutiqueempresarial.com.br"
 # AgentDiscovery"), achou a policy do outro site na busca por nome e a
 # SOBRESCREVEU — o mauricio.issei.com.br passou a anunciar os manifestos daqui.
 # Recurso compartilhado por coincidência de nome não é reuso, é colisão.
-POLICY_NAME="Boutique-AgentDiscovery-Headers"
+# Cria ou atualiza a função em DEVELOPMENT e ecoa o ETag. Publicar é decisão de
+# quem chama — sempre depois de testar.
+deploy_funcao() {
+  local nome="$1" fonte="$2" comentario="$3"
+  [ -f "$fonte" ] || { echo "não achei $fonte — rode da raiz do repositório" >&2; exit 1; }
 
-# O header é o mesmo conjunto de <link rel> que as páginas declaram no <head>.
-# Se um mudar, o outro muda junto — senão a descoberta diverge por porta de entrada.
-LINK_VALUE='</.well-known/api-catalog>; rel="api-catalog", </.well-known/ai-catalog.json>; rel="service-desc"; type="application/json", </llms.txt>; rel="service-doc"; type="text/plain", </llms-full.txt>; rel="describedby"; type="text/plain", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource"'
-
-link_headers() {
-  local existente
-  existente=$(aws cloudfront list-response-headers-policies --type custom \
-    --query "ResponseHeadersPolicyList.Items[?ResponseHeadersPolicy.ResponseHeadersPolicyConfig.Name=='${POLICY_NAME}'].ResponseHeadersPolicy.Id" \
-    --output text)
-
-  # `Vary: Accept` acompanha o Link porque a mesma URL passa a ter duas
-  # representações (HTML e Markdown). O CloudFront não precisa dele — a função
-  # viewer-request reescreve a URI antes do cache lookup, então a chave já
-  # difere. Ele existe para os caches DEPOIS do CloudFront: browser e proxies.
-  local config
-  config=$(cat <<EOF
-{
-  "Name": "${POLICY_NAME}",
-  "Comment": "Header Link RFC 8288 para descoberta por agentes + Vary Accept",
-  "CustomHeadersConfig": {
-    "Quantity": 2,
-    "Items": [
-      {
-        "Header": "Link",
-        "Value": "${LINK_VALUE//\"/\\\"}",
-        "Override": true
-      },
-      {
-        "Header": "Vary",
-        "Value": "Accept",
-        "Override": false
-      }
-    ]
-  }
-}
-EOF
-)
-
-  if [ -n "$existente" ] && [ "$existente" != "None" ]; then
-    local etag
-    etag=$(aws cloudfront get-response-headers-policy --id "$existente" --query ETag --output text)
-    aws cloudfront update-response-headers-policy \
-      --id "$existente" --if-match "$etag" \
-      --response-headers-policy-config "$config" >/dev/null
-    echo "Policy atualizada: ${POLICY_NAME} (${existente})"
+  if aws cloudfront describe-function --name "$nome" --stage DEVELOPMENT >/dev/null 2>&1; then
+    local atual
+    atual=$(aws cloudfront describe-function --name "$nome" --stage DEVELOPMENT \
+      --query ETag --output text)
+    aws cloudfront update-function --name "$nome" --if-match "$atual" \
+      --function-config "Comment='${comentario}',Runtime=cloudfront-js-2.0" \
+      --function-code "fileb://${fonte}" --query ETag --output text
   else
-    existente=$(aws cloudfront create-response-headers-policy \
-      --response-headers-policy-config "$config" \
-      --query "ResponseHeadersPolicy.Id" --output text)
-    echo "Policy criada: ${POLICY_NAME} (${existente})"
+    aws cloudfront create-function --name "$nome" \
+      --function-config "Comment='${comentario}',Runtime=cloudfront-js-2.0" \
+      --function-code "fileb://${fonte}" --query ETag --output text
   fi
+}
 
-  # Deliberadamente NÃO anexa sozinho: anexar exige reescrever o
-  # DistributionConfig inteiro, e um update-distribution malformado derruba o
-  # site. Um comando manual é mais barato que um rollback.
+# O header Link sai de uma CloudFront Function, não de uma Response Headers
+# Policy. A policy é o caminho canônico e foi a primeira tentativa, mas
+# **policy custom exige plano Business nesta distribuição** — o console mostra
+# o campo desabilitado. Functions são recurso à parte e continuam disponíveis;
+# o resultado no header é idêntico, sem migrar de plano por causa de um header.
+link_headers() {
+  local nome="BoutiqueViewerResponse"
+  local etag
+  etag=$(deploy_funcao "$nome" "infra/cloudfront-functions/viewer-response.js" \
+    "Header Link RFC 8288 + Vary Accept")
+  echo "Função pronta em DEVELOPMENT: ${nome}"
+
+  aws cloudfront publish-function --name "$nome" --if-match "$etag" >/dev/null
+  echo "Publicada em LIVE."
+
   cat <<EOF
 
-Falta anexar a policy ao comportamento padrão da distribuição:
+Falta ANEXAR ao comportamento padrão da distribuição de ${DOMINIO}:
 
-  Console → CloudFront → distribuição de ${DOMINIO} → Behaviors → Default (*)
-          → Response headers policy → ${POLICY_NAME}
+  Console → CloudFront → Behaviors → Default (*) → Edit
+    Function associations → Viewer response → CloudFront Functions → ${nome}
 
-Para conferir depois do deploy:
+Atenção: é o slot **Viewer response**, não o Viewer request — este último já
+tem a BoutiqueViewerRequest, e são associações independentes.
 
-  curl -sI https://${DOMINIO}/ | grep -i '^link:'
+Para conferir depois:
+
+  curl -sI https://${DOMINIO}/ | grep -iE '^(link|vary):'
 EOF
 }
 
@@ -165,19 +146,7 @@ markdown_negotiation() {
   [ -f "$fonte" ] || { echo "não achei $fonte — rode da raiz do repositório" >&2; exit 1; }
 
   local etag
-  if aws cloudfront describe-function --name "$nome" --stage DEVELOPMENT >/dev/null 2>&1; then
-    etag=$(aws cloudfront describe-function --name "$nome" --stage DEVELOPMENT \
-      --query ETag --output text)
-    etag=$(aws cloudfront update-function --name "$nome" --if-match "$etag" \
-      --function-config "Comment='Markdown negotiation + roteamento .html',Runtime=cloudfront-js-2.0" \
-      --function-code "fileb://${fonte}" --query ETag --output text)
-    echo "Função atualizada: ${nome}"
-  else
-    etag=$(aws cloudfront create-function --name "$nome" \
-      --function-config "Comment='Markdown negotiation + roteamento .html',Runtime=cloudfront-js-2.0" \
-      --function-code "fileb://${fonte}" --query ETag --output text)
-    echo "Função criada: ${nome}"
-  fi
+  etag=$(deploy_funcao "$nome" "$fonte" "Markdown negotiation + roteamento .html")
 
   # Esta função decide o roteamento de TODAS as URLs do site. Publicar sem
   # testar é apostar o site inteiro num regex. Os dois casos abaixo são o
@@ -214,15 +183,13 @@ Falta ANEXAR ao comportamento padrão da distribuição de ${DOMINIO}:
 
   Console → CloudFront → Behaviors → Default (*) → Edit
     Function associations → Viewer request → CloudFront Functions → BoutiqueViewerRequest
-    Response headers policy → ${POLICY_NAME}
 
 É o único passo que este script não faz: anexar exige reescrever o
 DistributionConfig inteiro, e um update-distribution malformado tira o site do
-ar. Dois cliques revisados custam menos que um rollback.
+ar. Um clique revisado custa menos que um rollback.
 
 Depois, invalide e confira:
 
-  curl -sI https://${DOMINIO}/ | grep -iE '^(link|vary):'
   curl -s -H 'accept: text/markdown' https://${DOMINIO}/ | head -3
 EOF
 }

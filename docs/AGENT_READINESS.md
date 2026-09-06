@@ -25,14 +25,14 @@ uma, e nenhuma depende das outras:
 | Camada | Mecanismo | Descoberto por | Estado |
 | :-- | :-- | :-- | :-- |
 | **DNS** | registro HTTPS em `_agents.` | resolver, antes de qualquer HTTP | ✅ publicado, DNSSEC validando |
-| **Header HTTP** | `Link` (RFC 8288) em toda resposta | quem faz um `GET /` qualquer | policy criada, **falta anexar** |
-| **Negociação** | `Accept: text/markdown` → companion `.md` | agente que prefere Markdown | função publicada, **falta anexar** |
+| **Header HTTP** | `Link` (RFC 8288) em toda resposta | quem faz um `GET /` qualquer | função publicada, **falta anexar** |
+| **Negociação** | `Accept: text/markdown` → companion `.md` | agente que prefere Markdown | ✅ no ar |
 | **HTML** | `<link rel="api-catalog\|service-desc\|service-doc">` | quem lê o `<head>` | ✅ nas 7 páginas |
 | **Arquivo bem-conhecido** | `/.well-known/*`, `/llms.txt`, `/robots.txt` | convenção | ✅ |
 | **Autenticação** | `/auth.md` + metadados OAuth | quem precisa de escopo/credencial | ✅ |
 | **Runtime** | `navigator.modelContext` (WebMCP) | agente que executa a página | ✅ na home |
 
-As duas primeiras são resposta HTTP e DNS — não arquivo estático. Ficam em
+As três primeiras são resposta HTTP e DNS — não arquivo estático. Ficam em
 `scripts/setup-agent-discovery-aws.sh` e exigem execução manual contra a conta AWS.
 
 ---
@@ -123,7 +123,7 @@ O formulário em `/formulario.html` coleta dado pessoal sob consentimento LGPD e
 
 ---
 
-## 4. As duas camadas que dependem da AWS
+## 4. As camadas que dependem da AWS
 
 ### Header `Link` (RFC 8288)
 
@@ -131,7 +131,15 @@ O formulário em `/formulario.html` coleta dado pessoal sob consentimento LGPD e
 ./scripts/setup-agent-discovery-aws.sh link-headers
 ```
 
-Cria ou atualiza a Response Headers Policy **`Boutique-AgentDiscovery-Headers`**. O script
+> 🔴 **Não é uma Response Headers Policy — é uma CloudFront Function.** O caminho canônico
+> para injetar `Link` é uma policy custom, e foi a primeira tentativa. Ela está
+> **desabilitada no plano desta distribuição**: o console mostra o campo cinza e exigiria
+> migrar para Business, o que não se paga por um header. CloudFront Functions são um
+> recurso à parte, seguem disponíveis, e o resultado no header é idêntico. A função vive em
+> `infra/cloudfront-functions/viewer-response.js` e roda em **`viewer-response`** — slot
+> independente do `viewer-request`, que já hospeda a negociação de Markdown.
+
+Publica a função **`BoutiqueViewerResponse`**. O script
 **não anexa sozinho** à distribuição: anexar exige reescrever o `DistributionConfig`
 inteiro, e um `update-distribution` malformado derruba o site. O script imprime o passo
 manual. Conferência depois do deploy:
