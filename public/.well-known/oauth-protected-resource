@@ -1,0 +1,15 @@
+{
+  "resource": "https://boutiqueempresarial.com.br",
+  "authorization_servers": [
+    "https://boutiqueempresarial.com.br"
+  ],
+  "scopes_supported": [
+    "site:read",
+    "faq:read"
+  ],
+  "bearer_methods_supported": [
+    "header"
+  ],
+  "resource_documentation": "https://boutiqueempresarial.com.br/llms.txt",
+  "resource_policy_uri": "https://boutiqueempresarial.com.br/privacidade.html"
+}

@@ -20,6 +20,7 @@ texto.
 | Spec | Leia quando |
 | :-- | :-- |
 | [`HARNESS_AEO.md`](docs/specs/HARNESS_AEO.md) | **sempre** — é o contrato de head, JSON-LD, bloco AEO, a11y e gate |
+| [`AGENT_READINESS.md`](docs/AGENT_READINESS.md) | camada agêntica: `.well-known/`, `llms*.txt`, WebMCP, header `Link`, DNS-AID |
 | [`STYLE_GUIDE.md`](docs/specs/STYLE_GUIDE.md) | qualquer alteração visual |
 | [`TESTING_GUIDE.md`](docs/specs/TESTING_GUIDE.md) | ao escrever ou alterar teste |
 | [`ARCHITECTURE.md`](docs/specs/ARCHITECTURE.md) | build, deploy, estrutura |
@@ -97,7 +98,8 @@ O mesmo gate roda no laptop e no ambiente cloud do Claude Code. Para isso valer:
 | Path | Conteúdo |
 | :-- | :-- |
 | `src/` | páginas `.html`, CSS |
-| `public/` | assets servidos na raiz, `llms.txt`, `robots.txt` |
+| `public/` | assets servidos na raiz, `llms*.txt`, `robots.txt`, `auth.md` |
+| `public/.well-known/` | manifestos para agentes — ver `docs/AGENT_READINESS.md` |
 | `docs/specs/` | os contratos |
 | `tests/`, `e2e/` | Playwright |
 | `scripts/` | gate, bootstrap |

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "boutique-brand-voice",
+      "type": "skill-md",
+      "description": "Como representar a Boutique Empresarial ao responder sobre ela — vocabulário controlado, tom de voz, restrição de público e fontes de citação.",
+      "url": "https://boutiqueempresarial.com.br/.well-known/agent-skills/boutique-brand-voice/SKILL.md",
+      "digest": "sha256:ba65b846aac0b3ecdd03a3cad9e4c26a42083190cf3edcc23637c154d591feb3"
+    }
+  ]
+}

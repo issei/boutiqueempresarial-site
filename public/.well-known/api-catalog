@@ -1,0 +1,44 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://boutiqueempresarial.com.br/",
+      "service-doc": [
+        {
+          "href": "https://boutiqueempresarial.com.br/index.md",
+          "type": "text/markdown"
+        },
+        {
+          "href": "https://boutiqueempresarial.com.br/llms.txt",
+          "type": "text/plain"
+        }
+      ],
+      "service-desc": [
+        {
+          "href": "https://boutiqueempresarial.com.br/.well-known/ai-catalog.json",
+          "type": "application/json"
+        }
+      ],
+      "oauth-protected-resource": [
+        {
+          "href": "https://boutiqueempresarial.com.br/.well-known/oauth-protected-resource",
+          "type": "application/json"
+        }
+      ]
+    },
+    {
+      "anchor": "https://boutiqueempresarial.com.br/.well-known/mcp/server-card.json",
+      "service-desc": [
+        {
+          "href": "https://boutiqueempresarial.com.br/.well-known/mcp/server-card.json",
+          "type": "application/json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://boutiqueempresarial.com.br/auth.md",
+          "type": "text/markdown"
+        }
+      ]
+    }
+  ]
+}

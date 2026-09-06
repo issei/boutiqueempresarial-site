@@ -1,6 +1,8 @@
-# Regras para todos os robôs de busca (Google, Bing, etc.)
+# Regras para todos os robôs — busca e agentes de IA.
+# A citação é o objetivo: nada de bloqueio a crawler de IA (HARNESS_AEO.md §B4).
 User-agent: *
 Allow: /
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 
 # Bloqueio de pastas de sistema ou temporárias (boas práticas)
 Disallow: /private/
@@ -16,3 +18,11 @@ Disallow: *.ai
 
 # Indicação do Mapa do Site (Essencial para indexação rápida)
 Sitemap: https://boutiqueempresarial.com.br/sitemap.xml
+Agentmap: https://boutiqueempresarial.com.br/.well-known/ai-catalog.json
+
+# Camada para máquinas — llms.txt standard + RFC 8288/9727/9728.
+# api-catalog:              https://boutiqueempresarial.com.br/.well-known/api-catalog
+# agent-catalog:            https://boutiqueempresarial.com.br/.well-known/agent-catalog
+# oauth-protected-resource: https://boutiqueempresarial.com.br/.well-known/oauth-protected-resource
+LLMs: https://boutiqueempresarial.com.br/llms.txt
+LLMs-full: https://boutiqueempresarial.com.br/llms-full.txt

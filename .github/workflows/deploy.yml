@@ -78,9 +78,26 @@ jobs:
         # --metadata-directive REPLACE zera o Cache-Control, então re-aplica.
         run: |
           aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }} s3://${{ secrets.S3_BUCKET_NAME }} \
-            --exclude "*" --include "*.md" --include "llms.txt" \
+            --exclude "*" --include "*.md" --include "llms.txt" --include "llms-full.txt" \
             --recursive --metadata-directive REPLACE \
             --content-type "text/markdown; charset=utf-8" \
+            --cache-control "public, max-age=0, must-revalidate"
+
+      - name: Corrigir Content-Type dos manifestos .well-known sem extensão
+        # RFC 8414/9727/9728 exigem caminho sem extensão (api-catalog,
+        # oauth-protected-resource, …). O sync sobe esses objetos como
+        # binary/octet-stream e um cliente estrito recusa o parse.
+        # AGENT_READINESS.md §7.
+        run: |
+          aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/.well-known/ \
+            s3://${{ secrets.S3_BUCKET_NAME }}/.well-known/ \
+            --exclude "*" \
+            --include "api-catalog" --include "agent-catalog" \
+            --include "oauth-protected-resource" \
+            --include "oauth-authorization-server" \
+            --include "openid-configuration" \
+            --recursive --metadata-directive REPLACE \
+            --content-type "application/json; charset=utf-8" \
             --cache-control "public, max-age=0, must-revalidate"
 
       - name: Invalidate CloudFront Cache
