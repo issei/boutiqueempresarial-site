@@ -5,6 +5,7 @@
 // a máquina, que é exatamente o consumidor que estes arquivos existem para servir.
 import { test, expect } from '@playwright/test';
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 
 const SITE = 'https://boutiqueempresarial.com.br';
 
@@ -105,6 +106,17 @@ test.describe('contrato dos manifestos', () => {
     const txt = await (await request.get('/robots.txt')).text();
     for (const marca of ['Content-Signal:', 'Sitemap:', 'Agentmap:', 'LLMs:', 'LLMs-full:']) {
       expect(txt, `robots.txt sem "${marca}"`).toContain(marca);
+    }
+  });
+
+  // O dev server serve public/ direto, então o teste acima passa mesmo quando o
+  // build descarta o arquivo. Foi exatamente o que aconteceu: vite-plugin-sitemap
+  // gera robots.txt por padrão e sobrescrevia o nosso, e só um scan em produção
+  // revelou. O que vai para o S3 é o dist — é o dist que precisa ser cobrado.
+  test('o robots.txt do build é o nosso, não o gerado pelo plugin', () => {
+    const dist = readFileSync(new URL('../dist/robots.txt', import.meta.url), 'utf8');
+    for (const marca of ['Content-Signal:', 'Sitemap:', 'Agentmap:', 'LLMs:', 'LLMs-full:']) {
+      expect(dist, `dist/robots.txt sem "${marca}" — o plugin sobrescreveu public/`).toContain(marca);
     }
   });
 });

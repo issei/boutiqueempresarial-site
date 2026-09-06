@@ -24,8 +24,9 @@ uma, e nenhuma depende das outras:
 
 | Camada | Mecanismo | Descoberto por | Estado |
 | :-- | :-- | :-- | :-- |
-| **DNS** | registro HTTPS em `_agents.` | resolver, antes de qualquer HTTP | script pronto, **não publicado** |
-| **Header HTTP** | `Link` (RFC 8288) em toda resposta | quem faz um `GET /` qualquer | script pronto, **não anexado** |
+| **DNS** | registro HTTPS em `_agents.` | resolver, antes de qualquer HTTP | ✅ publicado, DNSSEC validando |
+| **Header HTTP** | `Link` (RFC 8288) em toda resposta | quem faz um `GET /` qualquer | policy criada, **falta anexar** |
+| **Negociação** | `Accept: text/markdown` → companion `.md` | agente que prefere Markdown | função publicada, **falta anexar** |
 | **HTML** | `<link rel="api-catalog\|service-desc\|service-doc">` | quem lê o `<head>` | ✅ nas 7 páginas |
 | **Arquivo bem-conhecido** | `/.well-known/*`, `/llms.txt`, `/robots.txt` | convenção | ✅ |
 | **Autenticação** | `/auth.md` + metadados OAuth | quem precisa de escopo/credencial | ✅ |
@@ -48,11 +49,19 @@ As duas primeiras são resposta HTTP e DNS — não arquivo estático. Ficam em
 | header `Link` RFC 8288 | CloudFront — `scripts/setup-agent-discovery-aws.sh link-headers` |
 | DNS-AID | Route 53 — `scripts/setup-agent-discovery-aws.sh dns-aid` |
 
+> ⚠️ **`public/robots.txt` só chega em produção porque `vite.config.js` desliga o
+> `generateRobotsTxt` do `vite-plugin-sitemap`.** Com o default (`true`), o plugin
+> sobrescreve o arquivo no `dist` por quatro linhas genéricas — foi assim que o
+> `Content-Signal` (e, antes dele, os `Disallow` do arquivo original) nunca chegou ao ar,
+> com a fonte correta o tempo todo. `tests/agent-readiness.spec.js` passou a cobrar o
+> `dist`, não só o dev server, porque o dev server serve `public/` direto e não via o bug.
+
 ### Conteúdo legível por máquina
 
 | Artefato | Onde |
 | :-- | :-- |
 | índice curado | `public/llms.txt` |
+| negociação `Accept: text/markdown` | CloudFront Function — `infra/cloudfront-functions/viewer-request.js` |
 | conteúdo integral | `public/llms-full.txt` |
 | companion Markdown da home | `public/index.md` + `<link rel="alternate">` no `<head>` |
 | `Content-Type: text/markdown` em produção | passo dedicado em `.github/workflows/deploy.yml` |

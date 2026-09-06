@@ -35,6 +35,12 @@ export default defineConfig({
     tailwindcss(),
     sitemap({
       hostname: 'https://boutiqueempresarial.com.br',
+      // O plugin gera robots.txt por padrão e SOBRESCREVE public/robots.txt no
+      // dist. Foi assim que o Content-Signal — e, antes dele, os Disallow do
+      // arquivo original — nunca chegaram em produção: a fonte estava certa e o
+      // artefato publicado tinha quatro linhas. `tests/agent-readiness.spec.js`
+      // passou a cobrar o dist, não só o dev server, para não repetir.
+      generateRobotsTxt: false,
       // A exclusão sai do próprio `meta robots` de cada src/*.html — nunca de uma
       // lista manual, que apodrece na página seguinte.
       exclude: naoIndexaveis,

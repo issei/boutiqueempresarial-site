@@ -9,6 +9,9 @@
 #                  `Link` (RFC 8288) em toda resposta. Um agente que faz um
 #                  GET / qualquer descobre os manifestos sem ler o HTML.
 #
+#   markdown-negotiation  Publica a CloudFront Function que serve o companion .md
+#                  a quem manda `Accept: text/markdown`, e roteia .html.
+#
 #   dns-aid        Registro HTTPS em `_agents.` no Route 53 (DNS-AID). É a
 #                  camada anterior a qualquer HTTP: o resolver já entrega.
 #
@@ -17,6 +20,7 @@
 #
 # Uso:
 #   ./scripts/setup-agent-discovery-aws.sh link-headers
+#   ./scripts/setup-agent-discovery-aws.sh markdown-negotiation
 #   HOSTED_ZONE_ID=Z0123456789ABC ./scripts/setup-agent-discovery-aws.sh dns-aid
 #   ./scripts/setup-agent-discovery-aws.sh dnssec-status
 #
@@ -43,18 +47,27 @@ link_headers() {
     --query "ResponseHeadersPolicyList.Items[?ResponseHeadersPolicy.ResponseHeadersPolicyConfig.Name=='${POLICY_NAME}'].ResponseHeadersPolicy.Id" \
     --output text)
 
+  # `Vary: Accept` acompanha o Link porque a mesma URL passa a ter duas
+  # representações (HTML e Markdown). O CloudFront não precisa dele — a função
+  # viewer-request reescreve a URI antes do cache lookup, então a chave já
+  # difere. Ele existe para os caches DEPOIS do CloudFront: browser e proxies.
   local config
   config=$(cat <<EOF
 {
   "Name": "${POLICY_NAME}",
-  "Comment": "Header Link RFC 8288 para descoberta por agentes de IA",
+  "Comment": "Header Link RFC 8288 para descoberta por agentes + Vary Accept",
   "CustomHeadersConfig": {
-    "Quantity": 1,
+    "Quantity": 2,
     "Items": [
       {
         "Header": "Link",
         "Value": "${LINK_VALUE//\"/\\\"}",
         "Override": true
+      },
+      {
+        "Header": "Vary",
+        "Value": "Accept",
+        "Override": false
       }
     ]
   }
@@ -139,6 +152,74 @@ dnssecValidated. O DNSSEC desta zona já está habilitado — confira com
 EOF
 }
 
+markdown_negotiation() {
+  local fonte="infra/cloudfront-functions/viewer-request.js"
+  local nome="BoutiqueViewerRequest"
+  [ -f "$fonte" ] || { echo "não achei $fonte — rode da raiz do repositório" >&2; exit 1; }
+
+  local etag
+  if aws cloudfront describe-function --name "$nome" --stage DEVELOPMENT >/dev/null 2>&1; then
+    etag=$(aws cloudfront describe-function --name "$nome" --stage DEVELOPMENT \
+      --query ETag --output text)
+    etag=$(aws cloudfront update-function --name "$nome" --if-match "$etag" \
+      --function-config "Comment='Markdown negotiation + roteamento .html',Runtime=cloudfront-js-2.0" \
+      --function-code "fileb://${fonte}" --query ETag --output text)
+    echo "Função atualizada: ${nome}"
+  else
+    etag=$(aws cloudfront create-function --name "$nome" \
+      --function-config "Comment='Markdown negotiation + roteamento .html',Runtime=cloudfront-js-2.0" \
+      --function-code "fileb://${fonte}" --query ETag --output text)
+    echo "Função criada: ${nome}"
+  fi
+
+  # Esta função decide o roteamento de TODAS as URLs do site. Publicar sem
+  # testar é apostar o site inteiro num regex. Os dois casos abaixo são o
+  # mínimo: o caminho do browser e o do agente.
+  echo
+  echo "Testes antes de publicar:"
+  local falhou=0
+  for caso in "/|text/html|/index.html" "/|text/markdown|/index.md" "/formulario|text/html|/formulario.html"; do
+    IFS='|' read -r uri accept esperado <<<"$caso"
+    local evento obtido
+    evento=$(printf '{"version":"1.0","context":{"eventType":"viewer-request"},"viewer":{"ip":"1.2.3.4"},"request":{"method":"GET","uri":"%s","headers":{"accept":{"value":"%s"}},"querystring":{},"cookies":{}}}' "$uri" "$accept")
+    obtido=$(aws cloudfront test-function --name "$nome" --if-match "$etag" --stage DEVELOPMENT \
+      --event-object "$(printf '%s' "$evento" | base64 -w0 2>/dev/null || printf '%s' "$evento" | base64)" \
+      --query "TestResult.FunctionOutput" --output text | sed -n 's/.*"uri":"\([^"]*\)".*/\1/p')
+    if [ "$obtido" = "$esperado" ]; then
+      echo "  ok   ${uri} (${accept}) -> ${obtido}"
+    else
+      echo "  FALHA ${uri} (${accept}) -> ${obtido:-vazio}, esperava ${esperado}"
+      falhou=1
+    fi
+  done
+  [ "$falhou" -eq 0 ] || { echo; echo "Não publiquei: corrija ${fonte} antes." >&2; exit 1; }
+
+  aws cloudfront publish-function --name "$nome" --if-match "$etag" >/dev/null
+  echo
+  echo "Publicada em LIVE."
+  anexar_instrucoes
+}
+
+anexar_instrucoes() {
+  cat <<EOF
+
+Falta ANEXAR ao comportamento padrão da distribuição de ${DOMINIO}:
+
+  Console → CloudFront → Behaviors → Default (*) → Edit
+    Function associations → Viewer request → CloudFront Functions → BoutiqueViewerRequest
+    Response headers policy → ${POLICY_NAME}
+
+É o único passo que este script não faz: anexar exige reescrever o
+DistributionConfig inteiro, e um update-distribution malformado tira o site do
+ar. Dois cliques revisados custam menos que um rollback.
+
+Depois, invalide e confira:
+
+  curl -sI https://${DOMINIO}/ | grep -iE '^(link|vary):'
+  curl -s -H 'accept: text/markdown' https://${DOMINIO}/ | head -3
+EOF
+}
+
 dnssec_status() {
   local zid
   zid=$(aws route53 list-hosted-zones-by-name --dns-name "${DOMINIO}." \
@@ -159,8 +240,9 @@ dnssec_status() {
 }
 
 case "${1:-}" in
-  link-headers)  link_headers ;;
-  dns-aid)       dns_aid ;;
-  dnssec-status) dnssec_status ;;
-  *) echo "uso: $0 {link-headers|dns-aid|dnssec-status}" >&2; exit 1 ;;
+  link-headers)         link_headers ;;
+  dns-aid)              dns_aid ;;
+  markdown-negotiation) markdown_negotiation ;;
+  dnssec-status)        dnssec_status ;;
+  *) echo "uso: $0 {link-headers|markdown-negotiation|dns-aid|dnssec-status}" >&2; exit 1 ;;
 esac
