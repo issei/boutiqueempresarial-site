@@ -1,0 +1,8 @@
+# core.autocrlf=true converte para CRLF no checkout do Windows. Para conteúdo
+# servido literalmente a agentes isso não é cosmético: o digest de cada SKILL.md
+# em .well-known/agent-skills/index.json é o sha256 do conteúdo, e o deploy sobe
+# do Linux com LF. Sem isto, o mesmo arquivo tem dois digests — passa na CI e
+# falha no laptop, que é a pior forma de um teste falhar.
+public/**/*.md        text eol=lf
+public/**/*.txt       text eol=lf
+public/.well-known/** text eol=lf
