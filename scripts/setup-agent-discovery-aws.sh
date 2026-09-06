@@ -12,11 +12,20 @@
 #   dns-aid        Registro HTTPS em `_agents.` no Route 53 (DNS-AID). É a
 #                  camada anterior a qualquer HTTP: o resolver já entrega.
 #
+#   dnssec-status  Só leitura: estado da assinatura da zona e se a cadeia de
+#                  confiança fechou (DS cadastrado no Registro.br).
+#
 # Uso:
 #   ./scripts/setup-agent-discovery-aws.sh link-headers
 #   HOSTED_ZONE_ID=Z0123456789ABC ./scripts/setup-agent-discovery-aws.sh dns-aid
+#   ./scripts/setup-agent-discovery-aws.sh dnssec-status
 #
 # Idempotente: reexecutar atualiza, não duplica.
+#
+# Credencial: exige um principal com permissão de Route 53, CloudFront e KMS. O
+# `aws configure` desta máquina aponta para um IAM user sem Route 53 — use o
+# perfil SSO de administrador (AWS_PROFILE=... ou `aws sso login`), senão o
+# script morre em AccessDenied no primeiro comando.
 # ==============================================================================
 
 set -euo pipefail
@@ -125,15 +134,33 @@ Validação — pelo mesmo resolver que os scanners usam:
     "https://cloudflare-dns.com/dns-query?name=_index._agents.${DOMINIO}&type=HTTPS&do=1"
 
 Publicar o registro NÃO basta para o check dnsAid: o scanner exige
-dnssecValidated. Isso depende de habilitar DNSSEC signing no Route 53 e
-cadastrar o DS no registrador — decisão de custo e de risco, não passo
-mecânico. Leia docs/AGENT_READINESS.md §4 antes, inclusive a ordem de
-rollback: apagar a chave antes de remover o DS derruba o domínio inteiro.
+dnssecValidated. O DNSSEC desta zona já está habilitado — confira com
+'$0 dnssec-status' que a cadeia fechou (DS cadastrado no Registro.br).
 EOF
 }
 
+dnssec_status() {
+  local zid
+  zid=$(aws route53 list-hosted-zones-by-name --dns-name "${DOMINIO}." \
+    --query "HostedZones[0].Id" --output text | awk -F/ '{print $NF}')
+
+  echo "Hosted zone: ${zid}"
+  aws route53 get-dnssec --hosted-zone-id "$zid" \
+    --query "{Assinatura:Status.ServeSignature,KSKs:KeySigningKeys[].{Nome:Name,Status:Status,KeyTag:KeyTag,DS:DSRecord}}"
+
+  # A cadeia só fecha com o DS cadastrado no Registro.br. AD=true é a prova de
+  # que um resolver validador aceitou a assinatura — o resto é otimismo.
+  echo
+  echo "Cadeia de confiança, pelo resolver que os scanners usam:"
+  curl -s -H 'accept: application/dns-json' \
+    "https://cloudflare-dns.com/dns-query?name=${DOMINIO}&type=A&do=1" \
+    | grep -o '"AD":[a-z]*' || echo "  (sem resposta — verifique conectividade)"
+  echo "  AD:true = validado · AD:false = DS ausente ou cadeia quebrada"
+}
+
 case "${1:-}" in
-  link-headers) link_headers ;;
-  dns-aid)      dns_aid ;;
-  *) echo "uso: $0 {link-headers|dns-aid}" >&2; exit 1 ;;
+  link-headers)  link_headers ;;
+  dns-aid)       dns_aid ;;
+  dnssec-status) dnssec_status ;;
+  *) echo "uso: $0 {link-headers|dns-aid|dnssec-status}" >&2; exit 1 ;;
 esac
