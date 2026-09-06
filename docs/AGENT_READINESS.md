@@ -106,7 +106,7 @@ manifesto — é publicar um que mente.
 | Registro DNS `_mcp`/`_a2a` | **não publicar** | anunciar por DNS um endpoint que não responde é pior que não anunciar nada |
 | Authorization server OAuth | **não existe** | os três documentos OAuth são declarativos, para conformidade de descoberta e para carregar o `agent_auth`. `jwks.json` é `{"keys": []}` — a verdade: nada é assinado porque nada é emitido |
 | Companion `.md` de `formulario`/`privacidade`/`termos` | **não** | as três são `noindex` (HARNESS_AEO.md §6.1). Companion de página não indexável é peso sem leitor |
-| DNSSEC | **não habilitado** | ver §4 — custo recorrente e risco de derrubar o domínio inteiro. É decisão de negócio, não passo mecânico |
+| DNSSEC | **habilitado** | zona `SIGNING` desde 2026-09-06; ver §4 para o custo, os alarmes e a ordem de rollback |
 | Gerador de `llms-full.txt` | **não** | 1 página indexável. O gatilho está em HARNESS_AEO.md §A5 |
 
 O formulário em `/formulario.html` coleta dado pessoal sob consentimento LGPD explícito.
@@ -150,26 +150,85 @@ O Route 53 aceita somente SvcParamKeys registradas — `mandatory`, `alpn`,
 `InvalidChangeBatch: does not support undefined parameters`, e o change batch é **atômico**
 — nada é aplicado. O caminho dos manifestos vive no ARD, não no DNS.
 
-#### ⚠️ Armadilha: DNSSEC é bloqueante para o check `dnsAid`
+#### ⚠️ DNSSEC é bloqueante para o check `dnsAid`
 
-Publicar o registro não faz o check passar. O scanner exige `dnssecValidated: true` — a
-mensagem muda de *"records not found"* para *"records found, but DNSSEC was not
-validated"*, o que parece progresso e continua `fail`.
+Publicar o registro `_index` não faz o check passar. O scanner exige
+`dnssecValidated: true` — a mensagem muda de *"records not found"* para *"records found,
+but DNSSEC was not validated"*, o que parece progresso e continua `fail`.
 
-Habilitar DNSSEC significa: signing no Route 53 → uma KMS key (~US$1/mês) → cadastrar o DS
-no registrador → aguardar propagação. **A chave vira ponto único de falha do domínio
-inteiro**: apagá-la ou desabilitá-la com o DS publicado causa `SERVFAIL` em
-`boutiqueempresarial.com.br` para qualquer resolver validador.
+---
 
-🔴 **Ordem obrigatória de rollback:**
+## 4.1 DNSSEC — estado e operação
+
+Habilitado em **2026-09-06**. Zona `SIGNING`, KSK `boutiqueempresarial_com_br_ksk`
+(`ECDSAP256SHA256`), sobre uma KMS key `ECC_NIST_P256` em **us-east-1** — a região é
+exigência do Route 53, não escolha. Alias `alias/dnssec-boutiqueempresarial-com-br`.
+
+Este repositório é público: identificadores opacos de recurso (hosted zone, key id, account
+id) ficam deliberadamente **fora** da documentação. Não são credenciais, mas em repositório
+aberto só servem a reconhecimento. Para obtê-los:
+
+```bash
+aws route53 list-hosted-zones-by-name --dns-name boutiqueempresarial.com.br. \
+  --query "HostedZones[0].Id" --output text
+aws kms describe-key --region us-east-1 \
+  --key-id alias/dnssec-boutiqueempresarial-com-br --query "KeyMetadata.KeyId" --output text
+```
+
+### Estado atual, a qualquer momento
+
+```bash
+./scripts/setup-agent-discovery-aws.sh dnssec-status
+```
+
+### O que a habilitação envolveu, na ordem
+
+Registrado porque a ordem é o que separa uma operação sem incidente de uma queda de
+domínio — não para ser reexecutado.
+
+1. **Baixar o TTL máximo da zona antes de assinar.** O NS estava em 172800s (48h) e o campo
+   `minimum` do SOA em 86400s. Enquanto esses valores estão em cache dos resolvers, um
+   rollback demora até 48h para chegar. Foram para 3600 e 300 — é o que transforma um
+   problema em uma hora de espera. A AWS trata isso como etapa, não como detalhe.
+2. **KMS key com a policy certa.** Três `Allow` para `dnssec-route53.amazonaws.com`
+   (`DescribeKey`/`GetPublicKey`/`Sign`, e `CreateGrant` à parte), com `SourceArn` preso à
+   hosted zone desta zona — não da outra.
+3. **`CreateKeySigningKey` + `EnableHostedZoneDNSSEC`.** A zona passa a ser assinada, mas
+   **sem o DS no Registro.br ninguém valida**. Este é o ponto de não-retorno barato: dá para
+   desfazer sem consequência.
+4. **Alarmes antes do DS.** `DNSSECInternalFailure` e `DNSSECKeySigningKeysNeedingAction`,
+   namespace `AWS/Route53`, dimensão `HostedZoneId`, notificando o tópico SNS
+   `dnssec-alerts`. As métricas de DNSSEC do Route 53 são globais e **só existem em
+   us-east-1** — alarme criado em outra região nunca dispara.
+5. **DS no Registro.br.** Só aqui a validação passa a valer. `.com.br` não publica o DS
+   automaticamente: é cadastro manual no painel do registrador.
+
+### Proteção contra destruição acidental
+
+A key policy carrega um statement `DenyAccidentalKeyDestruction` que nega
+`kms:ScheduleKeyDeletion` e `kms:DisableKey` a **todos os principals**. Um `Deny` explícito
+vence qualquer `Allow`, inclusive o do root. O root mantém `kms:*` — incluindo
+`PutKeyPolicy` —, então destruir a chave exige primeiro remover esse statement: de um
+clique acidental para um ato deliberado em dois passos. Não interfere em
+`Sign`/`GetPublicKey`/`DescribeKey`/`CreateGrant`, que é o que o Route 53 usa para assinar.
+
+### 🔴 Ordem obrigatória de rollback
+
+**A chave é ponto único de falha do domínio inteiro.** Com o DS publicado, apagá-la ou
+desabilitá-la causa `SERVFAIL` em `boutiqueempresarial.com.br` para qualquer resolver
+validador — e a zona tem **MX do Google Workspace**, então cai o site *e* o e-mail.
 
 ```
-1. remover o DS no registrador
+1. remover o DS no Registro.br
 2. aguardar ~24h de propagação
 3. só então: DisableHostedZoneDNSSEC + DeleteKeySigningKey
 ```
 
-Inverter a ordem derruba o site, o e-mail e tudo que resolve pelo domínio.
+Inverter a ordem derruba tudo que resolve pelo domínio.
+
+### Custo
+
+~US$1/mês da KMS key, recorrente, enquanto o DNSSEC existir.
 
 ---
 
