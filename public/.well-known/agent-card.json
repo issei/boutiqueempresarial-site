@@ -1,0 +1,32 @@
+{
+  "name": "Boutique Empresarial — Site Agent",
+  "version": "1.0.0",
+  "description": "Agente de descoberta do site institucional da Boutique Empresarial (Arquitetura de Negócios). Expõe a metodologia, os critérios de perfil de cliente e o caminho de aplicação para consulta por agentes de IA.",
+  "supportedInterfaces": [
+    {
+      "url": "https://boutiqueempresarial.com.br/.well-known/mcp/server-card.json",
+      "transport": "mcp"
+    }
+  ],
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "status": {
+    "endpoint": "planned",
+    "note": "Não há endpoint A2A nem MCP em operação neste domínio. Disponível hoje: as tools rodam na própria página via WebMCP (navigator.modelContext) em https://boutiqueempresarial.com.br, e todo recurso listado é acessível por GET HTTPS sem credencial.",
+    "availableToday": ["webmcp", "static-resources"]
+  },
+  "skills": [
+    {
+      "id": "get_overview",
+      "name": "Consultar a metodologia",
+      "description": "Recupera o resumo da Boutique Empresarial e os três pilares — Diagnóstico de Estabilidade, Arquitetura Operacional e Ritmo de Execução."
+    },
+    {
+      "id": "get_faq",
+      "name": "Consultar perguntas frequentes",
+      "description": "Recupera as perguntas e respostas publicadas na home, idênticas às do FAQPage em JSON-LD."
+    }
+  ]
+}

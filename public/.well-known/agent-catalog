@@ -1,0 +1,61 @@
+{
+  "$schema": "https://isitagentready.com/schemas/agent-catalog/v1",
+  "name": "Boutique Empresarial — Agent Resource Catalog",
+  "description": "Recursos legíveis por máquina para agentes de IA entenderem a metodologia, o público-alvo e o processo de aplicação da Boutique Empresarial.",
+  "version": "1.0.0",
+  "published": "2026-09-05",
+  "contact": {
+    "email": "talita@boutiqueempresarial.com.br",
+    "linkedin": "https://www.linkedin.com/company/boutiqueempresarial"
+  },
+  "resources": [
+    {
+      "title": "Índice para agentes (llms.txt)",
+      "url": "https://boutiqueempresarial.com.br/llms.txt",
+      "rel": "describedby",
+      "mediaType": "text/plain",
+      "description": "Ponto de entrada no padrão llms.txt. Lista as páginas do site e as diretrizes de interpretação de tom."
+    },
+    {
+      "title": "Conteúdo integral para agentes (llms-full.txt)",
+      "url": "https://boutiqueempresarial.com.br/llms-full.txt",
+      "rel": "describedby",
+      "mediaType": "text/plain",
+      "description": "Conteúdo do site concatenado para modelos de contexto longo."
+    },
+    {
+      "title": "Página inicial em Markdown",
+      "url": "https://boutiqueempresarial.com.br/index.md",
+      "rel": "alternate",
+      "mediaType": "text/markdown",
+      "description": "Companion Markdown da home: resumo, três pilares, FAQ e próximo passo. Fonte de citação para answer engines."
+    },
+    {
+      "title": "Índice de skills do agente",
+      "url": "https://boutiqueempresarial.com.br/.well-known/agent-skills/index.json",
+      "rel": "service-desc",
+      "mediaType": "application/json",
+      "description": "Skills publicadas: vocabulário controlado e tom de voz da marca."
+    },
+    {
+      "title": "MCP Server Card",
+      "url": "https://boutiqueempresarial.com.br/.well-known/mcp/server-card.json",
+      "rel": "service-desc",
+      "mediaType": "application/json",
+      "description": "Card do Model Context Protocol. Atenção ao campo `status`: o endpoint HTTP é planejado; hoje as tools rodam na página via WebMCP."
+    },
+    {
+      "title": "OAuth Protected Resource Metadata",
+      "url": "https://boutiqueempresarial.com.br/.well-known/oauth-protected-resource",
+      "rel": "service-desc",
+      "mediaType": "application/json",
+      "description": "Metadados de acesso (RFC 9728). O acesso é anônimo — nenhum recurso deste domínio exige credencial."
+    }
+  ],
+  "capabilities": [
+    "Arquitetura de Negócios",
+    "Diagnóstico de Estabilidade",
+    "Arquitetura Operacional",
+    "Ritmo de Execução"
+  ]
+}

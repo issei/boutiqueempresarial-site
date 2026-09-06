@@ -100,6 +100,24 @@ dependencies:
       transport: stdio
       command: "${env:USERPROFILE}/.caveman/bin/caveman-mcp.exe"
 
+    # CodeGraph — https://github.com/colbymchenry/codegraph
+    # Grafo de símbolos/edges/arquivos do código em SQLite. `codegraph_explore`
+    # devolve, numa chamada, a fonte verbatim dos símbolos relevantes + os call
+    # paths entre eles — substitui um loop de grep + Read e segue saltos de
+    # dispatch dinâmico que o grep não pega. Diretiva do CLAUDE.md global: onde
+    # existe `.codegraph/` na raiz, é a PRIMEIRA ferramenta antes de grep/find.
+    # Ataca a alavanca de contexto que entra (§5 do plano) do lado da busca.
+    #   bootstrap: codegraph init   (cria .codegraph/ + índice inicial)
+    #   sync:      codegraph sync   (incremental, após mudanças)
+    #   CLI equivalente ao MCP:  codegraph explore "<pergunta ou símbolos>"
+    # NOTA: npm global (@colbymchenry/codegraph, v1.5.0 nesta máquina). Ainda
+    # não há `.codegraph/` neste repo — rodar `codegraph init` na Fase 0.
+    - name: codegraph
+      registry: false
+      transport: stdio
+      command: codegraph
+      args: ["serve", "--mcp"]
+
     # Docs versionadas de Vite 6, Tailwind v4 e Playwright — evita que um
     # subagente gaste turnos adivinhando API de build.
     - name: io.github.upstash/context7

@@ -1,0 +1,57 @@
+{
+  "serverInfo": {
+    "name": "boutique-empresarial-site",
+    "version": "1.0.0",
+    "description": "MCP server card do site da Boutique Empresarial — Arquitetura de Negócios que estrutura operações para funcionarem com estabilidade e autonomia, sem dependência do dono.",
+    "homepage": "https://boutiqueempresarial.com.br",
+    "contact": {
+      "email": "talita@boutiqueempresarial.com.br",
+      "linkedin": "https://www.linkedin.com/company/boutiqueempresarial"
+    }
+  },
+  "endpoint": "https://boutiqueempresarial.com.br/mcp",
+  "transport": "streamable-http",
+  "status": {
+    "endpoint": "planned",
+    "note": "O endpoint streamable-http em /mcp NÃO está no ar — não tente conectar. O site é estático (S3 + CloudFront) e não hospeda servidor. Disponível hoje: as tools abaixo rodam na própria página via WebMCP (navigator.modelContext) em https://boutiqueempresarial.com.br, expostas como get_overview e get_faq; e todo recurso listado neste card é acessível por GET HTTPS sem credencial.",
+    "availableToday": ["webmcp", "static-resources"]
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": true,
+    "prompts": false,
+    "logging": false
+  },
+  "resources": [
+    {
+      "uri": "https://boutiqueempresarial.com.br/index.md",
+      "name": "Home (Markdown)",
+      "description": "Resumo, três pilares, FAQ e próximo passo da Boutique Empresarial.",
+      "mimeType": "text/markdown"
+    },
+    {
+      "uri": "https://boutiqueempresarial.com.br/llms.txt",
+      "name": "Índice para agentes",
+      "description": "Ponto de entrada no padrão llms.txt, com diretrizes de tom e vocabulário.",
+      "mimeType": "text/plain"
+    },
+    {
+      "uri": "https://boutiqueempresarial.com.br/llms-full.txt",
+      "name": "Conteúdo integral para agentes",
+      "description": "Conteúdo do site concatenado para modelos de contexto longo.",
+      "mimeType": "text/plain"
+    }
+  ],
+  "tools": [
+    {
+      "name": "get_overview",
+      "description": "Recupera o resumo da Boutique Empresarial e os três pilares da metodologia.",
+      "inputSchema": { "type": "object", "properties": {}, "required": [] }
+    },
+    {
+      "name": "get_faq",
+      "description": "Recupera as perguntas frequentes publicadas na home, com as respostas literais.",
+      "inputSchema": { "type": "object", "properties": {}, "required": [] }
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Boutique Empresarial",
+    "identifier": "did:web:boutiqueempresarial.com.br"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:boutiqueempresarial.com.br:doc:llms",
+      "displayName": "Índice para agentes (llms.txt)",
+      "type": "text/plain",
+      "url": "https://boutiqueempresarial.com.br/llms.txt",
+      "representativeQueries": [
+        "o que é a Boutique Empresarial",
+        "quais páginas este site publica para leitura por IA"
+      ]
+    },
+    {
+      "identifier": "urn:air:boutiqueempresarial.com.br:doc:llms-full",
+      "displayName": "Conteúdo integral para agentes (llms-full.txt)",
+      "type": "text/plain",
+      "url": "https://boutiqueempresarial.com.br/llms-full.txt",
+      "representativeQueries": [
+        "conteúdo completo do site da Boutique Empresarial",
+        "metodologia dos três pilares da Boutique Empresarial"
+      ]
+    },
+    {
+      "identifier": "urn:air:boutiqueempresarial.com.br:doc:home",
+      "displayName": "Página inicial em Markdown",
+      "type": "text/markdown",
+      "url": "https://boutiqueempresarial.com.br/index.md",
+      "representativeQueries": [
+        "o que é Silêncio Operacional",
+        "para quem é a Boutique Empresarial",
+        "quais são os três pilares da Boutique Empresarial"
+      ]
+    },
+    {
+      "identifier": "urn:air:boutiqueempresarial.com.br:skills:index",
+      "displayName": "Índice de skills do agente",
+      "type": "application/json",
+      "url": "https://boutiqueempresarial.com.br/.well-known/agent-skills/index.json",
+      "representativeQueries": [
+        "como um agente deve representar a Boutique Empresarial",
+        "qual o tom de voz da Boutique Empresarial"
+      ]
+    },
+    {
+      "identifier": "urn:air:boutiqueempresarial.com.br:server:site-mcp",
+      "displayName": "MCP Server Card",
+      "type": "application/mcp-server-card+json",
+      "url": "https://boutiqueempresarial.com.br/.well-known/mcp/server-card.json",
+      "representativeQueries": [
+        "quais ferramentas MCP este site expõe"
+      ]
+    }
+  ]
+}

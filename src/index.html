@@ -38,6 +38,10 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Descoberta por agentes de IA (RFC 8288/9727/9728) - docs/AGENT_READINESS.md -->
+    <link rel="api-catalog" href="https://boutiqueempresarial.com.br/.well-known/api-catalog">
+    <link rel="service-desc" type="application/json" href="https://boutiqueempresarial.com.br/.well-known/ai-catalog.json">
+    <link rel="service-doc" type="text/plain" href="https://boutiqueempresarial.com.br/llms.txt">
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -416,6 +420,38 @@
             </div>
         </div>
     </footer>
+
+    <!-- WebMCP — camada de runtime da descoberta agêntica (docs/AGENT_READINESS.md §5).
+         As duas tools leem o que já está na página: o companion Markdown e o FAQPage do
+         JSON-LD. Nada de fonte paralela — o que a tool devolve é o que o humano lê. -->
+    <script>
+        if (typeof navigator.modelContext !== 'undefined') {
+            const { signal } = new AbortController();
+            const faq = () => {
+                const grafo = JSON.parse(document.querySelector('script[type="application/ld+json"]').textContent);
+                const no = (grafo['@graph'] ?? []).find((n) => n['@type'] === 'FAQPage');
+                return (no?.mainEntity ?? []).map((q) => ({ pergunta: q.name, resposta: q.acceptedAnswer.text }));
+            };
+
+            try {
+                navigator.modelContext.registerTool({
+                    name: 'get_overview',
+                    description: 'Recupera o resumo da Boutique Empresarial e os três pilares da metodologia, em Markdown.',
+                    inputSchema: { type: 'object', properties: {} },
+                    execute: async () => (await fetch('/index.md')).text(),
+                }, { signal });
+
+                navigator.modelContext.registerTool({
+                    name: 'get_faq',
+                    description: 'Recupera as perguntas frequentes da Boutique Empresarial com as respostas literais publicadas na página.',
+                    inputSchema: { type: 'object', properties: {} },
+                    execute: async () => faq(),
+                }, { signal });
+            } catch (err) {
+                console.error('WebMCP: falha ao registrar tools', err);
+            }
+        }
+    </script>
 
 </body>
 

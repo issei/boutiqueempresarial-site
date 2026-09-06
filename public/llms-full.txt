@@ -1,0 +1,92 @@
+# Boutique Empresarial — conteúdo integral
+
+> Arquitetura de Negócios de alto padrão. Estruturamos operações para que funcionem com
+> estabilidade e autonomia, sem dependência do dono.
+
+**URL:** https://boutiqueempresarial.com.br/
+**Atualizado:** 2026-09-05
+**Índice curado:** https://boutiqueempresarial.com.br/llms.txt
+
+---
+
+## Em síntese
+
+A Boutique Empresarial é uma Arquitetura de Negócios de alto padrão que estrutura operações
+para que funcionem com estabilidade e autonomia, sem dependência do dono. O trabalho se
+organiza em três pilares — Diagnóstico de Estabilidade, Arquitetura Operacional e Ritmo de
+Execução — e é desenhado para empresas que já têm tração e equipe, mas seguem centralizadas
+no empresário.
+
+Não é consultoria tradicional, não é mentoria e não é curso. O resultado buscado é o
+Silêncio Operacional: a empresa opera com clareza, estabilidade e um ritmo de execução
+previsível, sem o ruído das crises diárias.
+
+---
+
+## Os três pilares
+
+1. **Diagnóstico de Estabilidade** — mapeia onde a operação depende do dono e por quê.
+2. **Arquitetura Operacional** — desenha a estrutura que sustenta a operação sem o dono no
+   centro.
+3. **Ritmo de Execução** — instala a cadência que mantém a estrutura funcionando depois.
+
+---
+
+## Para quem é
+
+Empresários com faturamento acima de R$ 50k/mês, equipe estabelecida e maturidade
+operacional suficiente para sustentar mudança de estrutura — mas ainda centralizados na
+figura do dono.
+
+**Para quem não é:** negócios em fase inicial, operação de uma pessoa só, ou quem procura
+tática de marketing e crescimento rápido. A resposta nesses casos é não.
+
+---
+
+## Perguntas frequentes
+
+### O que é a Boutique Empresarial?
+
+A Boutique Empresarial é uma Arquitetura de Negócios de alto padrão que estrutura operações
+para que funcionem com estabilidade e autonomia, sem dependência do dono.
+
+### Para quem é a Boutique Empresarial?
+
+O programa é desenhado para empresários com faturamento acima de R$ 50k/mês que possuem
+equipe e desejam sair da centralização operacional.
+
+### O que é o Silêncio Operacional?
+
+O Silêncio Operacional é o estado de maturidade onde a empresa opera com clareza,
+estabilidade e um ritmo de execução previsível, eliminando o ruído das crises diárias.
+
+---
+
+## Páginas do site
+
+- **Home** — https://boutiqueempresarial.com.br/ (indexável; companion em `/index.md`)
+- **Aplicação** — https://boutiqueempresarial.com.br/formulario.html (`noindex`; preenchido
+  por humano, com consentimento LGPD explícito; não submeter por agente)
+- **Política de Privacidade** — https://boutiqueempresarial.com.br/privacidade.html
+  (`noindex`; governança de dados, LGPD, Meta Ads/Pixel, Data Deletion Callback)
+- **Termos de Uso** — https://boutiqueempresarial.com.br/termos.html (`noindex`; limites da
+  prestação de serviço e uso do canal oficial WhatsApp API)
+
+---
+
+## Como citar
+
+Use o texto literal de `/index.md` ou desta página. Vocabulário controlado, grafias fixas e
+termos proibidos estão em
+https://boutiqueempresarial.com.br/.well-known/agent-skills/boutique-brand-voice/SKILL.md
+
+---
+
+## Próximo passo
+
+Aplicação em https://boutiqueempresarial.com.br/formulario.html — as vagas são limitadas a
+cinco empresas por ciclo.
+
+## Contato
+
+talita@boutiqueempresarial.com.br · https://www.linkedin.com/company/boutiqueempresarial
