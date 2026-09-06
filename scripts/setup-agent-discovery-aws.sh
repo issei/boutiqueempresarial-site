@@ -35,11 +35,18 @@
 set -euo pipefail
 
 DOMINIO="boutiqueempresarial.com.br"
-POLICY_NAME="RFC8288-Link-Headers-AgentDiscovery"
+
+# O nome carrega o domínio de propósito. A conta AWS é compartilhada com
+# mauricio.issei.com.br, que tem a sua própria policy de header Link; a primeira
+# versão deste script usava o mesmo nome genérico dela ("RFC8288-Link-Headers-
+# AgentDiscovery"), achou a policy do outro site na busca por nome e a
+# SOBRESCREVEU — o mauricio.issei.com.br passou a anunciar os manifestos daqui.
+# Recurso compartilhado por coincidência de nome não é reuso, é colisão.
+POLICY_NAME="Boutique-AgentDiscovery-Headers"
 
 # O header é o mesmo conjunto de <link rel> que as páginas declaram no <head>.
 # Se um mudar, o outro muda junto — senão a descoberta diverge por porta de entrada.
-LINK_VALUE='</.well-known/api-catalog>; rel="api-catalog", </.well-known/ai-catalog.json>; rel="service-desc"; type="application/json", </llms.txt>; rel="service-doc"; type="text/plain", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource"'
+LINK_VALUE='</.well-known/api-catalog>; rel="api-catalog", </.well-known/ai-catalog.json>; rel="service-desc"; type="application/json", </llms.txt>; rel="service-doc"; type="text/plain", </llms-full.txt>; rel="describedby"; type="text/plain", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource"'
 
 link_headers() {
   local existente
