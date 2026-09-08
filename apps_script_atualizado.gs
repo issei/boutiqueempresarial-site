@@ -15,7 +15,7 @@
  * CAPI é uma credencial de longa duração. Configure em Script Properties:
  *
  *   Editor do Apps Script > Configurações do projeto > Propriedades do script
- *     META_PIXEL_ID     = 746637190095687
+ *     META_PIXEL_ID     = 1469019395044653
  *     META_ACCESS_TOKEN = <token da Conversions API>
  *     META_TEST_CODE    = <opcional, só durante testes no Events Manager>
  *
@@ -443,7 +443,7 @@ function hashSHA256(input) {
 /** Preencha, execute UMA vez, e limpe os valores antes de commitar. */
 function setupCredentials() {
   PropertiesService.getScriptProperties().setProperties({
-    META_PIXEL_ID: '',      // ex.: 746637190095687
+    META_PIXEL_ID: '',      // ex.: 1469019395044653
     META_ACCESS_TOKEN: '',  // token da Conversions API
     LEAD_NOTIFY_TO: ''      // destino(s) do aviso de novo lead, separados por vírgula
   });
