@@ -272,6 +272,47 @@
             line-height: 1.5
         }
 
+        .intro {
+            margin-bottom: 2rem
+        }
+
+        .intro-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: .75rem
+        }
+
+        .intro-lead {
+            font-style: italic
+        }
+
+        .intro ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: .65rem
+        }
+
+        .intro li {
+            position: relative;
+            padding-left: 1.1rem;
+            font-size: .9rem;
+            color: var(--text-secondary);
+            line-height: 1.5
+        }
+
+        .intro li::before {
+            content: "•";
+            position: absolute;
+            left: .1rem
+        }
+
+        .intro strong {
+            color: var(--text-primary);
+            font-weight: 600
+        }
+
         .cnt {
             font-size: .8rem;
             color: var(--text-secondary);
@@ -363,8 +404,13 @@
         .prg-txt {
             color: var(--text-secondary);
             margin-bottom: .5rem;
-            font-size: .75rem;
-            letter-spacing: .5px
+            font-size: .9rem;
+            line-height: 1.5
+        }
+
+        .prg-txt strong {
+            color: var(--text-primary);
+            font-weight: 600
         }
 
         .dots {
@@ -452,6 +498,16 @@
 
             <!-- 1 — Nome Completo -->
             <div class="step a" data-s="0">
+                <div class="intro">
+                    <p class="intro-title">Sessão Estratégica de Diagnóstico BE</p>
+                    <p class="hint intro-lead">Uma reunião individual de 45 minutos para identificar em quais etapas a sua operação trava e definir o que precisa ser ajustado para a sua equipe entregar com qualidade — sem precisar da sua aprovação em cada demanda.</p>
+                    <p class="hint"><strong>O que analisamos na sua sessão:</strong></p>
+                    <ul>
+                        <li><strong>Dependência de Aprovação:</strong> Mapeamos em quais momentos do dia a dia as tarefas param na sua mesa e quais decisões a sua equipe já deve tomar sozinha.</li>
+                        <li><strong>Erros de Execução e Retrabalho:</strong> Localizamos em qual etapa da prestação do serviço acontecem as falhas repetidas e o refazer de tarefas.</li>
+                        <li><strong>Fluxo de Informação:</strong> Avaliamos como estão organizadas as demandas no WhatsApp e nos canais internos para você acompanhar o andamento das entregas sem precisar perguntar o status o tempo todo.</li>
+                    </ul>
+                </div>
                 <h2 id="q-nome_completo">Para começar, qual o seu nome completo?</h2>
                 <input type="text" name="nome_completo" id="nome_completo" autocomplete="name"
                     placeholder="Digite sua resposta..." aria-labelledby="q-nome_completo" aria-describedby="err-nome_completo">
@@ -650,7 +706,7 @@
             </div>
 
             <div class="prg-inf">
-                <p class="prg-txt">Leva cerca de 2 minutos. Apenas 11 perguntas.</p>
+                <p class="prg-txt">⏳ <strong>Aplicação rápida (2 minutos).</strong> Por ser uma análise individual conduzida diretamente por Talita Issei, liberamos apenas <strong>3 vagas por semana</strong>. Preencha os dados abaixo para analisarmos o perfil da sua empresa.</p>
                 <div class="dots" id="dots"></div>
             </div>
 
