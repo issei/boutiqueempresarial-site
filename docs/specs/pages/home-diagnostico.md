@@ -1,6 +1,6 @@
 # SDD — Nova home: LP Diagnóstico Gratuito
 
-* **Status**: Implementado na branch `feat/home-diagnostico` — F0 a F8 concluídas, gate verde (432 testes)
+* **Status**: Implementado na branch `feat/home-diagnostico` — F0 a F8 concluídas, gate verde (432 testes). Revisão da autora aplicada em 2026-09-10 (§6.3)
 * **Substitui**: `src/index.html` atual (home institucional "Silêncio Operacional / três pilares")
 * **Fonte da verdade do conteúdo**: `COPY - LP DIAGNÓSTICO.md`, fornecido pela autora, refinado na §3 deste documento
 * **Arquivos afetados**: `src/index.html`, `src/index-legado.html` (novo), `public/index.md`, `public/llms.txt`, `public/llms-full.txt`, `public/.well-known/ai-catalog.json`, `public/.well-known/agent-card.json`, `public/.well-known/agent-skills/boutique-brand-voice/SKILL.md`, `public/fotos/talita-issei.webp` (novo), `tests/home.spec.js`, `tests/home-legado.spec.js` (novo), `docs/specs/HARNESS_AEO.md` §B6
@@ -116,6 +116,10 @@ Refinamentos aplicados sobre o arquivo original, cada um com sua razão:
 | R4 | (ausente) | FAQ "Para quem a sessão não é?" | `SKILL.md` §Restrição de público manda dizer não sem suavizar. A home atual tem "Para quem não é"; perder isso enfraquece o filtro e aumenta lead desqualificado |
 | R5 | "apresento como podemos fazer essa reestruturação juntas" | mantido | posicionamento feminino confirmado pela autora (D3) |
 
+> **Revertidos na revisão da autora (§6.3):** R1 e R2. A página publica a copy de origem literal,
+> contrações incluídas ("pra", "pro", "tá", "tão") — só o layout se adapta ao texto. O §3.3
+> abaixo já traz o texto publicado.
+
 Nenhum verbo proibido por §B6 ("garante", "elimina", "assegura") aparece na copy de origem.
 
 ### 3.1 `<head>` — §B1
@@ -156,9 +160,8 @@ Nenhum verbo proibido por §B6 ("garante", "elimina", "assegura") aparece na cop
 
 **Hero**
 
-* Eyebrow: `Sessão individual · 45 minutos · Sem custo`
-* H1: `Descubra exatamente onde sua equipe trava sem você — e o que fazer para resolver`
-* Subheadline: `Uma sessão individual de 45 minutos para analisar a operação da sua empresa de serviços e apontar onde a estrutura precisa de ajuste para o seu time rodar com autonomia.`
+* H1: `Descubra exatamente onde sua equipe trava sem você, e o que fazer pra resolver`
+* Subheadline: `Uma sessão individual de 45 minutos para analisar a operação da sua empresa de serviços e apontar exatamente onde a estrutura precisa de ajuste para o seu time rodar com autonomia.`
 * CTA 1: `Solicitar Diagnóstico Gratuito` → `/formulario.html`
 
 **Seção 2 — O que analisamos e entregamos na sua sessão**
@@ -168,10 +171,10 @@ Intro: `Durante a reunião, avaliamos o momento atual da sua operação e entreg
 | Nº | Título | Corpo |
 | :-- | :-- | :-- |
 | 01 | O que ainda trava em você | Mapeamos quais decisões do dia a dia hoje dependem só da sua aprovação, e indicamos o que seu time já pode decidir sozinho, sem precisar de você no meio. |
-| 02 | Onde a entrega falha | Identificamos em que etapa do serviço sua equipe mais erra ou gera retrabalho, e apontamos o que falta para isso parar de se repetir. |
-| 03 | Onde a informação se perde | Avaliamos se o WhatsApp e a falta de rotina clara estão te fazendo perder o controle do que cada um está fazendo, e mostramos como organizar isso. |
+| 02 | Onde a entrega falha | Identificamos em que etapa do serviço sua equipe mais erra ou gera retrabalho, e apontamos o que falta pra isso parar de se repetir. |
+| 03 | Onde a informação se perde | Avaliamos se o WhatsApp e a falta de rotina clara tão te fazendo perder o controle do que cada um tá fazendo, e mostramos como organizar isso. |
 
-Fechamento: `Ao final do encontro, você sai sabendo com clareza o que está travando sua operação, e o que precisa corrigir primeiro. Se fizer sentido para o seu momento, apresento como podemos fazer essa reestruturação juntas através da Boutique Empresarial.`
+Fechamento: `Ao final do encontro, você sai sabendo com clareza o que tá travando sua operação, e o que precisa corrigir primeiro. Se fizer sentido pro seu momento, apresento como podemos fazer essa reestruturação juntas através da Boutique Empresarial.`
 
 **Seção 3 — Quem conduz a sua análise**
 
@@ -183,7 +186,7 @@ Fechamento: `Ao final do encontro, você sai sabendo com clareza o que está tra
 
 * `Empresas de serviço com equipe a partir de 5 colaboradores`
 * `Negócio com operação ativa e carteira de clientes em expansão`
-* `Fundadoras decididas a sair do operacional para focar em gestão e crescimento`
+* `Fundadoras decididas a sair do operacional pra focar em gestão e crescimento`
 
 **Seção 5 — Como funciona a seleção**
 
@@ -191,7 +194,7 @@ Intro: `Por ser uma análise individual, conduzida diretamente por mim, libero a
 
 1. `Preenche o formulário de aplicação abaixo`
 2. `Eu analiso se o momento da sua empresa se encaixa na metodologia`
-3. `Com o perfil aprovado, minha equipe entra em contato para agendar seu horário`
+3. `Com o perfil aprovado, minha equipe entra em contato pra agendar seu horário`
 
 CTA 2: `Solicitar Diagnóstico Gratuito` → `/formulario.html`
 
@@ -282,15 +285,15 @@ Uma só jogada ousada — a seção de autoridade invertida com o retrato. Todo 
 | # | Elemento | Especificação | Mobile |
 | :-- | :-- | :-- | :-- |
 | V1 | Escala tipográfica | `h1: clamp(2.5rem, 4.4vw, 3.5rem)` com `text-wrap: balance`; subheadline `1.25rem/1.7`, `max-width: 54ch`; respiro de seção `clamp(72px, 11vh, 128px)`. **O teto do clamp é ditado pela coluna (7/12 de 1200px ≈ 700px), não pela viewport** — a 4.5rem o título quebrava em seis linhas, achado na captura da F5 | h1 nunca abaixo de 2.5rem |
-| V2 | Hero como índice do laudo | grid 12 col: título e subheadline nas 1–7; nas 9–12, o **índice do que a sessão examina** — as três frentes em texto corrido curto, sob um filete ouro. É a página de sumário do documento que a sessão entrega, não um bloco de bullets | empilha; o índice vem depois do CTA, com filete acima |
+| V2 | ~~Hero como índice do laudo~~ | **removido** — ver §6.3 A1. O grid de 12 colunas fica, segurando título e subheadline nas 1–7 | — |
 | V3 | ~~Eyebrow~~ | **removido** — ver §6.2 R1. Os três fatos da oferta (individual, 45 minutos, sem custo) vivem na subheadline, em frase, onde já estavam | — |
-| V4 | Achados (seção 2) | **sem numeral.** Cada frente é aberta pela pergunta que o diagnóstico faz — `Quem decide?` · `Onde erra?` · `Onde se perde?` — em Playfair, com o título descritivo e o corpo abaixo. A pergunta é o device estrutural: diz o que aquele bloco investiga | pilha, mesma ordem |
+| V4 | Achados (seção 2) | cartões numerados `01/02/03` com a mesma estrutura da seção "Arquitetura Operacional" do `index-legado.html` — ver §6.3 A2 | pilha, mesma ordem |
 | V5 | Seção de autoridade | **única seção invertida**: fundo `#1f1f1f`, texto `#f5f2eb`, ouro em detalhe. Cria respiro visual no meio da página e ancora credibilidade. Contraste ≈ 15:1 | retrato acima do texto |
 | V6 | Retrato | ver §6.1 | 100% da largura útil, `aspect-ratio` fixo |
 | V7 | Credenciais | dentro da frase de P1, não em linha própria (§3.3). Ênfase por peso tipográfico, sem separador decorativo e sem logo | idem |
 | V8 | Para quem é (seção 4) | **reusa `.pain-list`**, que já existe no CSS (filete ouro à esquerda). Não inventa componente | idem |
 | V9 | Seleção (seção 5) | linha do tempo: filete de 1px ligando os 3 passos — vertical no mobile, horizontal no desktop. Numeral em `--gold-text` (`#886829`, o que passa 4.5:1), nunca em `--gold-subtle` | vertical |
-| V10 | Escassez | nota tipográfica em small-caps. Sem badge, sem cor de alerta, sem contador | idem |
+| V10 | ~~Escassez~~ | **removida** — ver §6.3 A4. A escassez fica na frase da copy: "libero apenas 3 vagas por semana" | — |
 | V11 | CTA fixa | barra inferior `position: fixed` **apenas** em `max-width: 767px`, com `padding-bottom` compensatório no `body`. Alvo ≥ 48px. ~15 linhas de CSS, zero JS | é o item |
 | V12 | Movimento | **nenhum movimento não solicitado** — ver §6.2 R3. Transição só onde responde a uma ação: `<details>` do FAQ, `:hover`/`:focus-visible` dos dois CTAs | idem |
 | V13 | Fundo | `#f5f2eb` chapado, como no resto do site. **Sem gradiente** — ver §6.2 R4. A divisão sai do filete `--border-color` e da inversão da seção de autoridade | idem |
@@ -304,16 +307,17 @@ atual já faz. Só sobe para `src/style.css` o que uma segunda página vier a us
 
 | | |
 | :-- | :-- |
-| **Origem** | `IMG_3624.png` — 2640×3960, PNG, 11,3 MB, retrato de estúdio de corpo inteiro sentado |
+| **Origem** | `IMG_2552.jpg` — 2298×3446, JPEG, 323 KB, retrato de estúdio de corpo inteiro sentado. Substituiu `IMG_3624.png` na revisão da autora (§6.3 A3) |
 | **Destino** | `public/fotos/talita-issei.webp` |
-| **Recorte** | 4:5, peito acima — do topo da cabeça até abaixo das mãos apoiadas. Corpo inteiro a 800px de largura deixa o rosto pequeno demais no mobile |
+| **Recorte** | 4:5 na largura inteira (`crop=2296:2870:1:20`) — do topo da cabeça até abaixo das mãos apoiadas no joelho. Mais fechado que isso corta o braço ou as mãos |
 | **Saída** | 800×1000, WebP q≈82, **alvo < 80kb** (`ASSETS_GUIDE.md` §Regras de Dimensão e Peso) |
 | **Ferramenta** | `ffmpeg` com `libwebp` — já disponível no ambiente. **Nenhuma dependência nova**: nem `sharp`, nem ImageMagick, nem serviço externo |
+| **Cor** | a origem vem em Adobe RGB (1998) e o `ffmpeg` ignora o perfil ICC — sem conversão o retrato sai lavado. Convertida para sRGB com `lut3d`, a partir de uma LUT gerada pela matriz Adobe RGB → sRGB (D65). Conferir o perfil (`ffprobe -show_frames`) antes de trocar a foto de novo |
 | **Marcação** | `width="800" height="1000"` explícitos (CLS), `loading="lazy"`, `alt` descritivo — nunca `alt=""`, é conteúdo |
 | **Fallback** | se o processamento falhar, a seção roda só com tipografia e o desenvolvimento não bloqueia |
 
-> **A foto já está na paleta.** Blazer creme próximo do `#f5f2eb` da marca e fundo cinza de
-> estúdio: sobre a seção invertida (`#1f1f1f`) o retrato lê como um retângulo claro em campo
+> **A foto já está na paleta.** Blusa branca, poltrona clara e fundo bege, próximos do `#f5f2eb`
+> da marca: sobre a seção invertida (`#1f1f1f`) o retrato lê como um retângulo claro em campo
 > escuro — exatamente o contraste editorial que V5 procura. Não há tratamento de cor a fazer,
 > e recortar o fundo não é necessário nem desejável.
 >
@@ -338,6 +342,18 @@ brief, e brief vence. O que se move são os devices livres.
 **As quatro revisões reduzem código.** Menos CSS, menos animação, menos device — a skill de design
 e o `ponytail` apontaram para o mesmo lado, o que é um bom sinal de que o corte é real e não gosto.
 
+### 6.3 Revisão da autora — 2026-09-10
+
+A autora revisou a página na branch e pediu quatro ajustes. Onde houver conflito, eles vencem o
+§6 e o §6.2.
+
+| Rev | Pedido | O que mudou |
+| :-- | :-- | :-- |
+| A1 | Tirar do hero o índice "O que a sessão examina" | V2 removido. O hero fica com título, subheadline e CTA |
+| A2 | "O que analisamos" com a estrutura da "Arquitetura Operacional" do `index-legado.html` | V4 e §6.2 R2 revertidos: cartão branco com borda sobre o creme, numeral `01/02/03` em Playfair `--gold-text`, título da copy em `h3`, corpo abaixo. Três colunas a partir de 900px — não 768px como no legado, onde o cartão ficaria com ~130px de texto útil. Sem o hover com sombra do legado: o cartão não é clicável |
+| A3 | Trocar o retrato | nova origem em §6.1; mesmo destino, mesmas dimensões. `src`, `width`/`height` e o `image` do nó `Person` não mudam — só o `alt` |
+| A4 | Texto fiel à copy de origem, sem reinventar palavra ou expressão | §3 R1 e R2 revertidos. Saem as perguntas `Quem decide?` · `Onde erra?` · `Onde se perde?` (inclusive de `index.md` e `llms-full.txt`) e a nota de escassez (V10) — nada disso está na copy. O bloco AEO (§3.4) fica: é contrato do gate, não copy da página |
+
 ---
 
 ## 7. Acessibilidade — §B5
@@ -348,7 +364,7 @@ Cobrado por `tests/a11y.spec.js` em **ambas** as páginas (o glob pega o legado 
 | :-- | :-- |
 | Estrutura | `skip-link` primeiro focável → `<main id="conteudo">`; exatamente um `<h1>`; hierarquia sem salto (h1 → h2 por seção → h3 nos blocos) |
 | Contraste | creme sobre `#1f1f1f` na seção invertida ≈ 15:1; ouro **decorativo** = `--gold-subtle`, ouro **em texto** = `--gold-text` |
-| Marca d'água (V4) | o numeral a 18% é `aria-hidden="true"` e não carrega informação — a ordem também está no texto |
+| Numerais dos achados (V4) | texto visível em `--gold-text` sobre o branco do cartão (≈ 5,2:1) |
 | CTA fixa (V11) | não pode cobrir conteúdo nem o `footer`: `padding-bottom` no `body` igual à altura da barra |
 | Movimento (V12) | inteiro dentro de `prefers-reduced-motion: no-preference` |
 | Retrato | `alt` descritivo, não `alt=""` — é conteúdo, não decoração |

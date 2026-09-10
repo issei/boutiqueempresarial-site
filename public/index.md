@@ -4,7 +4,7 @@
 > e o que ajustar para o time decidir sozinho.
 
 **URL:** https://boutiqueempresarial.com.br/
-**Atualizado:** 2026-09-09
+**Atualizado:** 2026-09-10
 
 ## Em síntese
 
@@ -21,11 +21,11 @@ equipe a partir de 5 colaboradores.
 Durante a reunião, avaliamos o momento atual da operação e entregamos clareza sobre três
 pontos centrais:
 
-1. **Quem decide?** — Mapeamos quais decisões do dia a dia hoje dependem só da aprovação da
+1. **O que ainda trava em você** — Mapeamos quais decisões do dia a dia hoje dependem só da aprovação da
    fundadora, e indicamos o que o time já pode decidir sozinho, sem precisar dela no meio.
-2. **Onde erra?** — Identificamos em que etapa do serviço a equipe mais erra ou gera
+2. **Onde a entrega falha** — Identificamos em que etapa do serviço a equipe mais erra ou gera
    retrabalho, e apontamos o que falta para isso parar de se repetir.
-3. **Onde se perde?** — Avaliamos se o WhatsApp e a falta de rotina clara estão fazendo a
+3. **Onde a informação se perde** — Avaliamos se o WhatsApp e a falta de rotina clara estão fazendo a
    fundadora perder o controle do que cada um está fazendo, e mostramos como organizar isso.
 
 Ao final do encontro, a fundadora sai sabendo com clareza o que está travando a operação, e o
