@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-// O formulário tem 11 etapas; o orçamento padrão de 30s é apertado em CI.
+// O formulário tem 9 etapas; o orçamento padrão de 30s é apertado em CI.
 test.setTimeout(90000);
 
 // Bloqueia recursos de terceiros: o teste valida o payload, não a rede externa.
@@ -37,22 +37,19 @@ test('fluxo completo captura payload correto', async ({ page }) => {
   await page.fill('#nome_completo', 'Maria Silva Souza');
   await next.click();
 
-  // 2 email
+  // 2 whatsapp
+  await page.fill('#whatsapp', '11987654321');
+  await expect(page.locator('#whatsapp')).toHaveValue('(11) 98765-4321');
+  await next.click();
+
+  // 3 email
   await page.fill('#email', 'invalido');
   await next.click();
   await expect(page.locator('#err-email')).toBeVisible();
   await page.fill('#email', 'Maria@Exemplo.COM ');
   await next.click();
 
-  // 3 whatsapp
-  await page.fill('#whatsapp', '11987654321');
-  await expect(page.locator('#whatsapp')).toHaveValue('(11) 98765-4321');
-  await next.click();
-
-  // 4 instagram (opcional — segue vazio)
-  await next.click();
-
-  // 5 modelo de negocio -> Outro
+  // 4 modelo de negocio -> Outro
   await page.locator('input[name=modelo_negocio][value=Outro]').check();
   await expect(page.locator('#modelo_negocio_outro')).toBeVisible();
   await next.click();
@@ -60,35 +57,29 @@ test('fluxo completo captura payload correto', async ({ page }) => {
   await page.fill('#modelo_negocio_outro', 'Franquia');
   await next.click();
 
-  // 6 equipe
-  await page.locator('input[name=tamanho_equipe][value="9 a 20 pessoas"]').check();
+  // 5 quantidade de pessoas no time
+  await page.locator('input[name=tamanho_equipe][value="5 a 15"]').check();
   await next.click();
 
-  // 7 faturamento
-  await page.locator('input[name=faturamento_mensal][value="R$ 150 mil a R$ 300 mil"]').check();
+  // 6 faturamento
+  await page.locator('input[name=faturamento_mensal][value="R$ 100k a R$ 300k"]').check();
   await next.click();
 
-  // 8 autonomia
-  await page.locator('input[name=autonomia_operacional]').nth(1).check();
+  // 7 dependencia da operacao (escala 0 a 10) — radio "escondido", clica no rotulo
+  await next.click();
+  await expect(page.locator('#err-dependencia_operacional')).toBeVisible();
+  await page.locator('label.sc', { has: page.locator('input[value="8"]') }).click();
+  await expect(page.locator('input[name=dependencia_operacional][value="8"]')).toBeChecked();
   await next.click();
 
-  // 9 problemas — limite de 2
-  const boxes = page.locator('input[name=maior_problema_gestao]');
+  // 8 maior desafio com a equipe (escolha unica)
   await next.click();
   await expect(page.locator('#err-maior_problema_gestao')).toBeVisible();
-  await boxes.nth(0).check();
-  await boxes.nth(2).check();
-  await expect(page.locator('#cnt-problema')).toHaveText('2 de 2 selecionadas');
-  await expect(boxes.nth(1)).toBeDisabled();
+  await page.locator('input[name=maior_problema_gestao][value="Centralização de decisões em mim"]').check();
   await next.click();
 
-  // 10 prioridade
-  await page.locator('input[name=prioridade_resolucao]').first().check();
-  await next.click();
-
-  // 11 consentimento obrigatorio
+  // 9 consentimento obrigatorio
   await expect(next).toHaveText('Enviar aplicação');
-  await page.fill('#informacoes_adicionais', 'Equipe recem contratada.');
   await next.click();
   await expect(page.locator('#err-consentimento')).toBeVisible();
   await page.locator('#consentimento').check();
@@ -103,16 +94,20 @@ test('fluxo completo captura payload correto', async ({ page }) => {
   expect(d.nome_completo).toBe('Maria Silva Souza');
   expect(d.email).toBe('Maria@Exemplo.COM');
   expect(d.whatsapp).toBe('(11) 98765-4321');
-  expect(d.instagram_site).toBe('');
   expect(d.modelo_negocio).toBe('Outro');
   expect(d.modelo_negocio_outro).toBe('Franquia');
-  expect(d.tamanho_equipe).toBe('9 a 20 pessoas');
-  expect(d.faturamento_mensal).toBe('R$ 150 mil a R$ 300 mil');
-  expect(Array.isArray(d.maior_problema_gestao)).toBe(true);
-  expect(d.maior_problema_gestao.length).toBe(2);
-  expect(d.prioridade_resolucao).toContain('30 dias');
-  expect(d.informacoes_adicionais).toBe('Equipe recem contratada.');
+  expect(d.tamanho_equipe).toBe('5 a 15');
+  expect(d.faturamento_mensal).toBe('R$ 100k a R$ 300k');
+  expect(d.dependencia_operacional).toBe('8');
+  expect(typeof d.maior_problema_gestao).toBe('string');
+  expect(d.maior_problema_gestao).toBe('Centralização de decisões em mim');
   expect(d.consentimento).toBe(true);
+
+  // campos removidos não devem mais trafegar
+  expect(d.instagram_site).toBeUndefined();
+  expect(d.autonomia_operacional).toBeUndefined();
+  expect(d.prioridade_resolucao).toBeUndefined();
+  expect(d.informacoes_adicionais).toBeUndefined();
 
   // rastreamento
   expect(d.event_id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);

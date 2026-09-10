@@ -122,7 +122,7 @@
         .bar {
             background: var(--text-primary);
             height: 100%;
-            width: 9%;
+            width: 11%;
             transition: width .4s ease
         }
 
@@ -245,6 +245,46 @@
             border-radius: 3px
         }
 
+        /* Escala 0–10: grupo de radio na horizontal, cada nota um botão */
+        .scale {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem
+        }
+
+        .sc {
+            cursor: pointer;
+            user-select: none
+        }
+
+        .sc input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none
+        }
+
+        .sc span {
+            display: grid;
+            place-content: center;
+            min-width: 2.75rem;
+            height: 2.75rem;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            transition: .2s
+        }
+
+        .sc input:checked+span {
+            background: var(--text-primary);
+            color: #fff;
+            border-color: var(--text-primary)
+        }
+
+        .sc input:focus-visible+span {
+            outline: 2px solid var(--text-primary);
+            outline-offset: 2px
+        }
+
         .rl.dis {
             opacity: .45;
             cursor: not-allowed
@@ -311,12 +351,6 @@
         .intro strong {
             color: var(--text-primary);
             font-weight: 600
-        }
-
-        .cnt {
-            font-size: .8rem;
-            color: var(--text-secondary);
-            margin-top: .8rem
         }
 
         .btns {
@@ -491,7 +525,7 @@
                 height="200"></div>
         <div class="p-c">
             <div class="bar" id="pb" role="progressbar" aria-label="Progresso da aplicação" aria-valuemin="0"
-                aria-valuemax="100" aria-valuenow="9"></div>
+                aria-valuemax="100" aria-valuenow="11"></div>
         </div>
         <form id="f" onsubmit="return!1" novalidate>
             <input type="hidden" name="event_id" id="eid">
@@ -514,17 +548,8 @@
                 <p class="err" id="err-nome_completo" aria-live="polite">Informe seu nome completo.</p>
             </div>
 
-            <!-- 2 — E-mail -->
+            <!-- 2 — WhatsApp -->
             <div class="step" data-s="1">
-                <h2 id="q-email">Qual o seu melhor e-mail?</h2>
-                <p class="hint">É por ele que enviaremos a confirmação da sua aplicação.</p>
-                <input type="email" name="email" id="email" autocomplete="email" inputmode="email"
-                    placeholder="nome@exemplo.com" aria-labelledby="q-email" aria-describedby="err-email">
-                <p class="err" id="err-email" aria-live="polite">Informe um e-mail válido.</p>
-            </div>
-
-            <!-- 3 — WhatsApp -->
-            <div class="step" data-s="2">
                 <h2 id="q-whatsapp">Qual o seu WhatsApp com DDD?</h2>
                 <p class="hint">Priorizamos o contato por aqui.</p>
                 <input type="tel" name="whatsapp" id="whatsapp" autocomplete="tel" inputmode="numeric"
@@ -532,19 +557,19 @@
                 <p class="err" id="err-whatsapp" aria-live="polite">Informe um WhatsApp válido com DDD.</p>
             </div>
 
-            <!-- 4 — Instagram / site (opcional) -->
-            <div class="step" data-s="3">
-                <h2 id="q-instagram_site">Instagram e/ou site da empresa:</h2>
-                <p class="hint">Opcional — mas nos ajuda a entender seu contexto antes da conversa.</p>
-                <input type="text" name="instagram_site" id="instagram_site" autocomplete="url"
-                    placeholder="@suaempresa ou suaempresa.com.br" aria-labelledby="q-instagram_site" aria-describedby="err-instagram_site">
-                <p class="err" id="err-instagram_site" aria-live="polite">Campo inválido.</p>
+            <!-- 3 — E-mail corporativo -->
+            <div class="step" data-s="2">
+                <h2 id="q-email">E-mail corporativo</h2>
+                <p class="hint">É por ele que enviaremos a confirmação da sua aplicação.</p>
+                <input type="email" name="email" id="email" autocomplete="email" inputmode="email"
+                    placeholder="nome@exemplo.com" aria-labelledby="q-email" aria-describedby="err-email">
+                <p class="err" id="err-email" aria-live="polite">Informe um e-mail válido.</p>
             </div>
 
-            <!-- 5 — Modelo de negócio -->
-            <div class="step" data-s="4">
+            <!-- 4 — Modelo de negócio -->
+            <div class="step" data-s="3">
                 <fieldset>
-                    <legend>Qual o modelo de negócio da sua empresa?</legend>
+                    <legend>Qual é o modelo de negócio da sua empresa?</legend>
                     <div class="rg">
                         <label class="rl top"><input type="radio" name="modelo_negocio"
                                 value="Serviços (consultoria, agência, prestação de serviço)">Serviços (consultoria,
@@ -567,131 +592,78 @@
                 <p class="err" id="err-modelo_negocio" aria-live="polite">Selecione uma opção.</p>
             </div>
 
-            <!-- 6 — Tamanho da equipe -->
-            <div class="step" data-s="5">
+            <!-- 5 — Quantidade de pessoas no time -->
+            <div class="step" data-s="4">
                 <fieldset>
-                    <legend>Quantas pessoas trabalham com você hoje? (CLT, PJ e fixos)</legend>
+                    <legend>Quantidade de pessoas no time (CLT + PJ):</legend>
                     <div class="rg">
-                        <label class="rl"><input type="radio" name="tamanho_equipe" value="1 a 3 pessoas">1 a 3
-                            pessoas</label>
-                        <label class="rl"><input type="radio" name="tamanho_equipe" value="4 a 8 pessoas">4 a 8
-                            pessoas</label>
-                        <label class="rl"><input type="radio" name="tamanho_equipe" value="9 a 20 pessoas">9 a 20
-                            pessoas</label>
-                        <label class="rl"><input type="radio" name="tamanho_equipe" value="21 a 50 pessoas">21 a 50
-                            pessoas</label>
-                        <label class="rl"><input type="radio" name="tamanho_equipe" value="Mais de 50 pessoas">Mais de
-                            50 pessoas</label>
+                        <label class="rl"><input type="radio" name="tamanho_equipe" value="Apenas eu">Apenas eu</label>
+                        <label class="rl"><input type="radio" name="tamanho_equipe" value="2 a 4">2 a 4</label>
+                        <label class="rl"><input type="radio" name="tamanho_equipe" value="5 a 15">5 a 15</label>
+                        <label class="rl"><input type="radio" name="tamanho_equipe" value="Mais de 15">Mais de 15</label>
                     </div>
                 </fieldset>
                 <p class="err" id="err-tamanho_equipe" aria-live="polite">Selecione uma opção.</p>
             </div>
 
-            <!-- 7 — Faturamento -->
-            <div class="step" data-s="6">
+            <!-- 6 — Faturamento -->
+            <div class="step" data-s="5">
                 <fieldset>
-                    <legend>Qual o faturamento médio mensal da empresa?</legend>
+                    <legend>Faturamento médio mensal nos últimos 3 meses:</legend>
                     <div class="rg">
-                        <label class="rl"><input type="radio" name="faturamento_mensal" value="Até R$ 30 mil">Até R$ 30
-                            mil</label>
+                        <label class="rl"><input type="radio" name="faturamento_mensal" value="Até R$ 30k">Até R$ 30k</label>
                         <label class="rl"><input type="radio" name="faturamento_mensal"
-                                value="R$ 30 mil a R$ 80 mil">R$ 30 mil a R$ 80 mil</label>
+                                value="R$ 30k a R$ 100k">R$ 30k a R$ 100k</label>
                         <label class="rl"><input type="radio" name="faturamento_mensal"
-                                value="R$ 80 mil a R$ 150 mil">R$ 80 mil a R$ 150 mil</label>
+                                value="R$ 100k a R$ 300k">R$ 100k a R$ 300k</label>
                         <label class="rl"><input type="radio" name="faturamento_mensal"
-                                value="R$ 150 mil a R$ 300 mil">R$ 150 mil a R$ 300 mil</label>
-                        <label class="rl"><input type="radio" name="faturamento_mensal"
-                                value="R$ 300 mil a R$ 500 mil">R$ 300 mil a R$ 500 mil</label>
-                        <label class="rl"><input type="radio" name="faturamento_mensal"
-                                value="Acima de R$ 500 mil">Acima de R$ 500 mil</label>
+                                value="Acima de R$ 300k">Acima de R$ 300k</label>
                     </div>
                 </fieldset>
                 <p class="err" id="err-faturamento_mensal" aria-live="polite">Selecione uma opção.</p>
             </div>
 
-            <!-- 8 — Autonomia operacional -->
+            <!-- 7 — Dependência da operação (escala 0 a 10) -->
+            <div class="step" data-s="6">
+                <fieldset>
+                    <legend>Em uma escala de 0 a 10, quanto a operação depende de você para funcionar bem e sem erros?</legend>
+                    <div class="scale">
+                        <label class="sc"><input type="radio" name="dependencia_operacional" value="0"><span>0</span></label>
+                        <label class="sc"><input type="radio" name="dependencia_operacional" value="1"><span>1</span></label>
+                        <label class="sc"><input type="radio" name="dependencia_operacional" value="2"><span>2</span></label>
+                        <label class="sc"><input type="radio" name="dependencia_operacional" value="3"><span>3</span></label>
+                        <label class="sc"><input type="radio" name="dependencia_operacional" value="4"><span>4</span></label>
+                        <label class="sc"><input type="radio" name="dependencia_operacional" value="5"><span>5</span></label>
+                        <label class="sc"><input type="radio" name="dependencia_operacional" value="6"><span>6</span></label>
+                        <label class="sc"><input type="radio" name="dependencia_operacional" value="7"><span>7</span></label>
+                        <label class="sc"><input type="radio" name="dependencia_operacional" value="8"><span>8</span></label>
+                        <label class="sc"><input type="radio" name="dependencia_operacional" value="9"><span>9</span></label>
+                        <label class="sc"><input type="radio" name="dependencia_operacional" value="10"><span>10</span></label>
+                    </div>
+                </fieldset>
+                <p class="err" id="err-dependencia_operacional" aria-live="polite">Selecione uma nota de 0 a 10.</p>
+            </div>
+
+            <!-- 8 — Maior desafio com a equipe -->
             <div class="step" data-s="7">
                 <fieldset>
-                    <legend>Hoje, como a empresa funciona quando você se afasta da rotina?</legend>
+                    <legend>Qual é o maior desafio com a sua equipe hoje?</legend>
                     <div class="rg">
-                        <label class="rl top"><input type="radio" name="autonomia_operacional"
-                                value="A empresa para de executar as tarefas se eu me ausentar.">A empresa para de
-                            executar as tarefas se eu me ausentar.</label>
-                        <label class="rl top"><input type="radio" name="autonomia_operacional"
-                                value="Os funcionários executam as tarefas, mas eu preciso autorizar e corrigir o trabalho.">Os
-                            funcionários executam as tarefas, mas eu preciso autorizar e corrigir o trabalho.</label>
-                        <label class="rl top"><input type="radio" name="autonomia_operacional"
-                                value="Os funcionários executam e autorizam as tarefas sem precisar da minha validação.">Os
-                            funcionários executam e autorizam as tarefas sem precisar da minha validação.</label>
-                        <label class="rl"><input type="radio" name="autonomia_operacional"
-                                data-other="autonomia_operacional_outro" value="Outro">Outro</label>
-                        <input type="text" class="oth h" name="autonomia_operacional_outro"
-                            id="autonomia_operacional_outro" placeholder="Qual?"
-                            aria-label="Especifique como a empresa funciona sem você">
+                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
+                                value="Refazer trabalho / Falta de qualidade">Refazer trabalho / Falta de qualidade</label>
+                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
+                                value="Centralização de decisões em mim">Centralização de decisões em mim</label>
+                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
+                                value="Informações perdidas no WhatsApp / Falta de processos">Informações perdidas no
+                            WhatsApp / Falta de processos</label>
                     </div>
                 </fieldset>
-                <p class="err" id="err-autonomia_operacional" aria-live="polite">Selecione uma opção.</p>
+                <p class="err" id="err-maior_problema_gestao" aria-live="polite">Selecione uma opção.</p>
             </div>
 
-            <!-- 9 — Maior problema de gestão (até 2) -->
-            <div class="step" data-s="8" data-max="2">
-                <fieldset>
-                    <legend>Qual é o maior problema da sua gestão hoje?</legend>
-                    <p class="hint">Escolha até 2 opções.</p>
-                    <div class="rg">
-                        <label class="rl top"><input type="checkbox" name="maior_problema_gestao"
-                                value="Muitas decisões e autorizações dependem exclusivamente de mim">Muitas decisões e
-                            autorizações dependem exclusivamente de mim</label>
-                        <label class="rl top"><input type="checkbox" name="maior_problema_gestao"
-                                value="O time entrega tarefas com erros ou fora do padrão esperado">O time entrega
-                            tarefas com erros ou fora do padrão esperado</label>
-                        <label class="rl top"><input type="checkbox" name="maior_problema_gestao"
-                                value="Falta de rotina de acompanhamento e de cobrança de prazos">Falta de rotina de
-                            acompanhamento e de cobrança de prazos</label>
-                        <label class="rl top"><input type="checkbox" name="maior_problema_gestao"
-                                value="Gerentes ou supervisores que não assumem a responsabilidade pelas metas">Gerentes
-                            ou supervisores que não assumem a responsabilidade pelas metas</label>
-                        <label class="rl top"><input type="checkbox" name="maior_problema_gestao"
-                                value="A empresa aumentou o volume de clientes, mas a rotina ficou desorganizada">A
-                            empresa aumentou o volume de clientes, mas a rotina ficou desorganizada</label>
-                        <label class="rl"><input type="checkbox" name="maior_problema_gestao"
-                                data-other="maior_problema_gestao_outro" value="Outro">Outro</label>
-                        <input type="text" class="oth h" name="maior_problema_gestao_outro"
-                            id="maior_problema_gestao_outro" placeholder="Qual?"
-                            aria-label="Especifique o maior problema da sua gestão">
-                    </div>
-                </fieldset>
-                <p class="cnt" id="cnt-problema" aria-live="polite">0 de 2 selecionadas</p>
-                <p class="err" id="err-maior_problema_gestao" aria-live="polite">Selecione ao menos 1 opção (máximo 2).
-                </p>
-            </div>
-
-            <!-- 10 — Prioridade -->
-            <div class="step" data-s="9">
-                <fieldset>
-                    <legend>Qual é a sua prioridade para resolver esse problema?</legend>
-                    <div class="rg">
-                        <label class="rl top"><input type="radio" name="prioridade_resolucao"
-                                value="Quero implementar as melhorias na minha empresa nos próximos 30 dias.">Quero
-                            implementar as melhorias na minha empresa nos próximos 30 dias.</label>
-                        <label class="rl top"><input type="radio" name="prioridade_resolucao"
-                                value="Pretendo fazer essas mudanças nos próximos 3 a 6 meses.">Pretendo fazer essas
-                            mudanças nos próximos 3 a 6 meses.</label>
-                        <label class="rl top"><input type="radio" name="prioridade_resolucao"
-                                value="Estou apenas buscando entender meus pontos de melhoria, sem pressa para aplicar.">Estou
-                            apenas buscando entender meus pontos de melhoria, sem pressa para aplicar.</label>
-                    </div>
-                </fieldset>
-                <p class="err" id="err-prioridade_resolucao" aria-live="polite">Selecione uma opção.</p>
-            </div>
-
-            <!-- 11 — Informações adicionais + Consentimento -->
-            <div class="step" data-s="10">
-                <h2>Descreva brevemente qualquer informação relevante sobre a sua equipe antes da reunião</h2>
-                <p class="hint">Opcional. Quanto mais contexto, mais preparada será a sessão.</p>
-                <textarea name="informacoes_adicionais" id="informacoes_adicionais" rows="4"
-                    placeholder="Digite sua resposta..."></textarea>
-                <div class="rg" style="margin-top:2rem">
+            <!-- 9 — Consentimento -->
+            <div class="step" data-s="8">
+                <div class="rg">
                     <label class="rl top"><input type="checkbox" name="consentimento" id="consentimento"
                             value="Sim"><span><strong>Termo de Consentimento.</strong> Concordo em ser contatado e
                             autorizo o uso dos dados apenas para avaliação desta aplicação.</span></label>
@@ -896,22 +868,9 @@
                     }
                 }
 
-                if (boxes.length) {
-                    var checked = Array.prototype.filter.call(boxes, function (b) { return b.checked; });
-
-                    if (step.dataset.max) {
-                        var max = parseInt(step.dataset.max, 10);
-                        if (checked.length < 1) { showError(step, "Selecione ao menos 1 opção."); return false; }
-                        if (checked.length > max) { showError(step, "Selecione no máximo " + max + " opções."); return false; }
-                        var other = checked.filter(function (b) { return b.dataset.other; })[0];
-                        if (other) {
-                            var oIn = document.getElementById(other.dataset.other);
-                            if (oIn && oIn.value.trim().length < 2) { markInvalid(oIn); showError(step, "Descreva a opção “Outro”."); return false; }
-                        }
-                    } else if (boxes.length === 1 && boxes[0].name === "consentimento" && !boxes[0].checked) {
-                        showError(step, "É necessário aceitar o termo para enviar a aplicação.");
-                        return false;
-                    }
+                if (boxes.length === 1 && boxes[0].name === "consentimento" && !boxes[0].checked) {
+                    showError(step, "É necessário aceitar o termo para enviar a aplicação.");
+                    return false;
                 }
 
                 return true;
@@ -929,7 +888,7 @@
             window.nav = nav;
 
             /* ---------------------------------------------------------------
-             * 4. INTERAÇÕES — máscara, "Outro", limite de 2 seleções
+             * 4. INTERAÇÕES — máscara de telefone e campo "Outro"
              * ------------------------------------------------------------- */
 
             var mask = function (v) {
@@ -952,26 +911,10 @@
                 });
             }
 
-            // Regra "Escolha até 2": a terceira marcação é bloqueada na origem.
-            function syncMax(step) {
-                var max = parseInt(step.dataset.max, 10);
-                if (!max) return;
-                var boxes = step.querySelectorAll('input[type=checkbox]');
-                var n = Array.prototype.filter.call(boxes, function (b) { return b.checked; }).length;
-                Array.prototype.forEach.call(boxes, function (b) {
-                    var lock = !b.checked && n >= max;
-                    b.disabled = lock;
-                    b.closest(".rl").classList.toggle("dis", lock);
-                });
-                var counter = step.querySelector(".cnt");
-                if (counter) counter.innerText = n + " de " + max + " selecionadas";
-            }
-
             form.addEventListener("change", function (e) {
                 var step = e.target.closest(".step");
                 if (!step) return;
                 syncOther(step);
-                syncMax(step);
                 clearError(step);
             });
 
@@ -1004,19 +947,11 @@
                 // Respostas: FormData preserva a ordem e agrupa os checkboxes.
                 var fd = new FormData(form);
                 fd.forEach(function (value, key) {
-                    if (key === "maior_problema_gestao") {
-                        (d[key] = d[key] || []).push(value);
-                    } else {
-                        d[key] = typeof value === "string" ? value.trim() : value;
-                    }
+                    d[key] = typeof value === "string" ? value.trim() : value;
                 });
-                if (!d.maior_problema_gestao) d.maior_problema_gestao = [];
 
-                // Chaves opcionais ausentes precisam existir para o backend alinhar colunas.
-                ["instagram_site", "modelo_negocio_outro", "autonomia_operacional_outro",
-                    "maior_problema_gestao_outro", "informacoes_adicionais"].forEach(function (k) {
-                        if (!d[k]) d[k] = "";
-                    });
+                // Chave opcional ausente precisa existir para o backend alinhar colunas.
+                if (!d.modelo_negocio_outro) d.modelo_negocio_outro = "";
 
                 d.event_id = EVENT_ID;
                 d.consentimento = document.getElementById("consentimento").checked;
