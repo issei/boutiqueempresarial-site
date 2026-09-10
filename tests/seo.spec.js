@@ -46,6 +46,16 @@ for (const { slug, url } of pages) {
       expect(await page.content(), `${slug}: ID do GA4 divergente`).toContain('G-8HNXV7KTY9');
     });
 
+    // Cobra os bytes servidos, nao o DOM: o parser reposiciona <meta charset>
+    // ao renderizar, entao page.content() sempre pareceria correto.
+    test('charset dentro dos primeiros 1024 bytes', async ({ page }) => {
+      const body = await (await page.request.get(url)).body();
+      // latin1: 1 byte = 1 char, entao o indice da string e o offset em bytes.
+      const i = body.toString('latin1').toLowerCase().indexOf('<meta charset');
+      expect(i, `${slug}: <meta charset> ausente`).toBeGreaterThanOrEqual(0);
+      expect(i, `${slug}: <meta charset> no byte ${i}, fora da janela de 1024`).toBeLessThan(1024);
+    });
+
     test('lang do documento é pt-BR', async ({ page }) => {
       await page.goto(url);
       const lang = (await attr(page, 'html', 'lang'))?.toLowerCase();

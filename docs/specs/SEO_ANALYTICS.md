@@ -21,7 +21,10 @@
 
 ### Injeção de Tags (Global)
 
-Todas as páginas HTML em `src/` devem conter o fragmento do GA4 imediatamente após a abertura da tag `<head>`.
+Todas as páginas HTML em `src/` devem conter o fragmento do GA4 dentro do `<head>`. A posição é
+livre: o `gtag.js` é `async`, então ele não bloqueia o parser nem executa antes de chegar da rede —
+a ordem entre ele e o Meta Pixel não altera a medição. Hoje o Pixel vem primeiro em todas as
+páginas; ver `docs/specs/HARNESS_AEO.md` §6.1.
 
 > **Nota para a IA:** Ao gerar novas páginas, não esqueça de replicar o script de rastreamento.
 
