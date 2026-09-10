@@ -51,12 +51,12 @@ const CONFIG = {
 /** Ordem canônica das colunas. Alterar aqui exige republicar o Web App. */
 const HEADERS = [
   'Data', 'Event ID',
-  'Nome Completo', 'E-mail', 'WhatsApp', 'Instagram/Site',
+  'Nome Completo', 'E-mail', 'WhatsApp',
   'Modelo de Negócio', 'Modelo (Outro)',
   'Tamanho da Equipe', 'Faturamento Mensal',
-  'Autonomia Operacional', 'Autonomia (Outro)',
-  'Maior Problema (Gestão)', 'Problema (Outro)',
-  'Prioridade', 'Informações Adicionais', 'Consentimento',
+  'Dependência Operacional (0-10)',
+  'Maior Desafio (Equipe)',
+  'Consentimento',
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
   'FBCLID', 'GCLID', 'FBC', 'FBP',
   'Página', 'Referrer', 'IP', 'User Agent', 'Status CAPI'
@@ -163,7 +163,6 @@ function saveToSheet(data, capiStatus) {
     sanitizeInput(data.nome_completo),
     sanitizeInput(data.email),
     asText(onlyDigits(data.whatsapp)),
-    sanitizeInput(data.instagram_site),
 
     sanitizeInput(data.modelo_negocio),
     sanitizeInput(data.modelo_negocio_outro),
@@ -171,15 +170,10 @@ function saveToSheet(data, capiStatus) {
     sanitizeInput(data.tamanho_equipe),
     sanitizeInput(data.faturamento_mensal),
 
-    sanitizeInput(data.autonomia_operacional),
-    sanitizeInput(data.autonomia_operacional_outro),
+    sanitizeInput(data.dependencia_operacional),
 
-    // Array serializado com "; " — as próprias opções contêm vírgulas.
     sanitizeInput(data.maior_problema_gestao),
-    sanitizeInput(data.maior_problema_gestao_outro),
 
-    sanitizeInput(data.prioridade_resolucao),
-    sanitizeInput(data.informacoes_adicionais),
     (data.consentimento === true || data.consentimento === 'Sim') ? 'Sim' : 'Não',
 
     sanitizeInput(data.utm_source),
@@ -268,15 +262,12 @@ function buildLeadEmail(data, capiStatus) {
     'Nome: ' + nome,
     'E-mail: ' + plainText(data.email),
     'WhatsApp: ' + plainText(data.whatsapp),
-    optionalLine('Instagram/site', plainText(data.instagram_site)),
     '',
     'Modelo de negócio: ' + withOther(data.modelo_negocio, data.modelo_negocio_outro),
     'Tamanho da equipe: ' + plainText(data.tamanho_equipe),
     'Faturamento mensal: ' + faturamento,
-    'Autonomia operacional: ' + withOther(data.autonomia_operacional, data.autonomia_operacional_outro),
-    'Maior problema: ' + withOther(data.maior_problema_gestao, data.maior_problema_gestao_outro),
-    'Prioridade: ' + plainText(data.prioridade_resolucao),
-    optionalLine('Informações adicionais', plainText(data.informacoes_adicionais)),
+    'Dependência da operação (0-10): ' + plainText(data.dependencia_operacional),
+    'Maior desafio: ' + plainText(data.maior_problema_gestao),
     '',
     // Mesma regra de saveToSheet, repetida em vez de extraída: unificar exigiria
     // tocar no caminho de gravação, que esta mudança se comprometeu a não alterar.
@@ -300,11 +291,6 @@ function plainText(value) {
     return value.map(function (item) { return plainText(item); }).filter(String).join('; ');
   }
   return String(value).trim();
-}
-
-/** Linha omitida por completo quando o campo opcional veio vazio. */
-function optionalLine(label, value) {
-  return value ? label + ': ' + value : null;
 }
 
 /** "Opção" ou "Opção — texto do campo Outro". */
@@ -369,7 +355,7 @@ function sendToMetaCAPI(data) {
         status: 'submitted',
         lead_faturamento: data.faturamento_mensal || '',
         lead_equipe: data.tamanho_equipe || '',
-        lead_prioridade: data.prioridade_resolucao || ''
+        lead_dependencia: data.dependencia_operacional || ''
       }
     }]
   };
@@ -399,7 +385,7 @@ function sendToMetaCAPI(data) {
 
 /**
  * Neutraliza injeção de fórmula no Sheets (CSV/formula injection) e
- * serializa arrays — `maior_problema_gestao` chega como lista.
+ * serializa arrays, caso algum campo chegue como lista.
  */
 function sanitizeInput(input) {
   if (input === null || input === undefined || input === '') return '';
@@ -462,17 +448,12 @@ function leadFixture() {
     nome_completo: 'Fulana de Teste',
     email: 'fulana@exemplo.com.br',
     whatsapp: '(11) 98888-7777',
-    instagram_site: '@exemplo',
     modelo_negocio: 'Outro',
     modelo_negocio_outro: 'Consultoria de nicho',
-    tamanho_equipe: '4 a 8 pessoas',
-    faturamento_mensal: 'De R$ 100 mil a R$ 300 mil',
-    autonomia_operacional: 'Depende de mim para quase tudo',
-    autonomia_operacional_outro: '',
-    maior_problema_gestao: ['Processos indefinidos', 'Equipe sem autonomia'],
-    maior_problema_gestao_outro: '',
-    prioridade_resolucao: 'Imediata',
-    informacoes_adicionais: '',
+    tamanho_equipe: '5 a 15',
+    faturamento_mensal: 'R$ 100k a R$ 300k',
+    dependencia_operacional: '7',
+    maior_problema_gestao: 'Centralização de decisões em mim',
     consentimento: true,
     utm_source: 'instagram',
     utm_medium: 'cpc',

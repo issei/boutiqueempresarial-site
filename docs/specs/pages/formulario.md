@@ -2,14 +2,14 @@
 
 *   **Status**: Aprovado para implementação
 *   **Arquivos afetados**: `src/formulario.html`, `src/obrigada.html`, `apps_script_atualizado.gs`
-*   **Fonte da verdade do conteúdo**: PDF `Aplicação - Boutique Empresarial` (Google Forms, 5 páginas)
+*   **Fonte da verdade do conteúdo**: `COPY FORMULÁRIO.md` (revisão da autora — substitui o PDF `Aplicação - Boutique Empresarial`)
 *   **Substitui**: formulário legado de 7 perguntas (Nome, WhatsApp, E-mail, Faturamento, Time, Operação, Investimento)
 
 ---
 
 ## 1. Objetivo
 
-Substituir as perguntas do funil de captação por 12 campos de qualificação, **preservando integralmente**:
+Substituir as perguntas do funil de captação por 8 perguntas de qualificação + termo de consentimento, **preservando integralmente**:
 
 1.  O rastreamento de origem (UTMs, `fbclid`, `event_id`, `fbc`, `fbp`, `ip_address`, `user_agent`).
 2.  A identidade visual ("Silêncio e Elegância" — `docs/specs/STYLE_GUIDE.md`) e as classes CSS existentes.
@@ -46,24 +46,19 @@ Antes de escrever qualquer linha, o fluxo legado foi auditado. Os defeitos abaix
 | # | Pergunta | Chave JSON | Tipo | Obrig. | Controle |
 | :-- | :--- | :--- | :--- | :--: | :--- |
 | 1 | Nome Completo | `nome_completo` | string | ✅ | `input[type=text]` |
-| 2 | E-mail | `email` | string | ✅ | `input[type=email]` |
-| 3 | Whatsapp com DDD | `whatsapp` | string | ✅ | `input[type=tel]` (máscara) |
-| 4 | Instagram e/ou site da empresa | `instagram_site` | string | ➖ | `input[type=text]` |
-| 5 | Modelo de negócio | `modelo_negocio` | string | ✅ | `radio` + "Outro" |
-| 5b | ↳ especificação de "Outro" | `modelo_negocio_outro` | string | ➖ | `input[type=text]` condicional |
-| 6 | Pessoas que trabalham com você | `tamanho_equipe` | string | ✅ | `radio` |
-| 7 | Faturamento médio mensal | `faturamento_mensal` | string | ✅ | `radio` |
-| 8 | Como a empresa funciona sem você | `autonomia_operacional` | string | ✅ | `radio` + "Outro" |
-| 8b | ↳ especificação de "Outro" | `autonomia_operacional_outro` | string | ➖ | `input[type=text]` condicional |
-| 9 | Maior problema da gestão (até 2) | `maior_problema_gestao` | **array<string>** | ✅ | `checkbox`, `min 1 / max 2` |
-| 9b | ↳ especificação de "Outro" | `maior_problema_gestao_outro` | string | ➖ | `input[type=text]` condicional |
-| 10 | Prioridade para resolver | `prioridade_resolucao` | string | ✅ | `radio` |
-| 11 | Informações sobre a equipe | `informacoes_adicionais` | string | ➖ | `textarea` |
-| 12 | Termo de Consentimento | `consentimento` | boolean | ✅ | `checkbox` único |
+| 2 | WhatsApp com DDD | `whatsapp` | string | ✅ | `input[type=tel]` (máscara) |
+| 3 | E-mail corporativo | `email` | string | ✅ | `input[type=email]` |
+| 4 | Modelo de negócio | `modelo_negocio` | string | ✅ | `radio` + "Outro" |
+| 4b | ↳ especificação de "Outro" | `modelo_negocio_outro` | string | ➖ | `input[type=text]` condicional |
+| 5 | Quantidade de pessoas no time (CLT + PJ) | `tamanho_equipe` | string | ✅ | `radio` |
+| 6 | Faturamento médio mensal nos últimos 3 meses | `faturamento_mensal` | string | ✅ | `radio` |
+| 7 | Dependência da operação (escala 0 a 10) | `dependencia_operacional` | string `"0"`–`"10"` | ✅ | `radio` (11 opções) |
+| 8 | Maior desafio com a equipe | `maior_problema_gestao` | string | ✅ | `radio` (escolha única) |
+| 9 | Termo de Consentimento | `consentimento` | boolean | ✅ | `checkbox` único |
 
 > **`email` e `whatsapp` são chaves congeladas.** São as entradas de `sendToMetaCAPI()` (`em` / `ph`). Renomeá-las quebra o casamento de conversões — qualquer mudança futura nessas duas chaves exige atualização simultânea do `.gs`.
 
-> **`maior_problema_gestao` trafega como array.** Na planilha é serializado como string separada por `"; "` (e não `", "`, porque as próprias opções contêm vírgulas).
+> **`maior_problema_gestao` passou a ser escolha única (string).** Era `checkbox` "até 2" que trafegava como array; agora é um `radio` e a chave JSON foi mantida para não renomear a coluna da planilha.
 
 ### 3.2 Rastreamento (preservado + ampliado)
 
@@ -89,14 +84,15 @@ Antes de escrever qualquer linha, o fluxo legado foi auditado. Os defeitos abaix
 
 **Blocos novos reaproveitam as classes utilitárias existentes:**
 
-*   Checkbox usa `.rg` / `.rl` (mesma estrutura dos radios). Diferença visual mínima: `border-radius: 4px` em vez de `50%` (`.rl input[type=checkbox]`), respeitando a convenção de que quadrado = múltipla escolha.
 *   O input condicional de "Outro" usa `.oth` — apenas posicionamento (recuo e margem); a aparência vem da regra global de `input`.
-*   `textarea` herda literalmente a mesma declaração visual do `input` (borda inferior, fundo transparente, `font-size: 16px`).
 *   `.hint` reutiliza `--text-secondary`, substituindo o `style` inline do formulário legado.
+*   A apresentação da etapa 0 usa `.intro` / `.intro-title` / `.intro-lead` (bloco novo, conteúdo literal da copy `COPY FORMULÁRIO.md`).
+*   A escala 0–10 usa `.scale` / `.sc` (bloco novo): grupo de `radio` na horizontal, cada nota um botão.
+*   Removidas: `.cnt` (contador do "até 2", que deixou de existir). `.rl.dis` segue no CSS, sem uso ativo.
 
-### 4.2 Fluxo de 11 etapas
+### 4.2 Fluxo de 9 etapas
 
-`nome_completo` → `email` → `whatsapp` → `instagram_site` → `modelo_negocio` → `tamanho_equipe` → `faturamento_mensal` → `autonomia_operacional` → `maior_problema_gestao` → `prioridade_resolucao` → `informacoes_adicionais + consentimento`
+`nome_completo` → `whatsapp` → `email` → `modelo_negocio` → `tamanho_equipe` → `faturamento_mensal` → `dependencia_operacional` → `maior_problema_gestao` → `consentimento`
 
 Consentimento fica **na última etapa, adjacente ao botão de envio** — a LGPD exige que a manifestação seja inequívoca e contextual ao ato de envio.
 
@@ -107,10 +103,7 @@ Consentimento fica **na última etapa, adjacente ao botão de envio** — a LGPD
 | `nome_completo` | ≥ 3 caracteres |
 | `email` | regex `^[^\s@]+@[^\s@]+\.[^\s@]+$` — **obrigatório** (era condicional no legado; o CAPI depende dele) |
 | `whatsapp` | 10 ou 11 dígitos após remover a máscara |
-| `instagram_site` | livre (opcional) |
-| radios | exatamente 1 selecionado; se `Outro`, texto ≥ 2 caracteres |
-| `maior_problema_gestao` | 1 ≤ selecionados ≤ 2 (3ª marcação é bloqueada e o contador dispara `.shake`) |
-| `informacoes_adicionais` | livre (opcional) |
+| radios (`modelo_negocio`, `tamanho_equipe`, `faturamento_mensal`, `dependencia_operacional`, `maior_problema_gestao`) | exatamente 1 selecionado; se `Outro`, texto ≥ 2 caracteres |
 | `consentimento` | marcado |
 
 ### 4.4 Acessibilidade
@@ -122,13 +115,14 @@ Consentimento fica **na última etapa, adjacente ao botão de envio** — a LGPD
 ### 5.1 Colunas da planilha (ordem canônica)
 
 ```
-Data | Event ID | Nome Completo | E-mail | WhatsApp | Instagram/Site |
+Data | Event ID | Nome Completo | E-mail | WhatsApp |
 Modelo de Negócio | Modelo (Outro) | Tamanho da Equipe | Faturamento Mensal |
-Autonomia Operacional | Autonomia (Outro) | Maior Problema (Gestão) | Problema (Outro) |
-Prioridade | Informações Adicionais | Consentimento |
+Dependência Operacional (0-10) | Maior Desafio (Equipe) | Consentimento |
 utm_source | utm_medium | utm_campaign | utm_content | utm_term |
 FBCLID | GCLID | FBC | FBP | Página | Referrer | IP | User Agent | Status CAPI
 ```
+
+> A ordem antiga (com Instagram/Site, Autonomia, Prioridade, Informações Adicionais) diverge deste cabeçalho, então no primeiro `doPost` após o deploy o `ensureSheet()` arquiva a aba `Respostas` como `Respostas_legado_<timestamp>` e cria a nova. Nenhum dado histórico é apagado.
 
 ### 5.2 Comportamento
 
@@ -151,8 +145,8 @@ FBCLID | GCLID | FBC | FBP | Página | Referrer | IP | User Agent | Status CAPI
 ## 7. Critérios de aceite
 
 1.  `npm run build` conclui sem erro e `formulario.html` entra no bundle.
-2.  As 12 perguntas do PDF aparecem com texto **literal**, incluindo as opções "Outro".
-3.  `maior_problema_gestao` impede a 3ª seleção e exige ao menos 1.
+2.  As 8 perguntas + o termo de consentimento aparecem com o texto **literal** da copy `COPY FORMULÁRIO.md`, incluindo a opção "Outro" do modelo de negócio.
+3.  `dependencia_operacional` e `maior_problema_gestao` exigem exatamente 1 seleção.
 4.  Envio bloqueado sem consentimento.
 5.  `event_id` no `payload` é um UUID válido — não `"[object HTMLInputElement]"`.
 6.  `fbc`, `fbp`, `ip_address`, `page_url`, UTMs e `gclid` presentes no payload.
