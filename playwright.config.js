@@ -15,6 +15,13 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: '.',
   testMatch: ['e2e/**/*.spec.js', 'tests/**/*.spec.js'],
+  // Um git worktree em `.claude/worktrees/` é um checkout completo do projeto,
+  // com `tests/` e `node_modules/` próprios — e os globs acima alcançam o `tests/`
+  // de dentro dele. Os specs de lá resolvem `@playwright/test` pelo node_modules
+  // aninhado, o runner carrega uma SEGUNDA cópia do módulo e aborta com
+  // "Requiring @playwright/test second time" antes de rodar um teste sequer.
+  // O gate fica vermelho por existir um worktree, não por haver defeito no site.
+  testIgnore: ['**/.claude/**'],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
