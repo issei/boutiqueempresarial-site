@@ -146,7 +146,8 @@ o gatilho de reavaliação está em §A5.
 | `meta robots` | `index, follow, max-image-preview:large, max-snippet:-1` — ou `noindex` deliberado. **Hoje só `index` é indexável** — `privacidade` e `termos` também estão `noindex`, decisão anterior a este spec que a implementação preservou (ver §7) | `tests/seo.spec.js` |
 | OG | `og:type`, `og:site_name`, `og:locale=pt_BR`, `og:title`, `og:description`, `og:url`, `og:image` (1200×630) | `tests/seo.spec.js` |
 | Twitter | `twitter:card=summary_large_image` + title/description/image | `tests/seo.spec.js` |
-| GA4 | `G-8HNXV7KTY9` imediatamente após `<head>` | `tests/seo.spec.js` |
+| `meta charset` | `UTF-8`, dentro dos **primeiros 1024 bytes** do documento (HTML Standard) — na prática, primeira linha do `<head>` | `tests/seo.spec.js` |
+| GA4 | script `gtag.js` no `<head>` com o ID `G-8HNXV7KTY9`; **posição livre** dentro do `<head>` (ver §6.1) | `tests/seo.spec.js` |
 | `<html lang>` | `pt-br` | `tests/a11y.spec.js` (axe) |
 
 Páginas `noindex` são isentas de canonical, OG e Twitter — a suíte lê `meta robots` e ajusta as
@@ -285,6 +286,21 @@ decisão de negócio, não correção mecânica — a implementação preservou 
 como isentas. **Se a intenção era que fossem indexáveis** (páginas legais linkadas no rodapé
 costumam ser), é uma linha de `meta robots` em cada uma e o restante do contrato passa a valer
 automaticamente, porque a suíte lê a indexabilidade da própria página.
+
+**GA4 não precisa vir "imediatamente após `<head>`".** O §B1 exigia isso e nenhuma das 7 páginas
+cumpria — o Meta Pixel vem antes em todas. O texto do spec era o lado errado da divergência: o
+`gtag.js` é carregado com `async`, logo não bloqueia o parser e só executa quando chega da rede.
+Antecipá-lo algumas centenas de bytes não muda nada de mensurável, e atrasaria o Pixel, que também
+precisa disparar cedo. O contrato passou a cobrar o que o teste sempre cobrou e o que de fato
+importa: **presença do script e ID correto**. Páginas e `tests/seo.spec.js` ficaram como estavam.
+
+**A ordem de `<head>` que de fato importa era outra — e essa foi corrigida.** `<meta charset>` estava
+entre os bytes 1027 e 1847 nas 7 páginas, fora da janela de 1024 bytes do HTML Standard: o Pixel e o
+GA4 o empurravam para baixo. Fora dessa janela o browser pode começar a decodificar com o charset
+errado e reiniciar o parse. `charset` e `viewport` subiram para a primeira linha do `<head>` (byte ~50)
+e os scripts continuam na ordem que estavam. O §B1 passou a cobrar a janela, e a asserção lê os
+**bytes servidos**, não o DOM — o parser reposiciona `<meta charset>` ao renderizar, então uma
+verificação via DOM passaria mesmo com a página errada.
 
 ---
 
