@@ -1,7 +1,7 @@
 {
   "name": "Boutique Empresarial — Site Agent",
   "version": "1.0.0",
-  "description": "Agente de descoberta do site institucional da Boutique Empresarial (Arquitetura de Negócios). Expõe a metodologia, os critérios de perfil de cliente e o caminho de aplicação para consulta por agentes de IA.",
+  "description": "Agente de descoberta do site da Boutique Empresarial (Arquitetura de Negócios). Expõe o Diagnóstico Gratuito — sessão individual de 45 minutos que é a porta de entrada —, a metodologia do programa, os critérios de perfil de cliente e o caminho de aplicação para consulta por agentes de IA.",
   "supportedInterfaces": [
     {
       "url": "https://boutiqueempresarial.com.br/.well-known/mcp/server-card.json",
@@ -20,8 +20,8 @@
   "skills": [
     {
       "id": "get_overview",
-      "name": "Consultar a metodologia",
-      "description": "Recupera o resumo da Boutique Empresarial e os três pilares — Diagnóstico de Estabilidade, Arquitetura Operacional e Ritmo de Execução."
+      "name": "Consultar o diagnóstico e a metodologia",
+      "description": "Recupera o resumo do Diagnóstico Gratuito — o que a sessão de 45 minutos examina, quem conduz e para quem é — e os três pilares do programa: Diagnóstico de Estabilidade, Arquitetura Operacional e Ritmo de Execução."
     },
     {
       "id": "get_faq",

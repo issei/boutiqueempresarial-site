@@ -227,8 +227,13 @@ Não é seção separada: o que um leitor de tela não alcança, um answer engin
 Grafias fixas, cobradas na revisão de copy e em `tests/seo.spec.js` quando aparecerem em
 `<title>`/`description`:
 
-**Boutique Empresarial · Silêncio Operacional · Arquitetura de Negócios · Diagnóstico de
-Estabilidade · Arquitetura Operacional · Ritmo de Execução**
+**Boutique Empresarial · Silêncio Operacional · Arquitetura de Negócios · Diagnóstico
+Gratuito · Diagnóstico de Estabilidade · Arquitetura Operacional · Ritmo de Execução**
+
+**`Diagnóstico Gratuito` ≠ `Diagnóstico de Estabilidade`.** O primeiro é a sessão individual de
+45 minutos, sem custo, que é a porta de entrada; o segundo é o pilar 1 do programa pago. Usar um
+pelo outro é o drift que esta seção existe para impedir — decisão registrada em
+`pages/home-diagnostico.md` §D4.
 
 Proibido em copy público: "revolucionário", "disruptivo", "game-changer", "solução completa",
 "de última geração", e qualquer verbo que prometa resultado ("garante", "elimina", "assegura").
