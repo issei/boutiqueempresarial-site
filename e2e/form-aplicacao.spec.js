@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-// O formulário tem 9 etapas; o orçamento padrão de 30s é apertado em CI.
+// O formulário tem 8 etapas; o orçamento padrão de 30s é apertado em CI.
 test.setTimeout(90000);
 
 // Bloqueia recursos de terceiros: o teste valida o payload, não a rede externa.
@@ -31,54 +31,47 @@ test('fluxo completo captura payload correto', async ({ page }) => {
 
   const next = page.locator('#next');
 
-  // 1 nome — valida obrigatoriedade
+  // 1 maior desafio da operacao -> Outro
+  await next.click();
+  await expect(page.locator('#err-maior_problema_gestao')).toBeVisible();
+  await page.locator('input[name=maior_problema_gestao][value=Outro]').check();
+  await expect(page.locator('#maior_problema_gestao_outro')).toBeVisible();
+  await next.click();
+  await expect(page.locator('#err-maior_problema_gestao')).toBeVisible();
+  await page.fill('#maior_problema_gestao_outro', 'Falta de tempo para revisar tudo');
+  await next.click();
+
+  // 2 nome — valida obrigatoriedade
   await next.click();
   await expect(page.locator('#err-nome_completo')).toBeVisible();
   await page.fill('#nome_completo', 'Maria Silva Souza');
   await next.click();
 
-  // 2 whatsapp
+  // 3 whatsapp
   await page.fill('#whatsapp', '11987654321');
   await expect(page.locator('#whatsapp')).toHaveValue('(11) 98765-4321');
   await next.click();
 
-  // 3 email
+  // 4 email
   await page.fill('#email', 'invalido');
   await next.click();
   await expect(page.locator('#err-email')).toBeVisible();
   await page.fill('#email', 'Maria@Exemplo.COM ');
   await next.click();
 
-  // 4 modelo de negocio -> Outro
-  await page.locator('input[name=modelo_negocio][value=Outro]').check();
-  await expect(page.locator('#modelo_negocio_outro')).toBeVisible();
-  await next.click();
-  await expect(page.locator('#err-modelo_negocio')).toBeVisible();
-  await page.fill('#modelo_negocio_outro', 'Franquia');
+  // 5 modelo de negocio
+  await page.locator('input[name=modelo_negocio][value=E-commerce]').check();
   await next.click();
 
-  // 5 quantidade de pessoas no time
+  // 6 quantidade de pessoas no time
   await page.locator('input[name=tamanho_equipe][value="5 a 15"]').check();
   await next.click();
 
-  // 6 faturamento
+  // 7 faturamento
   await page.locator('input[name=faturamento_mensal][value="R$ 100k a R$ 300k"]').check();
   await next.click();
 
-  // 7 dependencia da operacao (escala 0 a 10) — radio "escondido", clica no rotulo
-  await next.click();
-  await expect(page.locator('#err-dependencia_operacional')).toBeVisible();
-  await page.locator('label.sc', { has: page.locator('input[value="8"]') }).click();
-  await expect(page.locator('input[name=dependencia_operacional][value="8"]')).toBeChecked();
-  await next.click();
-
-  // 8 maior desafio com a equipe (escolha unica)
-  await next.click();
-  await expect(page.locator('#err-maior_problema_gestao')).toBeVisible();
-  await page.locator('input[name=maior_problema_gestao][value="Centralização de decisões em mim"]').check();
-  await next.click();
-
-  // 9 consentimento obrigatorio
+  // 8 consentimento obrigatorio
   await expect(next).toHaveText('Enviar aplicação');
   await next.click();
   await expect(page.locator('#err-consentimento')).toBeVisible();
@@ -94,13 +87,13 @@ test('fluxo completo captura payload correto', async ({ page }) => {
   expect(d.nome_completo).toBe('Maria Silva Souza');
   expect(d.email).toBe('Maria@Exemplo.COM');
   expect(d.whatsapp).toBe('(11) 98765-4321');
-  expect(d.modelo_negocio).toBe('Outro');
-  expect(d.modelo_negocio_outro).toBe('Franquia');
+  expect(d.modelo_negocio).toBe('E-commerce');
+  expect(d.modelo_negocio_outro).toBe('');
   expect(d.tamanho_equipe).toBe('5 a 15');
   expect(d.faturamento_mensal).toBe('R$ 100k a R$ 300k');
-  expect(d.dependencia_operacional).toBe('8');
   expect(typeof d.maior_problema_gestao).toBe('string');
-  expect(d.maior_problema_gestao).toBe('Centralização de decisões em mim');
+  expect(d.maior_problema_gestao).toBe('Outro');
+  expect(d.maior_problema_gestao_outro).toBe('Falta de tempo para revisar tudo');
   expect(d.consentimento).toBe(true);
 
   // campos removidos não devem mais trafegar
@@ -108,6 +101,7 @@ test('fluxo completo captura payload correto', async ({ page }) => {
   expect(d.autonomia_operacional).toBeUndefined();
   expect(d.prioridade_resolucao).toBeUndefined();
   expect(d.informacoes_adicionais).toBeUndefined();
+  expect(d.dependencia_operacional).toBeUndefined();
 
   // rastreamento
   expect(d.event_id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
