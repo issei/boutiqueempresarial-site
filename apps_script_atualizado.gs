@@ -54,8 +54,7 @@ const HEADERS = [
   'Nome Completo', 'E-mail', 'WhatsApp',
   'Modelo de Negócio', 'Modelo (Outro)',
   'Tamanho da Equipe', 'Faturamento Mensal',
-  'Dependência Operacional (0-10)',
-  'Maior Desafio (Equipe)',
+  'Maior Desafio (Equipe)', 'Maior Desafio (Outro)',
   'Consentimento',
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
   'FBCLID', 'GCLID', 'FBC', 'FBP',
@@ -170,9 +169,8 @@ function saveToSheet(data, capiStatus) {
     sanitizeInput(data.tamanho_equipe),
     sanitizeInput(data.faturamento_mensal),
 
-    sanitizeInput(data.dependencia_operacional),
-
     sanitizeInput(data.maior_problema_gestao),
+    sanitizeInput(data.maior_problema_gestao_outro),
 
     (data.consentimento === true || data.consentimento === 'Sim') ? 'Sim' : 'Não',
 
@@ -266,8 +264,7 @@ function buildLeadEmail(data, capiStatus) {
     'Modelo de negócio: ' + withOther(data.modelo_negocio, data.modelo_negocio_outro),
     'Tamanho da equipe: ' + plainText(data.tamanho_equipe),
     'Faturamento mensal: ' + faturamento,
-    'Dependência da operação (0-10): ' + plainText(data.dependencia_operacional),
-    'Maior desafio: ' + plainText(data.maior_problema_gestao),
+    'Maior desafio: ' + withOther(data.maior_problema_gestao, data.maior_problema_gestao_outro),
     '',
     // Mesma regra de saveToSheet, repetida em vez de extraída: unificar exigiria
     // tocar no caminho de gravação, que esta mudança se comprometeu a não alterar.
@@ -354,8 +351,7 @@ function sendToMetaCAPI(data) {
         content_name: CONFIG.CONTENT_NAME,
         status: 'submitted',
         lead_faturamento: data.faturamento_mensal || '',
-        lead_equipe: data.tamanho_equipe || '',
-        lead_dependencia: data.dependencia_operacional || ''
+        lead_equipe: data.tamanho_equipe || ''
       }
     }]
   };
@@ -452,8 +448,8 @@ function leadFixture() {
     modelo_negocio_outro: 'Consultoria de nicho',
     tamanho_equipe: '5 a 15',
     faturamento_mensal: 'R$ 100k a R$ 300k',
-    dependencia_operacional: '7',
-    maior_problema_gestao: 'Centralização de decisões em mim',
+    maior_problema_gestao: 'Falta de padrão nas entregas e retrabalho',
+    maior_problema_gestao_outro: '',
     consentimento: true,
     utm_source: 'instagram',
     utm_medium: 'cpc',

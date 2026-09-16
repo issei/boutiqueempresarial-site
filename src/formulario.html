@@ -62,6 +62,7 @@
             --text-primary: #1f1f1f;
             --text-secondary: #555555;
             --error-color: #b91c1c;
+            --gold-subtle: #C5A059;
         }
 
         * {
@@ -98,12 +99,12 @@
 
         .l-w {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: .75rem;
             opacity: .95
         }
 
         .l-img {
-            width: 200px;
+            width: 68px;
             height: auto;
             aspect-ratio: 200/200;
             display: block;
@@ -114,7 +115,7 @@
             width: 100%;
             background: #e5e7eb;
             height: 2px;
-            margin-bottom: 2rem;
+            margin-bottom: 1.25rem;
             border-radius: 2px;
             overflow: hidden
         }
@@ -122,7 +123,7 @@
         .bar {
             background: var(--text-primary);
             height: 100%;
-            width: 11%;
+            width: 13%;
             transition: width .4s ease
         }
 
@@ -150,7 +151,7 @@
         h2 {
             font-size: 1.5rem;
             font-weight: 600;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             line-height: 1.2
         }
 
@@ -245,46 +246,6 @@
             border-radius: 3px
         }
 
-        /* Escala 0–10: grupo de radio na horizontal, cada nota um botão */
-        .scale {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .5rem
-        }
-
-        .sc {
-            cursor: pointer;
-            user-select: none
-        }
-
-        .sc input {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none
-        }
-
-        .sc span {
-            display: grid;
-            place-content: center;
-            min-width: 2.75rem;
-            height: 2.75rem;
-            border: 1px solid #aaa;
-            border-radius: 4px;
-            font-size: 1.1rem;
-            transition: .2s
-        }
-
-        .sc input:checked+span {
-            background: var(--text-primary);
-            color: #fff;
-            border-color: var(--text-primary)
-        }
-
-        .sc input:focus-visible+span {
-            outline: 2px solid var(--text-primary);
-            outline-offset: 2px
-        }
-
         .rl.dis {
             opacity: .45;
             cursor: not-allowed
@@ -313,14 +274,16 @@
         }
 
         .intro {
-            margin-bottom: 2rem
+            margin-bottom: 1.25rem
         }
 
         .intro-title {
             font-size: 1.25rem;
             font-weight: 600;
             line-height: 1.3;
-            margin-bottom: .75rem
+            margin-bottom: .75rem;
+            padding-left: .75rem;
+            border-left: 3px solid var(--gold-subtle)
         }
 
         .intro-lead {
@@ -331,7 +294,7 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: .65rem
+            gap: .4rem
         }
 
         .intro li {
@@ -500,6 +463,14 @@
                 justify-content: flex-start;
                 padding-top: 2rem
             }
+
+            .l-img {
+                width: 48px
+            }
+
+            .intro ul {
+                display: none
+            }
         }
 
         @media(prefers-reduced-motion:reduce) {
@@ -525,12 +496,12 @@
                 height="200"></div>
         <div class="p-c">
             <div class="bar" id="pb" role="progressbar" aria-label="Progresso da aplicação" aria-valuemin="0"
-                aria-valuemax="100" aria-valuenow="11"></div>
+                aria-valuemax="100" aria-valuenow="13"></div>
         </div>
         <form id="f" onsubmit="return!1" novalidate>
             <input type="hidden" name="event_id" id="eid">
 
-            <!-- 1 — Nome Completo -->
+            <!-- 1 — Maior desafio da operação -->
             <div class="step a" data-s="0">
                 <div class="intro">
                     <p class="intro-title">Sessão Estratégica de Diagnóstico BE</p>
@@ -542,14 +513,38 @@
                         <li><strong>Fluxo de Informação:</strong> Avaliamos como estão organizadas as demandas no WhatsApp e nos canais internos para você acompanhar o andamento das entregas sem precisar perguntar o status o tempo todo.</li>
                     </ul>
                 </div>
-                <h2 id="q-nome_completo">Para começar, qual o seu nome completo?</h2>
-                <input type="text" name="nome_completo" id="nome_completo" autocomplete="name"
-                    placeholder="Digite sua resposta..." aria-labelledby="q-nome_completo" aria-describedby="err-nome_completo">
-                <p class="err" id="err-nome_completo" aria-live="polite">Informe seu nome completo.</p>
+                <fieldset>
+                    <legend>Para começar, qual é o maior desafio da sua operação hoje?</legend>
+                    <div class="rg">
+                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
+                                value="Equipe dependente / preciso aprovar quase tudo">Equipe dependente / preciso
+                            aprovar quase tudo</label>
+                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
+                                value="Falta de padrão nas entregas e retrabalho">Falta de padrão nas entregas e
+                            retrabalho</label>
+                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
+                                value="Informações perdidas e excesso de mensagens no WhatsApp">Informações perdidas e
+                            excesso de mensagens no WhatsApp</label>
+                        <label class="rl"><input type="radio" name="maior_problema_gestao"
+                                data-other="maior_problema_gestao_outro" value="Outro">Outro</label>
+                        <input type="text" class="oth h" name="maior_problema_gestao_outro"
+                            id="maior_problema_gestao_outro" placeholder="Qual?"
+                            aria-label="Especifique o maior desafio">
+                    </div>
+                </fieldset>
+                <p class="err" id="err-maior_problema_gestao" aria-live="polite">Selecione uma opção.</p>
             </div>
 
-            <!-- 2 — WhatsApp -->
+            <!-- 2 — Nome -->
             <div class="step" data-s="1">
+                <h2 id="q-nome_completo">Para começar, qual o seu nome?</h2>
+                <input type="text" name="nome_completo" id="nome_completo" autocomplete="name"
+                    placeholder="Digite seu primeiro nome..." aria-labelledby="q-nome_completo" aria-describedby="err-nome_completo">
+                <p class="err" id="err-nome_completo" aria-live="polite">Informe seu nome.</p>
+            </div>
+
+            <!-- 3 — WhatsApp -->
+            <div class="step" data-s="2">
                 <h2 id="q-whatsapp">Qual o seu WhatsApp com DDD?</h2>
                 <p class="hint">Priorizamos o contato por aqui.</p>
                 <input type="tel" name="whatsapp" id="whatsapp" autocomplete="tel" inputmode="numeric"
@@ -557,8 +552,8 @@
                 <p class="err" id="err-whatsapp" aria-live="polite">Informe um WhatsApp válido com DDD.</p>
             </div>
 
-            <!-- 3 — E-mail corporativo -->
-            <div class="step" data-s="2">
+            <!-- 4 — E-mail corporativo -->
+            <div class="step" data-s="3">
                 <h2 id="q-email">E-mail corporativo</h2>
                 <p class="hint">É por ele que enviaremos a confirmação da sua aplicação.</p>
                 <input type="email" name="email" id="email" autocomplete="email" inputmode="email"
@@ -566,8 +561,8 @@
                 <p class="err" id="err-email" aria-live="polite">Informe um e-mail válido.</p>
             </div>
 
-            <!-- 4 — Modelo de negócio -->
-            <div class="step" data-s="3">
+            <!-- 5 — Modelo de negócio -->
+            <div class="step" data-s="4">
                 <fieldset>
                     <legend>Qual é o modelo de negócio da sua empresa?</legend>
                     <div class="rg">
@@ -592,8 +587,8 @@
                 <p class="err" id="err-modelo_negocio" aria-live="polite">Selecione uma opção.</p>
             </div>
 
-            <!-- 5 — Quantidade de pessoas no time -->
-            <div class="step" data-s="4">
+            <!-- 6 — Quantidade de pessoas no time -->
+            <div class="step" data-s="5">
                 <fieldset>
                     <legend>Quantidade de pessoas no time (CLT + PJ):</legend>
                     <div class="rg">
@@ -606,8 +601,8 @@
                 <p class="err" id="err-tamanho_equipe" aria-live="polite">Selecione uma opção.</p>
             </div>
 
-            <!-- 6 — Faturamento -->
-            <div class="step" data-s="5">
+            <!-- 7 — Faturamento -->
+            <div class="step" data-s="6">
                 <fieldset>
                     <legend>Faturamento médio mensal nos últimos 3 meses:</legend>
                     <div class="rg">
@@ -623,46 +618,8 @@
                 <p class="err" id="err-faturamento_mensal" aria-live="polite">Selecione uma opção.</p>
             </div>
 
-            <!-- 7 — Dependência da operação (escala 0 a 10) -->
-            <div class="step" data-s="6">
-                <fieldset>
-                    <legend>Em uma escala de 0 a 10, quanto a operação depende de você para funcionar bem e sem erros?</legend>
-                    <div class="scale">
-                        <label class="sc"><input type="radio" name="dependencia_operacional" value="0"><span>0</span></label>
-                        <label class="sc"><input type="radio" name="dependencia_operacional" value="1"><span>1</span></label>
-                        <label class="sc"><input type="radio" name="dependencia_operacional" value="2"><span>2</span></label>
-                        <label class="sc"><input type="radio" name="dependencia_operacional" value="3"><span>3</span></label>
-                        <label class="sc"><input type="radio" name="dependencia_operacional" value="4"><span>4</span></label>
-                        <label class="sc"><input type="radio" name="dependencia_operacional" value="5"><span>5</span></label>
-                        <label class="sc"><input type="radio" name="dependencia_operacional" value="6"><span>6</span></label>
-                        <label class="sc"><input type="radio" name="dependencia_operacional" value="7"><span>7</span></label>
-                        <label class="sc"><input type="radio" name="dependencia_operacional" value="8"><span>8</span></label>
-                        <label class="sc"><input type="radio" name="dependencia_operacional" value="9"><span>9</span></label>
-                        <label class="sc"><input type="radio" name="dependencia_operacional" value="10"><span>10</span></label>
-                    </div>
-                </fieldset>
-                <p class="err" id="err-dependencia_operacional" aria-live="polite">Selecione uma nota de 0 a 10.</p>
-            </div>
-
-            <!-- 8 — Maior desafio com a equipe -->
+            <!-- 8 — Consentimento -->
             <div class="step" data-s="7">
-                <fieldset>
-                    <legend>Qual é o maior desafio com a sua equipe hoje?</legend>
-                    <div class="rg">
-                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
-                                value="Refazer trabalho / Falta de qualidade">Refazer trabalho / Falta de qualidade</label>
-                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
-                                value="Centralização de decisões em mim">Centralização de decisões em mim</label>
-                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
-                                value="Informações perdidas no WhatsApp / Falta de processos">Informações perdidas no
-                            WhatsApp / Falta de processos</label>
-                    </div>
-                </fieldset>
-                <p class="err" id="err-maior_problema_gestao" aria-live="polite">Selecione uma opção.</p>
-            </div>
-
-            <!-- 9 — Consentimento -->
-            <div class="step" data-s="8">
                 <div class="rg">
                     <label class="rl top"><input type="checkbox" name="consentimento" id="consentimento"
                             value="Sim"><span><strong>Termo de Consentimento.</strong> Concordo em ser contatado e
