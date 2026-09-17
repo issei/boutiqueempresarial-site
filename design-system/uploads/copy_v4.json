@@ -1,0 +1,54 @@
+{
+  "respostas_pergunta_1": {
+    "P1_dependencia": "Se qualquer decisão precisa passar pela sua mão antes de andar, a operação inteira fica parada esperando sua resposta.",
+    "P1_retrabalho": "Refazer o que a equipe entregou consome horas do seu dia e reduz o lucro da empresa. Isso acontece por falta de padrão claro.",
+    "P1_informacao": "Quando as orientações do trabalho ficam espalhadas em mensagens de áudio, a equipe se perde, perde prazo e você passa o dia cobrando status.",
+    "P1_outro": "Toda operação tem travas específicas. Vamos mapear o que está impedindo o fluxo da sua empresa para ajustar a rotina."
+  },
+  "respostas_pergunta_4_matriz_P1xP4": {
+    "P01_dependencia_agencia": "Se cada arte ou texto precisa da sua validação, a agência não entrega no prazo e o time trava toda vez que você entra em uma reunião.",
+    "P02_dependencia_consultoria": "Para a consultoria atender mais clientes, a equipe precisa responder ao cliente sem depender do seu ok. Hoje o dia a dia fica todo preso no seu horário.",
+    "P03_dependencia_b2b": "Prestação de serviço B2B exige resposta rápida. Se a entrega fica parada na sua mesa para revisão, o cliente espera e o contrato perde rentabilidade.",
+    "P04_dependencia_b2c": "No B2C o volume de pedidos é alto. A equipe precisa saber resolver os problemas sozinha enquanto você cuida da gestão da empresa.",
+    "P05_retrabalho_agencia": "Refazer arquivo porque as instruções vieram incompletas reduz a margem do contrato. Ter um passo a passo claro protege o lucro da agência.",
+    "P06_retrabalho_consultoria": "Entregar consultoria sem um roteiro definido faz a equipe se perder na condução e exige que você entre para refazer o relatório.",
+    "P07_retrabalho_b2b": "No B2B, o cliente nota quando cada entrega vem de um jeito. Ter que refazer projeto desgasta a relação e aumenta o custo com a equipe.",
+    "P08_retrabalho_b2c": "Se o produto ou serviço varia de qualidade, o cliente não compra de novo. A operação precisa de uma rotina fixa de checagem.",
+    "P09_informacao_agencia": "O cliente pede alteração por áudio no WhatsApp, a informação não vai para a planilha de controle e o designer perde o prazo de entrega.",
+    "P10_informacao_consultoria": "Dados do cliente perdidos em conversas soltas fazem a equipe aplicar orientações erradas na reunião de acompanhamento.",
+    "P11_informacao_b2b": "Alinhamento feito sem registro gera discussão sobre o que foi combinado quando chega o dia do pagamento.",
+    "P12_informacao_b2c": "Usar o WhatsApp para falar com o cliente funciona. Usar o WhatsApp como canal para gerir a equipe gera falhas na rotina.",
+    "P13_outro_agencia": "Agências têm uma dinâmica própria de prazos e refações. Vamos direto ao ponto na sessão para ajustar a rotina da sua equipe criativa.",
+    "P14_outro_consultoria": "Estruturar o atendimento da consultoria exige rotinas bem claras. Vamos ajustar o fluxo sem mudar a forma como você atende.",
+    "P15_outro_b2b": "Operações B2B lidam com contratos longos e entregas por etapas. Vamos analisar seu modelo para simplificar o trabalho do time.",
+    "P16_outro_b2c": "O dia a dia do B2C exige respostas rápidas. Vamos analisar sua rotina para criar regras simples que a equipe consiga seguir."
+  },
+  "respostas_pergunta_4_segmento_outro": {
+    "P17_dependencia_segmento_outro": "Se nada anda sem a sua resposta, o crescimento da empresa fica limitado ao número de horas que você consegue trabalhar no dia.",
+    "P18_retrabalho_segmento_outro": "O time refaz tarefas quando não sabe exatamente como a entrega deve ser feita. Isso se resolve criando um instrucional simples de execução.",
+    "P19_informacao_segmento_outro": "Informação importante solta em mensagens gera atrasos e entregas erradas. O fluxo de trabalho precisa de um sistema central.",
+    "P20_outro_segmento_outro": "Vamos analisar a fundo como sua equipe trabalha no dia a dia para identificar o ponto exato que está atrasando as entregas."
+  },
+  "respostas_conclusao": {
+    "obrigada_P01_dependencia_agencia": "[Nome], tocar uma agência com [Tamanho do Time] e faturamento de [Faturamento] aprovando cada entrega final limita a capacidade da empresa. Na sessão vamos alinhar onde e como passar autonomia para o time.",
+    "obrigada_P02_dependencia_consultoria": "[Nome], uma consultoria com [Tamanho do Time] e faturamento de [Faturamento] não aceita novos projetos se cada decisão depende de você. Na sessão vamos criar a rotina para liberar sua agenda.",
+    "obrigada_P03_dependencia_b2b": "[Nome], serviços B2B com [Tamanho do Time] e faturamento de [Faturamento] pedem agilidade no atendimento. Se você revisa tudo, a entrega atrasa. Na sessão vamos desenhar o processo para o time andar sozinho.",
+    "obrigada_P04_dependencia_b2c": "[Nome], sua operação B2C com [Tamanho do Time] e faturamento de [Faturamento] precisa rodar sem sua presença constante. Na sessão vamos ajustar o fluxo para o time tocar o dia a dia.",
+    "obrigada_P05_retrabalho_agencia": "[Nome], uma agência com [Tamanho do Time] e faturamento de [Faturamento] reduz a margem de lucro cada vez que um trabalho volta por falta de padrão. Na sessão vamos montar o passo a passo que evita refação.",
+    "obrigada_P06_retrabalho_consultoria": "[Nome], sua consultoria com [Tamanho do Time] e faturamento de [Faturamento] perde produtividade quando a equipe entrega trabalhos fora do padrão. Na sessão vamos alinhar o método exato de execução.",
+    "obrigada_P07_retrabalho_b2b": "[Nome], serviços B2B com [Tamanho do Time] e faturamento de [Faturamento] exigem padronização para manter o custo previsto no contrato. Na sessão vamos ajustar os processos de entrega da equipe.",
+    "obrigada_P08_retrabalho_b2c": "[Nome], no B2C com [Tamanho do Time] e faturamento de [Faturamento], erros na entrega fazem o cliente buscar concorrentes. Na sessão vamos estruturar a lista de checagem do serviço.",
+    "obrigada_P09_informacao_agencia": "[Nome], sua agência com [Tamanho do Time] e faturamento de [Faturamento] não pode perder prazos por pedidos perdidos em mensagens. Na sessão vamos organizar o canal oficial de informações do time.",
+    "obrigada_P10_informacao_consultoria": "[Nome], sua consultoria com [Tamanho do Time] e faturamento de [Faturamento] perde tempo quando dados de clientes somem em conversas soltas. Na sessão vamos organizar esse registro.",
+    "obrigada_P11_informacao_b2b": "[Nome], uma empresa B2B com [Tamanho do Time] e faturamento de [Faturamento] precisa de alinhamentos registrados para evitar cobranças indevidas. Na sessão vamos padronizar onde as informações ficam salvas.",
+    "obrigada_P12_informacao_b2c": "[Nome], com [Tamanho do Time] e faturamento de [Faturamento], usar aplicativo de mensagem para comandar o time gera desorganização. Na sessão vamos definir os canais e responsáveis de cada tarefa.",
+    "obrigada_P13_outro_agencia": "[Nome], sua agência com [Tamanho do Time] e faturamento de [Faturamento] tem demandas bem específicas. Na sessão vamos analisar a rotina atual e ajustar o que está atrasando o time.",
+    "obrigada_P14_outro_consultoria": "[Nome], sua consultoria com [Tamanho do Time] e faturamento de [Faturamento] exige organização sob medida. Na sessão vamos analisar o trabalho da equipe e simplificar os processos.",
+    "obrigada_P15_outro_b2b": "[Nome], serviços B2B com [Tamanho do Time] e faturamento de [Faturamento] lidam com rotinas operacionais detalhadas. Na sessão vamos identificar onde simplificar a rotina da equipe.",
+    "obrigada_P16_outro_b2c": "[Nome], sua operação B2C com [Tamanho do Time] e faturamento de [Faturamento] tem problemas práticos de rotina. Na sessão vamos organizar o passo a passo do atendimento e da entrega.",
+    "obrigada_P17_dependencia_segmento_outro": "[Nome], uma empresa com [Tamanho do Time] e faturamento de [Faturamento] para de crescer se toda decisão precisa da sua aprovação. Na sessão vamos mapear como passar tarefas para a equipe.",
+    "obrigada_P18_retrabalho_segmento_outro": "[Nome], com [Tamanho do Time] e faturamento de [Faturamento], o time refaz trabalho por falta de instruções escritas. Na sessão vamos organizar o padrão de entrega das tarefas.",
+    "obrigada_P19_informacao_segmento_outro": "[Nome], com [Tamanho do Time] e faturamento de [Faturamento], perder prazos por orientações espalhadas em mensagens gera custos. Na sessão vamos centralizar o fluxo de trabalho.",
+    "obrigada_P20_outro_segmento_outro": "[Nome], com [Tamanho do Time] e faturamento de [Faturamento], cada empresa tem falhas específicas na operação. Na sessão vamos mapear a rotina do seu time e organizar as etapas."
+  }
+}

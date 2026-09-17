@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Formulário conversacional" description="Aplicação do Diagnóstico BE em uma pergunta por vez — hero, 6 perguntas, envio e conclusão" -->
+<helmet>
+<script src="./ds-base.js"></script>
+<style>
+html,body{margin:0;background:#f5f2eb}
+*{box-sizing:border-box}
+input,button{font:inherit}
+::placeholder{color:#a39f95;opacity:1}
+@keyframes cf-right{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes cf-left{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+@keyframes cf-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes cf-shake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(2px)}30%,50%,70%{transform:translateX(-4px)}40%,60%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</helmet>
+<div data-screen-label="Formulário conversacional" ref="{{ rootRef }}" style="min-height:100dvh;display:flex;flex-direction:column;font-family:'Inter',sans-serif;font-weight:300;color:#1f1f1f;background:#f5f2eb;-webkit-font-smoothing:antialiased">
+<header style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px clamp(20px,5vw,64px)">
+<span style="font-family:'Playfair Display',serif;font-weight:600;font-size:1.05rem;letter-spacing:.03em;white-space:nowrap">Boutique Empresarial<span style="color:#C5A059">.</span></span>
+<sc-if value="{{ showProgress }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;gap:20px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase">
+<sc-if value="{{ showStages }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:14px;white-space:nowrap"><sc-for list="{{ stages }}" as="s" hint-placeholder-count="3"><span data-stage="{{ s.active }}" style="color:#a39f95;transition:color 300ms">{{ s.label }}</span></sc-for></div></sc-if>
+<sc-if value="{{ showCounter }}" hint-placeholder-val="{{ true }}"><span style="font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:0;text-transform:none;color:#886829;white-space:nowrap">{{ counter }}</span></sc-if>
+</div>
+</sc-if>
+</header>
+<main style="flex:1;display:flex;align-items:center;padding:16px clamp(20px,5vw,64px) 40px">
+<div data-enter="1" style="width:100%;max-width:760px;margin:0 auto">
+
+<sc-if value="{{ isFirst }}" hint-placeholder-val="{{ true }}">
+<section style="margin-bottom:44px">
+<span style="display:block;text-transform:uppercase;font-size:.72rem;letter-spacing:.2em;color:#555;margin-bottom:18px">Sessão Estratégica de Diagnóstico BE</span>
+<h1 style="font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(1.9rem,3.8vw,2.9rem);line-height:1.12;letter-spacing:-.025em;margin:0 0 18px;text-wrap:balance">Uma reunião individual de 45 minutos para identificar onde o seu time trava.</h1>
+<p style="font-size:clamp(1rem,1.3vw,1.125rem);line-height:1.7;color:#555;max-width:58ch;margin:0">Eu vou analisar a sua operação e te mostrar o que ajustar para a equipe entregar no padrão correto — sem depender da sua aprovação para tudo.</p>
+<div style="margin-top:28px;border-top:1px solid #E5E5E5;padding-top:10px">
+<button type="button" onClick="{{ toggleDetails }}" aria-expanded="{{ showDetails }}" style="display:flex;align-items:center;gap:10px;background:none;border:0;padding:8px 0;color:#555;font-size:.76rem;text-transform:uppercase;letter-spacing:.14em;cursor:pointer;transition:color 300ms" style-hover="color:#1f1f1f" style-focus="outline:2px solid #1f1f1f;outline-offset:2px"><span aria-hidden="true" style="color:#886829;font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:0;line-height:1">{{ detailsMarker }}</span>O que eu analiso na sua sessão</button>
+<sc-if value="{{ showDetails }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;padding:4px 0 6px;animation:cf-rise 300ms ease-out both">
+<div style="display:grid;grid-template-columns:minmax(0,10rem) minmax(0,1fr);gap:6px 24px;padding:14px 0;border-top:1px solid #E5E5E5;font-size:.88rem;line-height:1.6;color:#555"><strong style="font-weight:500;color:#1f1f1f">Dependência de aprovação</strong><span>Mapeamos quais tarefas travam na sua mão ao longo do dia e quais decisões a sua equipe já deve tomar sozinha.</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,10rem) minmax(0,1fr);gap:6px 24px;padding:14px 0;border-top:1px solid #E5E5E5;font-size:.88rem;line-height:1.6;color:#555"><strong style="font-weight:500;color:#1f1f1f">Erros de execução e refação</strong><span>Localizamos em qual etapa da prestação do serviço acontecem as falhas repetidas, para você parar de refazer o trabalho do funcionário.</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,10rem) minmax(0,1fr);gap:6px 24px;padding:14px 0;border-top:1px solid #E5E5E5;font-size:.88rem;line-height:1.6;color:#555"><strong style="font-weight:500;color:#1f1f1f">Fluxo de informação</strong><span>Avaliamos como os pedidos e prazos são repassados no WhatsApp, para você acompanhar as entregas sem precisar mandar mensagem cobrando o tempo todo.</span></div>
+</div>
+</sc-if>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isQuestion }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ hasAck }}" hint-placeholder-val="{{ false }}"><p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:#886829;margin:0 0 10px">{{ ack }}</p></sc-if>
+<sc-if value="{{ hasPlan }}" hint-placeholder-val="{{ false }}">
+<div style="border-left:2px solid #C5A059;padding:2px 0 2px 20px;margin:0 0 28px;max-width:62ch;animation:cf-rise 420ms ease-out both">
+<span style="display:block;text-transform:uppercase;font-size:.68rem;letter-spacing:.14em;color:#886829;margin-bottom:8px">{{ planEyebrow }}</span>
+<p style="font-family:'Playfair Display',serif;font-size:1.15rem;line-height:1.35;margin:0 0 8px">{{ planAxis }}</p>
+<p style="font-size:.95rem;line-height:1.7;color:#555;margin:0">{{ planText }}</p>
+</div>
+</sc-if>
+<h2 id="cf-question" style="font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(1.3rem,2.3vw,1.75rem);line-height:1.25;letter-spacing:-.015em;margin:0;text-wrap:pretty">{{ qText }}</h2>
+<sc-if value="{{ hasNote }}" hint-placeholder-val="{{ false }}"><p style="font-size:.9rem;line-height:1.6;color:#555;max-width:56ch;margin:12px 0 0">{{ qNote }}</p></sc-if>
+
+<sc-if value="{{ isChoice }}" hint-placeholder-val="{{ true }}">
+<div data-answers="1" role="radiogroup" aria-labelledby="cf-question" style="margin-top:22px;background:#ffffff;border:1px solid #E5E5E5;border-radius:0">
+<sc-for list="{{ options }}" as="o" hint-placeholder-count="4">
+<button type="button" role="radio" data-opt="{{ o.selected }}" aria-checked="{{ o.selected }}" onClick="{{ o.pick }}" style="display:flex;align-items:center;gap:18px;width:100%;text-align:left;min-height:60px;padding:16px 22px;border:0;border-bottom:1px solid #EFEDE8;background:transparent;color:#1f1f1f;border-radius:0;cursor:pointer;font-family:'Playfair Display',serif;font-size:clamp(1rem,1.4vw,1.15rem);line-height:1.35;transition:background-color 200ms,color 200ms;animation:cf-rise 360ms ease-out both" style-hover="background:#FBFAF7" style-focus="outline:2px solid #1f1f1f;outline-offset:-2px" style-active="transform:none">
+<span data-optnum="1" aria-hidden="true" style="font-family:'Inter',sans-serif;font-size:.66rem;letter-spacing:.12em;color:#886829;min-width:14px">{{ o.num }}</span>
+<span>{{ o.label }}</span>
+</button>
+</sc-for>
+<sc-if value="{{ showOther }}" hint-placeholder-val="{{ false }}">
+<div style="padding:14px 22px 16px 54px;animation:cf-rise 300ms ease-out both">
+<label for="cf-other" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Descreva</label>
+<input id="cf-other" ref="{{ otherRef }}" type="text" value="{{ otherValue }}" onChange="{{ onOther }}" placeholder="{{ otherPlaceholder }}" style="width:100%;background:transparent;border:0;border-bottom:1px solid rgba(0,0,0,.25);font-family:'Playfair Display',serif;font-size:clamp(1rem,1.4vw,1.15rem);padding:8px 0;color:#1f1f1f;border-radius:0;outline:none;transition:border-color 300ms" style-focus="border-bottom-color:#1f1f1f">
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isText }}" hint-placeholder-val="{{ false }}">
+<div data-answers="1" style="margin-top:28px;background:#ffffff;border:1px solid #E5E5E5;padding:20px 22px">
+<label for="cf-field" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">{{ qText }}</label>
+<input id="cf-field" ref="{{ fieldRef }}" type="{{ inputType }}" inputMode="{{ inputMode }}" autoComplete="{{ autoComplete }}" value="{{ fieldValue }}" onChange="{{ onField }}" placeholder="{{ placeholder }}" aria-invalid="{{ hasError }}" style="width:100%;background:transparent;border:0;border-bottom:1px solid rgba(0,0,0,.25);font-family:'Playfair Display',serif;font-size:clamp(1.25rem,2.2vw,1.7rem);padding:10px 0;color:#1f1f1f;border-radius:0;outline:none;transition:border-color 300ms" style-focus="border-bottom:2px solid #1f1f1f">
+</div>
+</sc-if>
+
+<sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}"><p role="alert" style="font-size:.9rem;color:#b91c1c;margin:14px 0 0;animation:cf-rise 240ms ease-out both">{{ error }}</p></sc-if>
+</sc-if>
+
+<sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+<span style="display:block;text-transform:uppercase;font-size:.72rem;letter-spacing:.2em;color:#555;margin-bottom:24px">Aplicação recebida</span>
+<h1 style="font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(1.9rem,3.8vw,2.9rem);line-height:1.12;letter-spacing:-.025em;margin:0 0 24px;text-wrap:balance">{{ doneTitle }}</h1>
+<p style="font-size:clamp(1.05rem,1.4vw,1.2rem);line-height:1.7;color:#555;max-width:56ch;margin:0 0 32px">Obrigada pelas respostas — elas já me dizem por onde a sua sessão começa.</p>
+<sc-if value="{{ hasSynth }}" hint-placeholder-val="{{ true }}">
+<div style="background:#ffffff;border:1px solid #E5E5E5;padding:24px 26px;margin:0 0 30px;max-width:64ch">
+<span style="display:block;text-transform:uppercase;font-size:.68rem;letter-spacing:.14em;color:#886829;margin-bottom:12px">O que eu já sei da sua operação</span>
+<p style="font-family:'Playfair Display',serif;font-size:1.2rem;line-height:1.35;margin:0 0 14px">{{ synthLine }}</p>
+<p style="font-size:1rem;line-height:1.75;color:#555;margin:0">{{ synthText }}</p>
+<sc-if value="{{ hasClosing }}" hint-placeholder-val="{{ false }}">
+<p style="font-size:1rem;line-height:1.75;color:#1A1A1A;margin:18px 0 0;padding-top:18px;border-top:1px solid #E5E5E5">{{ closingText }}</p>
+</sc-if>
+</div>
+</sc-if>
+<div style="border-left:2px solid #C5A059;padding:2px 0 2px 20px;margin:0 0 30px;max-width:62ch">
+<span style="display:block;text-transform:uppercase;font-size:.68rem;letter-spacing:.14em;color:#886829;margin-bottom:8px">Próximo passo</span>
+<p style="font-size:1rem;line-height:1.75;color:#555;margin:0">Eu analiso pessoalmente cada aplicação. São três vagas por semana: se o momento da sua empresa se encaixar, minha equipe entra em contato pelo WhatsApp em até 48h úteis para agendar os seus 45 minutos.</p>
+</div>
+<p style="font-size:.9rem;line-height:1.7;color:#555;margin:0">Suas informações são confidenciais.</p>
+<div aria-hidden="true" style="width:64px;height:1px;background:#C5A059;margin:40px 0 0"></div>
+</sc-if>
+
+<sc-if value="{{ isFailed }}" hint-placeholder-val="{{ false }}">
+<h1 style="font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 20px">Não conseguimos enviar agora.</h1>
+<p style="font-size:1.05rem;line-height:1.7;color:#555;max-width:54ch;margin:0">Suas respostas ficaram guardadas aqui. Tente de novo em alguns segundos — nada precisa ser preenchido outra vez.</p>
+</sc-if>
+
+</div>
+</main>
+<sc-if value="{{ showFooter }}" hint-placeholder-val="{{ true }}">
+<footer style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:16px clamp(20px,5vw,64px) calc(20px + env(safe-area-inset-bottom));border-top:1px solid #E5E5E5">
+<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+<sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ back }}" style="background:none;border:0;padding:10px 0;color:#555;font-size:.9rem;cursor:pointer;border-bottom:1px solid transparent;transition:border-color 300ms,color 300ms" style-hover="border-bottom-color:#1f1f1f;color:#1f1f1f" style-focus="outline:2px solid #1f1f1f;outline-offset:2px">← Voltar</button></sc-if>
+<span style="font-size:.8rem;line-height:1.5;color:#555">{{ footNote }}</span>
+</div>
+<sc-if value="{{ showPrimary }}" hint-placeholder-val="{{ false }}"><button type="button" data-primary="1" onClick="{{ primary }}" disabled="{{ sending }}" style="font-family:'Inter',sans-serif;font-weight:400;letter-spacing:.02em;font-size:1rem;padding:18px 40px;min-height:48px;border:1px solid #1f1f1f;border-radius:2px;background:#1f1f1f;color:#fff;cursor:pointer;opacity:1;transition:background-color 300ms,color 300ms,opacity 300ms" style-hover="background:transparent;color:#1f1f1f" style-active="transform:scale(.98)" style-focus="outline:2px solid #1f1f1f;outline-offset:2px">{{ primaryLabel }}</button></sc-if>
+</footer>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;autoAdvance&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Comportamento&quot;},&quot;progressStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;both&quot;,&quot;options&quot;:[&quot;both&quot;,&quot;stages&quot;,&quot;counter&quot;],&quot;tsType&quot;:&quot;'both' | 'stages' | 'counter'&quot;,&quot;section&quot;:&quot;Comportamento&quot;},&quot;simulateFailure&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Estados&quot;}}">
+class Component extends DCLogic {
+  state = { step: 0, answers: {}, other: {}, error: null, dir: 1, tick: 0, errTick: 0, sending: false, done: false, failed: false, showDetails: false };
+
+  Q = [
+    { id: 'desafio', kind: 'choice', stage: 0, text: 'Para começar, qual é o maior desafio da sua operação hoje?',
+      options: ['Equipe dependente / preciso aprovar quase tudo', 'Falta de padrão nas entregas e retrabalho', 'Informações perdidas e excesso de mensagens no WhatsApp', 'Outro'],
+      other: true, otherPlaceholder: 'Conte em poucas palavras', error: 'Escolha o desafio que mais pesa hoje — dá para ajustar na conversa.' },
+    { id: 'nome', kind: 'text', stage: 1, ack: 'Perfeito.', text: 'Para identificarmos sua aplicação, qual o seu nome?',
+      placeholder: 'Digite seu primeiro nome', autoComplete: 'given-name', error: 'Preciso do seu nome para identificar a aplicação.' },
+    { id: 'modelo', kind: 'choice', stage: 1, ack: (a) => a.nome ? `Obrigada, ${this.firstName()}.` : 'Obrigada.', text: 'Qual o modelo de negócio da sua empresa?',
+      options: ['Agência / Assessoria', 'Consultoria / Mentoria', 'Prestação de Serviços B2B', 'Prestação de Serviços B2C', 'Outro'],
+      other: true, otherPlaceholder: 'Descreva o modelo', error: 'Qual dessas descreve melhor a sua empresa?' },
+    { id: 'time', kind: 'choice', stage: 1, ack: 'Certo.', text: 'Quantas pessoas fazem parte do seu time hoje (CLT + PJ)?',
+      options: ['Apenas eu', '2 a 4 colaboradores', '5 a 15 colaboradores', 'Mais de 15 colaboradores'], error: 'Conte o time inteiro — CLT e PJ.' },
+    { id: 'faturamento', kind: 'choice', stage: 1, ack: 'Entendi.', text: 'Qual o faturamento médio mensal da empresa?',
+      note: 'Uma faixa aproximada basta. É o que permite calibrar a análise ao tamanho da operação.',
+      options: ['Até R$ 30 mil/mês', 'R$ 30 mil a R$ 100 mil/mês', 'R$ 100 mil a R$ 300 mil/mês', 'Acima de R$ 300 mil/mês'], error: 'Uma faixa aproximada já é suficiente.' },
+    { id: 'whatsapp', kind: 'tel', stage: 2, ack: 'Quase lá.', text: 'Qual o seu WhatsApp com DDD para retorno da equipe?',
+      note: 'Prometemos não enviar spam. O contato é exclusivo para agendamento da sessão.',
+      placeholder: '(00) 00000-0000', autoComplete: 'tel-national', error: 'Confira o número — precisamos do DDD e dos 9 dígitos.' },
+  ];
+  STAGES = ['Desafio', 'Contexto', 'Contato'];
+
+  /** Micro-entrega de valor. Cada resposta de escolha devolve, na tela
+   *  seguinte, o recorte que aquela resposta dá à sessão. Os textos do eixo
+   *  de desafio são os do arquivo-fonte, passados para a primeira pessoa;
+   *  os demais descrevem o método de análise, sem prometer resultado. */
+  INSIGHTS = {
+    desafio: {
+      eyebrow: 'O que eu vou analisar no seu caso',
+      by: {
+        'Equipe dependente / preciso aprovar quase tudo': {
+          axis: 'Dependência de aprovação',
+          text: 'Na sua sessão eu mapeio quais tarefas travam na sua mão ao longo do dia e quais decisões a sua equipe já deve tomar sozinha.',
+        },
+        'Falta de padrão nas entregas e retrabalho': {
+          axis: 'Erros de execução e refação',
+          text: 'Na sua sessão eu localizo em qual etapa da prestação do serviço acontecem as falhas repetidas, para você parar de refazer o trabalho do funcionário.',
+        },
+        'Informações perdidas e excesso de mensagens no WhatsApp': {
+          axis: 'Fluxo de informação',
+          text: 'Na sua sessão eu avalio como os pedidos e prazos são repassados no WhatsApp, para você acompanhar as entregas sem precisar mandar mensagem cobrando o tempo todo.',
+        },
+        Outro: {
+          axis: 'Os três eixos da operação',
+          text: 'Na sua sessão eu percorro os três eixos — dependência de aprovação, erros de execução e fluxo de informação — para localizar onde a sua operação trava.',
+        },
+      },
+    },
+    modelo: {
+      eyebrow: 'Como isso muda a análise',
+      by: {
+        'Agência / Assessoria': {
+          axis: 'Entrega recorrente, cliente a cliente',
+          text: 'Em agência e assessoria eu começo pelo que se repete em toda conta: quanto da entrega já está descrito e quanto ainda mora na cabeça de quem executa.',
+        },
+        'Consultoria / Mentoria': {
+          axis: 'A entrega que nasce em você',
+          text: 'Em consultoria e mentoria a entrega tende a ficar colada em você. Eu olho o que pode ser padronizado sem descaracterizar o seu método.',
+        },
+        'Prestação de Serviços B2B': {
+          axis: 'O combinado de cada contrato',
+          text: 'No B2B eu acompanho como cada contrato é conduzido, e onde o que foi combinado com o cliente se perde entre quem vende e quem executa.',
+        },
+        'Prestação de Serviços B2C': {
+          axis: 'Volume e repetição',
+          text: 'No B2C o volume expõe qualquer falha de padrão. Eu olho o que a sua equipe faz muitas vezes ao dia e como isso é conferido antes de chegar ao cliente.',
+        },
+        Outro: {
+          axis: 'A sua operação, no seu formato',
+          text: 'Antes de falar de estrutura, eu entendo como a sua entrega acontece hoje — é isso que define o que vale padronizar primeiro.',
+        },
+      },
+    },
+    time: {
+      eyebrow: 'A prioridade no seu tamanho de operação',
+      by: {
+        'Apenas eu': {
+          axis: 'Estrutura antes da primeira contratação',
+          text: 'Sozinha, o risco não é o time: é você se tornar o gargalo de um negócio que ainda vai crescer. Eu olho o que precisa estar descrito antes da primeira contratação.',
+        },
+        '2 a 4 colaboradores': {
+          axis: 'A saída do combinado verbal',
+          text: 'Com até quatro pessoas quase tudo funciona por combinado verbal. Eu olho quais rotinas já precisam existir por escrito para o time não parar quando você não responde.',
+        },
+        '5 a 15 colaboradores': {
+          axis: 'A camada de coordenação',
+          text: 'De 5 a 15 pessoas a operação passa a precisar de coordenação, e não só de execução. Eu olho quem decide o quê, e onde essa decisão hoje volta para você.',
+        },
+        'Mais de 15 colaboradores': {
+          axis: 'Padrão que se replica',
+          text: 'Acima de 15 pessoas o que trava raramente é esforço: é a falta de um padrão replicável. Eu olho como a sua operação se sustenta quando entra mais uma equipe.',
+        },
+      },
+    },
+    faturamento: {
+      eyebrow: 'Como eu calibro a sessão',
+      by: {
+        'Até R$ 30 mil/mês': {
+          axis: 'Uma frente por vez',
+          text: 'Nessa faixa eu prefiro apontar uma frente só: a que devolve mais tempo para você com o menor ajuste na rotina.',
+        },
+        'R$ 30 mil a R$ 100 mil/mês': {
+          axis: 'Organização que acompanha o crescimento',
+          text: 'Nessa faixa a operação costuma ter crescido mais rápido que a organização. Eu olho o que precisa ser ajustado agora para o próximo salto não custar a sua rotina.',
+        },
+        'R$ 100 mil a R$ 300 mil/mês': {
+          axis: 'Previsibilidade da entrega',
+          text: 'Nessa faixa o tema deixa de ser vender e passa a ser entregar sempre no mesmo padrão. Eu olho em que ponto a entrega oscila.',
+        },
+        'Acima de R$ 300 mil/mês': {
+          axis: 'Estabilidade da operação',
+          text: 'Nessa faixa a conversa é estabilidade: o que precisa existir para a operação não depender da sua presença diária.',
+        },
+      },
+    },
+  };
+
+  /** Partes curtas usadas para compor a síntese final. */
+  SHORT = {
+    modelo: { 'Agência / Assessoria': 'Agência/assessoria', 'Consultoria / Mentoria': 'Consultoria/mentoria', 'Prestação de Serviços B2B': 'Serviços B2B', 'Prestação de Serviços B2C': 'Serviços B2C', Outro: 'Serviço próprio' },
+    time: { 'Apenas eu': 'você sozinha', '2 a 4 colaboradores': 'um time de 2 a 4', '5 a 15 colaboradores': 'um time de 5 a 15', 'Mais de 15 colaboradores': 'um time de mais de 15' },
+    faturamento: { 'Até R$ 30 mil/mês': 'até R$ 30 mil/mês', 'R$ 30 mil a R$ 100 mil/mês': 'entre R$ 30 mil e R$ 100 mil/mês', 'R$ 100 mil a R$ 300 mil/mês': 'entre R$ 100 mil e R$ 300 mil/mês', 'Acima de R$ 300 mil/mês': 'acima de R$ 300 mil/mês' },
+  };
+  FOCUS = {
+    desafio: {
+      'Equipe dependente / preciso aprovar quase tudo': 'as decisões que ainda travam na sua mão',
+      'Falta de padrão nas entregas e retrabalho': 'a etapa em que a entrega sai do padrão',
+      'Informações perdidas e excesso de mensagens no WhatsApp': 'como pedido e prazo circulam no seu time',
+      Outro: 'o ponto em que a sua operação trava',
+    },
+    time: {
+      'Apenas eu': 'o que precisa estar descrito antes da próxima contratação',
+      '2 a 4 colaboradores': 'quais rotinas precisam sair do combinado verbal',
+      '5 a 15 colaboradores': 'quem decide o quê sem passar por você',
+      'Mais de 15 colaboradores': 'o padrão que se replica a cada nova equipe',
+    },
+  };
+
+  /** Qual resposta alimenta o bloco de cada tela: a escolha anterior. */
+  SOURCE_OF = { 1: 'desafio', 3: 'modelo', 4: 'time', 5: 'faturamento' };
+
+  insightFor(step) {
+    const id = this.SOURCE_OF[step];
+    if (!id) return null;
+    const group = this.INSIGHTS[id];
+    const found = group && group.by[this.state.answers[id]];
+    return found ? { eyebrow: group.eyebrow, axis: found.axis, text: found.text } : null;
+  }
+
+  /** Bloco de desafio, reaproveitado na conclusão. */
+  plan() {
+    const g = this.INSIGHTS.desafio;
+    const found = g.by[this.state.answers.desafio];
+    return found ? { eyebrow: 'Seu ponto de partida', axis: found.axis, text: found.text } : null;
+  }
+
+  /** Como a própria pessoa descreveria a sua dor — abre a síntese final. */
+  PAIN = {
+    'Equipe dependente / preciso aprovar quase tudo': 'a equipe depender da sua aprovação para quase tudo',
+    'Falta de padrão nas entregas e retrabalho': 'a falta de padrão nas entregas e o retrabalho que vem com ela',
+    'Informações perdidas e excesso de mensagens no WhatsApp': 'a informação que se perde no meio das mensagens',
+  };
+
+  /** Slugs que compõem a chave da copy de conclusão: eixo × segmento. */
+  AXIS_SLUG = {
+    'Equipe dependente / preciso aprovar quase tudo': 'dependencia',
+    'Falta de padrão nas entregas e retrabalho': 'retrabalho',
+    'Informações perdidas e excesso de mensagens no WhatsApp': 'informacao',
+    Outro: 'outro',
+  };
+  SEG_SLUG = {
+    'Agência / Assessoria': 'agencia',
+    'Consultoria / Mentoria': 'consultoria',
+    'Prestação de Serviços B2B': 'b2b',
+    'Prestação de Serviços B2C': 'b2c',
+    Outro: 'segmento_outro',
+  };
+
+  /** Tamanho do time na forma que cabe depois de "com …". */
+  TIME_WITH = {
+    'Apenas eu': 'apenas você',
+    '2 a 4 colaboradores': 'um time de 2 a 4 pessoas',
+    '5 a 15 colaboradores': 'um time de 5 a 15 pessoas',
+    'Mais de 15 colaboradores': 'um time de mais de 15 pessoas',
+  };
+
+  /** Faixa de faturamento na forma que cabe depois de "faturamento de …". */
+  FAT_WITH = {
+    'Até R$ 30 mil/mês': 'até R$ 30 mil/mês',
+    'R$ 30 mil a R$ 100 mil/mês': 'R$ 30 mil a R$ 100 mil/mês',
+    'R$ 100 mil a R$ 300 mil/mês': 'R$ 100 mil a R$ 300 mil/mês',
+    'Acima de R$ 300 mil/mês': 'mais de R$ 300 mil/mês',
+  };
+
+  /** Copy de fechamento — uma entrada por combinação eixo × segmento. */
+  CLOSING = {
+    dependencia_agencia: '[Nome], tocar uma agência com [Tamanho do Time] e faturamento de [Faturamento] aprovando cada entrega final limita a capacidade da empresa. Na sessão vamos alinhar onde e como passar autonomia para o time.',
+    dependencia_consultoria: '[Nome], uma consultoria com [Tamanho do Time] e faturamento de [Faturamento] não aceita novos projetos se cada decisão depende de você. Na sessão vamos criar a rotina para liberar sua agenda.',
+    dependencia_b2b: '[Nome], serviços B2B com [Tamanho do Time] e faturamento de [Faturamento] pedem agilidade no atendimento. Se você revisa tudo, a entrega atrasa. Na sessão vamos desenhar o processo para o time andar sozinho.',
+    dependencia_b2c: '[Nome], sua operação B2C com [Tamanho do Time] e faturamento de [Faturamento] precisa rodar sem sua presença constante. Na sessão vamos ajustar o fluxo para o time tocar o dia a dia.',
+    dependencia_segmento_outro: '[Nome], uma empresa com [Tamanho do Time] e faturamento de [Faturamento] para de crescer se toda decisão precisa da sua aprovação. Na sessão vamos mapear como passar tarefas para a equipe.',
+    retrabalho_agencia: '[Nome], uma agência com [Tamanho do Time] e faturamento de [Faturamento] reduz a margem de lucro cada vez que um trabalho volta por falta de padrão. Na sessão vamos montar o passo a passo que evita refação.',
+    retrabalho_consultoria: '[Nome], sua consultoria com [Tamanho do Time] e faturamento de [Faturamento] perde produtividade quando a equipe entrega trabalhos fora do padrão. Na sessão vamos alinhar o método exato de execução.',
+    retrabalho_b2b: '[Nome], serviços B2B com [Tamanho do Time] e faturamento de [Faturamento] exigem padronização para manter o custo previsto no contrato. Na sessão vamos ajustar os processos de entrega da equipe.',
+    retrabalho_b2c: '[Nome], no B2C com [Tamanho do Time] e faturamento de [Faturamento], erros na entrega fazem o cliente buscar concorrentes. Na sessão vamos estruturar a lista de checagem do serviço.',
+    retrabalho_segmento_outro: '[Nome], com [Tamanho do Time] e faturamento de [Faturamento], o time refaz trabalho por falta de instruções escritas. Na sessão vamos organizar o padrão de entrega das tarefas.',
+    informacao_agencia: '[Nome], sua agência com [Tamanho do Time] e faturamento de [Faturamento] não pode perder prazos por pedidos perdidos em mensagens. Na sessão vamos organizar o canal oficial de informações do time.',
+    informacao_consultoria: '[Nome], sua consultoria com [Tamanho do Time] e faturamento de [Faturamento] perde tempo quando dados de clientes somem em conversas soltas. Na sessão vamos organizar esse registro.',
+    informacao_b2b: '[Nome], uma empresa B2B com [Tamanho do Time] e faturamento de [Faturamento] precisa de alinhamentos registrados para evitar cobranças indevidas. Na sessão vamos padronizar onde as informações ficam salvas.',
+    informacao_b2c: '[Nome], com [Tamanho do Time] e faturamento de [Faturamento], usar aplicativo de mensagem para comandar o time gera desorganização. Na sessão vamos definir os canais e responsáveis de cada tarefa.',
+    informacao_segmento_outro: '[Nome], com [Tamanho do Time] e faturamento de [Faturamento], perder prazos por orientações espalhadas em mensagens gera custos. Na sessão vamos centralizar o fluxo de trabalho.',
+    outro_agencia: '[Nome], sua agência com [Tamanho do Time] e faturamento de [Faturamento] tem demandas bem específicas. Na sessão vamos analisar a rotina atual e ajustar o que está atrasando o time.',
+    outro_consultoria: '[Nome], sua consultoria com [Tamanho do Time] e faturamento de [Faturamento] exige organização sob medida. Na sessão vamos analisar o trabalho da equipe e simplificar os processos.',
+    outro_b2b: '[Nome], serviços B2B com [Tamanho do Time] e faturamento de [Faturamento] lidam com rotinas operacionais detalhadas. Na sessão vamos identificar onde simplificar a rotina da equipe.',
+    outro_b2c: '[Nome], sua operação B2C com [Tamanho do Time] e faturamento de [Faturamento] tem problemas práticos de rotina. Na sessão vamos organizar o passo a passo do atendimento e da entrega.',
+    outro_segmento_outro: '[Nome], com [Tamanho do Time] e faturamento de [Faturamento], cada empresa tem falhas específicas na operação. Na sessão vamos mapear a rotina do seu time e organizar as etapas.',
+  };
+
+  /** Primeiro nome, capitalizado — a pessoa digita em minúsculas no celular. */
+  firstName() {
+    const raw = String(this.state.answers.nome || '').trim();
+    if (!raw) return '';
+    const first = raw.split(/\s+/)[0];
+    return first.charAt(0).toUpperCase() + first.slice(1);
+  }
+
+  /** Substituição literal dos tokens; sem nome, a frase abre sem vocativo. */
+  fill(tpl, vars) {
+    let out = tpl;
+    for (const [token, value] of Object.entries(vars)) out = out.split(token).join(value);
+    if (!vars['[Nome]']) {
+      out = out.replace(/^,\s*/, '');
+      out = out.charAt(0).toUpperCase() + out.slice(1);
+    }
+    return out;
+  }
+
+  /** Fechamento: copy por eixo × segmento, com as faixas do respondente. */
+  closing() {
+    const a = this.state.answers;
+    const axis = this.AXIS_SLUG[a.desafio] || 'outro';
+    const seg = this.SEG_SLUG[a.modelo] || 'segmento_outro';
+    const tpl = this.CLOSING[`${axis}_${seg}`] || this.CLOSING.outro_segmento_outro;
+    const time = this.TIME_WITH[a.time];
+    const fat = this.FAT_WITH[a.faturamento];
+    if (!time || !fat) return '';
+    return this.fill(tpl, { '[Nome]': this.firstName(), '[Tamanho do Time]': time, '[Faturamento]': fat });
+  }
+
+  /** Síntese final: um bloco só, na voz da Talita, sem repetir o que os
+   *  blocos das telas anteriores já disseram. */
+  synthesis() {
+    const a = this.state.answers;
+    const modelo = this.SHORT.modelo[a.modelo];
+    const time = this.SHORT.time[a.time];
+    const fat = this.SHORT.faturamento[a.faturamento];
+    const dFocus = this.FOCUS.desafio[a.desafio];
+    const tFocus = this.FOCUS.time[a.time];
+    if (!modelo || !time || !fat || !dFocus) return null;
+
+    const custom = (this.state.other.desafio || '').trim();
+    const pain = this.PAIN[a.desafio] || (custom ? `o que você me descreveu: "${custom}"` : 'o ponto em que a sua operação trava');
+
+    let text = `Você me disse que o que mais pesa hoje é ${pain}. É por aí que eu começo: ${dFocus}`;
+    text += tFocus ? `. E, num time desse tamanho, ${tFocus}.` : '.';
+    return { line: [modelo, time, fat].join(' · '), text, closing: this.closing() };
+  }
+
+  rootRef = React.createRef();
+  fieldRef = React.createRef();
+  otherRef = React.createRef();
+
+  componentDidMount() {
+    this.onKey = (e) => {
+      const { done, sending, failed } = this.state;
+      if (done || sending) return;
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.primary(); return; }
+      if (failed) return;
+      const q = this.Q[this.state.step];
+      const tag = (document.activeElement || {}).tagName;
+      if (q && q.kind === 'choice' && tag !== 'INPUT' && /^[1-9]$/.test(e.key)) {
+        const label = q.options[Number(e.key) - 1];
+        if (label) this.pick(q, label);
+      }
+    };
+    document.addEventListener('keydown', this.onKey);
+    this.paint();
+  }
+  componentWillUnmount() { document.removeEventListener('keydown', this.onKey); clearTimeout(this.timer); }
+
+  componentDidUpdate(_, prev) {
+    const s = this.state;
+    this.paint();
+    if (prev.tick !== s.tick) this.replay('[data-enter]', `${s.dir < 0 ? 'cf-left' : 'cf-right'} 400ms ease-out both`);
+    if (prev.errTick !== s.errTick && s.error) this.replay('[data-answers]', 'cf-shake 400ms cubic-bezier(.36,.07,.19,.97) both');
+    if (prev.step !== s.step || prev.failed !== s.failed) {
+      const el = this.fieldRef.current;
+      if (el && window.innerWidth > 768) el.focus();
+    }
+  }
+
+  /** All state-dependent visuals live here, so every style= in the template
+   *  stays a literal and paints before the logic class lands. */
+  paint() {
+    const root = this.rootRef.current;
+    if (!root) return;
+    const { step, error, sending, done, failed } = this.state;
+    const q = done || failed ? null : this.Q[step];
+
+    root.querySelectorAll('[data-stage]').forEach((el) => {
+      el.style.color = el.getAttribute('data-stage') === 'true' ? '#1f1f1f' : '#a39f95';
+    });
+
+    const opts = root.querySelectorAll('[data-opt]');
+    opts.forEach((el, i) => {
+      const on = el.getAttribute('data-opt') === 'true';
+      el.style.background = on ? '#1f1f1f' : 'transparent';
+      el.style.color = on ? '#f5f2eb' : '#1f1f1f';
+      el.style.animationDelay = `${i * 55}ms`;
+      // Hairline between rows only — the group's own border closes the block.
+      el.style.borderBottom = i === opts.length - 1 ? '0' : '1px solid #EFEDE8';
+      const num = el.querySelector('[data-optnum]');
+      if (num) num.style.color = on ? '#C5A059' : '#886829';
+    });
+
+    const group = root.querySelector('[data-answers]');
+    if (group) group.style.borderColor = error && q && q.kind === 'choice' ? '#b91c1c' : '#E5E5E5';
+
+    const field = this.fieldRef.current;
+    if (field) field.style.borderBottomColor = error && q && q.kind !== 'choice' ? '#b91c1c' : 'rgba(0,0,0,.25)';
+
+    const btn = root.querySelector('[data-primary]');
+    if (btn) btn.style.opacity = sending ? '.6' : '1';
+  }
+
+  replay(sel, anim) {
+    const el = this.rootRef.current && this.rootRef.current.querySelector(sel);
+    if (!el) return;
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = anim;
+  }
+
+  autoAdvance() { return this.props.autoAdvance ?? true; }
+  go(step, dir) { clearTimeout(this.timer); this.setState((s) => ({ step, dir, error: null, failed: false, tick: s.tick + 1 })); }
+  back() { if (this.state.step <= 0) return; this.go(this.state.step - 1, -1); }
+  fail(msg) { this.setState((s) => ({ error: msg, errTick: s.errTick + 1 })); }
+
+  pick(q, label) {
+    clearTimeout(this.timer);
+    this.setState((s) => ({ answers: { ...s.answers, [q.id]: label }, error: null }));
+    if (label === 'Outro') { setTimeout(() => this.otherRef.current && this.otherRef.current.focus(), 60); return; }
+    if (this.autoAdvance()) this.timer = setTimeout(() => this.next(), 380);
+  }
+
+  fmtPhone(v) {
+    const d = v.replace(/\D/g, '').slice(0, 11);
+    if (d.length <= 2) return d.length ? `(${d}` : '';
+    if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+    if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+    return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+  }
+
+  valid(q) {
+    const a = this.state.answers[q.id];
+    if (q.kind === 'choice') {
+      if (!a) return false;
+      if (a === 'Outro' && !(this.state.other[q.id] || '').trim()) return false;
+      return true;
+    }
+    if (q.kind === 'tel') { const d = (a || '').replace(/\D/g, ''); return d.length === 10 || d.length === 11; }
+    return !!(a || '').trim();
+  }
+
+  next() {
+    const { step } = this.state;
+    const q = this.Q[step];
+    if (!q) return;
+    if (!this.valid(q)) {
+      const a = this.state.answers[q.id];
+      this.fail(q.kind === 'choice' && a === 'Outro' ? 'Descreva em poucas palavras para eu entender o contexto.' : q.error);
+      return;
+    }
+    if (step === this.Q.length - 1) this.submit();
+    else this.go(step + 1, 1);
+  }
+
+  submit() {
+    this.setState({ sending: true, error: null });
+    this.timer = setTimeout(() => {
+      if (this.props.simulateFailure) this.setState((s) => ({ sending: false, failed: true, tick: s.tick + 1 }));
+      else this.setState((s) => ({ sending: false, done: true, tick: s.tick + 1 }));
+    }, 900);
+  }
+
+  primary() {
+    if (this.state.failed) return this.submit();
+    this.next();
+  }
+
+  renderVals() {
+    const { step, answers, other, error, sending, done, failed, showDetails } = this.state;
+    const progressStyle = this.props.progressStyle ?? 'both';
+    const q = done || failed ? null : this.Q[step];
+    const answer = q ? answers[q.id] : undefined;
+    const ack = q && q.ack ? (typeof q.ack === 'function' ? q.ack(answers) : q.ack) : '';
+    const firstName = this.firstName();
+    // Cada escolha devolve um bloco na tela seguinte; a conclusão recapitula
+    // o eixo de desafio e sintetiza a combinação das respostas.
+    const plan = done || failed ? null : this.insightFor(step);
+    const synth = done ? this.synthesis() : null;
+
+    const options = q && q.kind === 'choice' ? q.options.map((label, i) => ({
+      label, selected: answer === label, num: String(i + 1).padStart(2, '0'), pick: () => this.pick(q, label),
+    })) : [];
+
+    const isLast = step === this.Q.length - 1;
+    let primaryLabel = 'Continuar';
+    if (failed) primaryLabel = 'Tentar novamente';
+    else if (sending) primaryLabel = 'Enviando…';
+    else if (isLast) primaryLabel = 'Enviar aplicação';
+
+    let footNote = '';
+    if (step === 0 && q) footNote = '⏳ Aplicação rápida (2 minutos). Vagas limitadas (3 por semana).';
+    else if (q && q.kind !== 'choice') footNote = 'Enter ↵ para continuar';
+    else if (q) footNote = this.autoAdvance() ? 'Escolha uma opção para seguir' : '';
+
+    return {
+      rootRef: this.rootRef,
+      isQuestion: !!q, isFirst: !!q && step === 0, isDone: done, isFailed: failed && !done,
+      showDetails, detailsMarker: showDetails ? '–' : '+',
+      toggleDetails: () => this.setState((s) => ({ showDetails: !s.showDetails })),
+      showProgress: !!q, showStages: progressStyle !== 'counter', showCounter: progressStyle !== 'stages',
+      stages: this.STAGES.map((label, i) => ({ label, active: !!q && q.stage === i })),
+      counter: q ? `${String(step + 1).padStart(2, '0')} / ${String(this.Q.length).padStart(2, '0')}` : '',
+      hasAck: !!ack, ack, qText: q ? q.text : '', hasNote: !!(q && q.note), qNote: q && q.note ? q.note : '',
+      hasPlan: !!plan, planEyebrow: plan ? plan.eyebrow : '',
+      planAxis: plan ? plan.axis : '', planText: plan ? plan.text : '',
+      hasSynth: !!synth, synthLine: synth ? synth.line : '', synthText: synth ? synth.text : '',
+      hasClosing: !!(synth && synth.closing), closingText: synth ? synth.closing : '',
+      isChoice: !!q && q.kind === 'choice', isText: !!q && q.kind !== 'choice', options,
+      showOther: !!q && q.other && answer === 'Outro', otherRef: this.otherRef, otherValue: q ? (other[q.id] || '') : '',
+      otherPlaceholder: q && q.otherPlaceholder ? q.otherPlaceholder : '',
+      onOther: (e) => { const v = e.target.value; this.setState((s) => ({ other: { ...s.other, [q.id]: v }, error: null })); },
+      fieldRef: this.fieldRef, inputType: q && q.kind === 'tel' ? 'tel' : 'text', inputMode: q && q.kind === 'tel' ? 'tel' : 'text',
+      autoComplete: q && q.autoComplete ? q.autoComplete : 'off', fieldValue: q ? (answer || '') : '',
+      placeholder: q && q.placeholder ? q.placeholder : '',
+      onField: (e) => { const raw = e.target.value; const v = q.kind === 'tel' ? this.fmtPhone(raw) : raw; this.setState((s) => ({ answers: { ...s.answers, [q.id]: v }, error: null })); },
+      hasError: !!error, error: error || '',
+      doneTitle: firstName ? `Aplicação recebida, ${firstName}.` : 'Aplicação recebida.',
+      showFooter: !done, canBack: step > 0 && !sending && !failed, back: () => this.back(),
+      // Na escolha única o clique na opção já avança — o botão só aparece
+      // quando tem função: campo de texto, "Outro" (precisa confirmar o que
+      // foi digitado), avanço manual desligado, ou reenvio após falha.
+      showPrimary: failed || sending || (!!q && (q.kind !== 'choice' || !this.autoAdvance() || answer === 'Outro')),
+      primary: () => this.primary(), primaryLabel, sending,
+      footNote,
+    };
+  }
+}
+</script>
+</body>
+</html>
