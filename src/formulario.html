@@ -143,14 +143,16 @@
             display: block
         }
 
+        /* Sem opacity: um fade real deixa o texto abaixo de 4,5:1 de contraste
+           por parte da animação (400ms), o que reprova o critério de a11y
+           num scan logo após o load. Só o slide preserva a intenção visual
+           sem esse risco. */
         @keyframes f {
             from {
-                opacity: 0;
                 transform: translatex(10px)
             }
 
             to {
-                opacity: 1;
                 transform: translatex(0)
             }
         }
