@@ -75,11 +75,14 @@
     <title>Solicitação Recebida | Boutique Empresarial</title>
     <meta name="description" content="Recebemos sua solicitação de Diagnóstico Estratégico. Retornaremos em até 48h úteis caso sua aplicação seja aprovada.">
     <link rel="stylesheet" href="/style.css">
+    <script type="module" src="/js/form-copy.js"></script>
 
     <style>
         :root {
             --bg-color: #f5f2eb;
-            --text-primary: #1f1f1f
+            --text-primary: #1f1f1f;
+            --text-secondary: #555555;
+            --gold-subtle: #C5A059
         }
 
         * {
@@ -130,6 +133,18 @@
             font-size: 1.2rem;
             line-height: 1.6
         }
+
+        /* Fase 5 — fechamento personalizado por eixo × segmento
+         * docs/specs/pages/aplicacao-conversacional.md §6 */
+        .cf-fechamento {
+            text-align: left;
+            border-left: 2px solid var(--gold-subtle);
+            padding: 2px 0 2px 20px;
+            margin: 0 0 2rem;
+            font-size: 1rem;
+            line-height: 1.75;
+            color: var(--text-secondary)
+        }
     </style>
 </head>
 
@@ -139,11 +154,43 @@
     src="https://www.facebook.com/tr?id=1469019395044653&ev=PageView&noscript=1"
     /></noscript>
     <div class="c"><img src="/boutiquelogo.webp" alt="Logo" class="l-img" width="200" height="200">
-        <h1>Solicitação Recebida</h1>
+        <h1 id="titulo">Solicitação Recebida</h1>
         <div class="s"></div>
+        <p class="cf-fechamento" id="fechamento" hidden></p>
         <p>Suas informações são confidenciais. Retornaremos em até 48h úteis via WhatsApp/E-mail caso sua aplicação seja
             aprovada.</p>
     </main>
+
+    <script type="module">
+        // Fechamento personalizado — docs/specs/pages/aplicacao-conversacional.md §6.
+        // type="module": garante execução após o form-copy.js (também módulo,
+        // portanto adiado) — um script clássico aqui rodaria antes e veria
+        // window.FormCopy ainda indefinido.
+        // be_perfil é conveniência de renderização; ausente/corrompida, fica no
+        // agradecimento genérico acima (o Pixel já disparou, independente disso).
+        (function () {
+            try {
+                var raw = localStorage.getItem("be_perfil");
+                if (!raw) return;
+                var p = JSON.parse(raw);
+                var FC = window.FormCopy;
+                if (!FC || !p || !p.eixo || !p.segmento) return;
+
+                var tpl = FC.FECHAMENTO[p.eixo + "_" + p.segmento] || FC.FECHAMENTO.outro_segmento_outro;
+                var time = FC.TIME_COM[p.time];
+                var faturamento = FC.FAT_DE[p.faturamento];
+                if (!tpl || !time || !faturamento) return;
+
+                var nome = (p.nome || "").trim();
+                var texto = FC.preencher(tpl, { "[Nome]": nome, "[Tamanho do Time]": time, "[Faturamento]": faturamento });
+
+                document.getElementById("titulo").textContent = nome ? "Aplicação recebida, " + nome + "." : "Aplicação recebida.";
+                var el = document.getElementById("fechamento");
+                el.textContent = texto;
+                el.hidden = false;
+            } catch (e) { /* fica no agradecimento genérico */ }
+        })();
+    </script>
 </body>
 
 </html>

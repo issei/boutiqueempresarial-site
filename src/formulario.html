@@ -54,6 +54,7 @@
     <link rel="canonical" href="https://boutiqueempresarial.com.br/formulario.html">
     <title>Aplicação | Sessão Estratégica — Boutique Empresarial</title>
     <link rel="stylesheet" href="/style.css">
+    <script type="module" src="/js/form-copy.js"></script>
 
     <style>
         :root {
@@ -63,6 +64,15 @@
             --text-secondary: #555555;
             --error-color: #b91c1c;
             --gold-subtle: #C5A059;
+            /* Fase 5 — docs/specs/pages/aplicacao-conversacional.md §5.2 */
+            --gold-text: #886829;
+            --hairline: #E5E5E5;
+            --hairline-inner: #EFEDE8;
+            --opt-surface: #ffffff;
+            --opt-hover: #FBFAF7;
+            /* #a39f95 do STYLE_GUIDE.md dá ~2,4:1 em #f5f2eb — reprova o critério 20
+               (≥4,5:1). Reaproveita --text-secondary, que já passa (6,9:1). */
+            --stage-idle: #555555;
         }
 
         * {
@@ -429,6 +439,167 @@
             background: var(--text-primary)
         }
 
+        /* Fase 5 — progresso em etapas nomeadas (docs/specs/pages/aplicacao-conversacional.md §5.1/§5.2) */
+        .cf-prog {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: .7rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: 1.25rem
+        }
+
+        .cf-stages {
+            display: flex;
+            gap: 14px;
+            white-space: nowrap;
+            flex-wrap: wrap
+        }
+
+        .cf-stage {
+            color: var(--stage-idle);
+            transition: color .3s
+        }
+
+        .cf-stage.a {
+            color: var(--text-primary)
+        }
+
+        .cf-count {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            letter-spacing: 0;
+            text-transform: none;
+            color: var(--gold-text);
+            white-space: nowrap
+        }
+
+        /* Bloco de análise — devolutiva da resposta anterior */
+        .cf-an {
+            border-left: 2px solid var(--gold-subtle);
+            padding: 2px 0 2px 20px;
+            margin: 0 0 28px;
+            max-width: 62ch;
+            animation: f .42s cubic-bezier(.16, 1, .3, 1) both
+        }
+
+        .cf-an-kicker {
+            display: block;
+            text-transform: uppercase;
+            font-size: .68rem;
+            letter-spacing: .14em;
+            color: var(--gold-text);
+            margin-bottom: 8px;
+            font-family: 'Inter', sans-serif
+        }
+
+        .cf-an-axis {
+            font-size: 1.15rem;
+            line-height: 1.35;
+            margin: 0 0 8px
+        }
+
+        .cf-an-text {
+            font-size: .95rem;
+            line-height: 1.75;
+            color: var(--text-secondary);
+            margin: 0;
+            font-family: 'Inter', sans-serif
+        }
+
+        /* Bloco de opções — hairline interna, seleção inverte tinta */
+        .cf-opts {
+            background: var(--opt-surface);
+            border: 1px solid var(--hairline);
+            margin-top: 1rem
+        }
+
+        .cf-opt {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            width: 100%;
+            text-align: left;
+            min-height: 60px;
+            padding: 16px 22px;
+            border: 0;
+            border-bottom: 1px solid var(--hairline-inner);
+            background: transparent;
+            color: var(--text-primary);
+            border-radius: 0;
+            cursor: pointer;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1rem, 1.4vw, 1.15rem);
+            line-height: 1.35;
+            transition: background-color .2s, color .2s;
+            animation: f .36s ease-out both
+        }
+
+        .cf-opt:last-child {
+            border-bottom: 0
+        }
+
+        .cf-opt:hover {
+            background: var(--opt-hover)
+        }
+
+        .cf-opt:focus-visible {
+            outline: 2px solid var(--text-primary);
+            outline-offset: -2px
+        }
+
+        .cf-opt.sel,
+        .cf-opt:has(input:checked) {
+            background: var(--text-primary);
+            color: var(--bg-color)
+        }
+
+        /* Fica no fluxo (não position:absolute) para não sair da caixa flex e
+         * sobrepor o numeral — 1x1px é imperceptível e preserva o foco por Tab. */
+        .cf-opt input[type=radio] {
+            width: 1px;
+            height: 1px;
+            margin: 0;
+            opacity: 0;
+            flex-shrink: 0;
+            pointer-events: none
+        }
+
+        .cf-opt:has(input:focus-visible) {
+            outline: 2px solid var(--text-primary);
+            outline-offset: -2px
+        }
+
+        .cf-opt-n {
+            font-family: 'Inter', sans-serif;
+            font-size: .66rem;
+            letter-spacing: .12em;
+            color: var(--gold-text);
+            min-width: 14px
+        }
+
+        .cf-opt.sel .cf-opt-n,
+        .cf-opt:has(input:checked) .cf-opt-n {
+            color: var(--gold-subtle)
+        }
+
+        .cf-opts .oth {
+            margin: 0;
+            max-width: none;
+            padding: 14px 22px 16px 54px
+        }
+
+        @media (prefers-reduced-motion:reduce) {
+
+            .cf-an,
+            .cf-opt {
+                animation: none !important
+            }
+        }
+
         .leg {
             margin-top: 3rem;
             font-size: .7rem;
@@ -494,9 +665,10 @@
         <h1 class="vh">Aplicação para a Sessão Estratégica — Boutique Empresarial</h1>
         <div class="l-w"><img src="/boutiquelogo.webp" alt="Boutique Empresarial" class="l-img" width="200"
                 height="200"></div>
-        <div class="p-c">
-            <div class="bar" id="pb" role="progressbar" aria-label="Progresso da aplicação" aria-valuemin="0"
-                aria-valuemax="100" aria-valuenow="13"></div>
+        <div class="cf-prog" id="pb" role="progressbar" aria-label="Progresso da aplicação" aria-valuemin="0"
+            aria-valuemax="100" aria-valuenow="13">
+            <div class="cf-stages" id="stages"></div>
+            <span class="cf-count" id="count"></span>
         </div>
         <form id="f" onsubmit="return!1" novalidate>
             <input type="hidden" name="event_id" id="eid">
@@ -514,19 +686,19 @@
                     </ul>
                 </div>
                 <fieldset>
-                    <legend>Para começar, qual é o maior desafio da sua operação hoje?</legend>
-                    <div class="rg">
-                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
-                                value="Equipe dependente / preciso aprovar quase tudo">Equipe dependente / preciso
-                            aprovar quase tudo</label>
-                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
-                                value="Falta de padrão nas entregas e retrabalho">Falta de padrão nas entregas e
-                            retrabalho</label>
-                        <label class="rl top"><input type="radio" name="maior_problema_gestao"
-                                value="Informações perdidas e excesso de mensagens no WhatsApp">Informações perdidas e
-                            excesso de mensagens no WhatsApp</label>
-                        <label class="rl"><input type="radio" name="maior_problema_gestao"
-                                data-other="maior_problema_gestao_outro" value="Outro">Outro</label>
+                    <legend id="q-maior_problema_gestao">Para começar, qual é o maior desafio da sua operação hoje?</legend>
+                    <div class="cf-opts" role="radiogroup" aria-labelledby="q-maior_problema_gestao">
+                        <label class="cf-opt"><input type="radio" name="maior_problema_gestao"
+                                value="Equipe dependente / preciso aprovar quase tudo"><span class="cf-opt-n" aria-hidden="true">01</span><span>Equipe dependente / preciso
+                            aprovar quase tudo</span></label>
+                        <label class="cf-opt"><input type="radio" name="maior_problema_gestao"
+                                value="Falta de padrão nas entregas e retrabalho"><span class="cf-opt-n" aria-hidden="true">02</span><span>Falta de padrão nas entregas e
+                            retrabalho</span></label>
+                        <label class="cf-opt"><input type="radio" name="maior_problema_gestao"
+                                value="Informações perdidas e excesso de mensagens no WhatsApp"><span class="cf-opt-n" aria-hidden="true">03</span><span>Informações perdidas e
+                            excesso de mensagens no WhatsApp</span></label>
+                        <label class="cf-opt"><input type="radio" name="maior_problema_gestao"
+                                data-other="maior_problema_gestao_outro" value="Outro"><span class="cf-opt-n" aria-hidden="true">04</span><span>Outro</span></label>
                         <input type="text" class="oth h" name="maior_problema_gestao_outro"
                             id="maior_problema_gestao_outro" placeholder="Qual?"
                             aria-label="Especifique o maior desafio">
@@ -537,6 +709,7 @@
 
             <!-- 2 — Nome -->
             <div class="step" data-s="1">
+                <div class="cf-an" id="an-1" aria-live="off" hidden></div>
                 <h2 id="q-nome_completo">Para começar, qual o seu nome?</h2>
                 <input type="text" name="nome_completo" id="nome_completo" autocomplete="name"
                     placeholder="Digite seu primeiro nome..." aria-labelledby="q-nome_completo" aria-describedby="err-nome_completo">
@@ -563,23 +736,20 @@
 
             <!-- 5 — Modelo de negócio -->
             <div class="step" data-s="4">
+                <p class="hint" id="ack-nome" hidden></p>
                 <fieldset>
-                    <legend>Qual é o modelo de negócio da sua empresa?</legend>
-                    <div class="rg">
-                        <label class="rl top"><input type="radio" name="modelo_negocio"
-                                value="Serviços (consultoria, agência, prestação de serviço)">Serviços (consultoria,
-                            agência, prestação de serviço)</label>
-                        <label class="rl top"><input type="radio" name="modelo_negocio"
-                                value="Produtos físicos (fabricação, varejo, distribuição)">Produtos físicos
-                            (fabricação, varejo, distribuição)</label>
-                        <label class="rl"><input type="radio" name="modelo_negocio"
-                                value="E-commerce">E-commerce</label>
-                        <label class="rl top"><input type="radio" name="modelo_negocio"
-                                value="Infoprodutos / negócio digital">Infoprodutos / negócio digital</label>
-                        <label class="rl top"><input type="radio" name="modelo_negocio"
-                                value="Misto (produto + serviço)">Misto (produto + serviço)</label>
-                        <label class="rl"><input type="radio" name="modelo_negocio" data-other="modelo_negocio_outro"
-                                value="Outro">Outro</label>
+                    <legend id="q-modelo_negocio">Qual é o modelo de negócio da sua empresa?</legend>
+                    <div class="cf-opts" role="radiogroup" aria-labelledby="q-modelo_negocio">
+                        <label class="cf-opt"><input type="radio" name="modelo_negocio"
+                                value="Agência / Assessoria"><span class="cf-opt-n" aria-hidden="true">01</span><span>Agência / Assessoria</span></label>
+                        <label class="cf-opt"><input type="radio" name="modelo_negocio"
+                                value="Consultoria / Mentoria"><span class="cf-opt-n" aria-hidden="true">02</span><span>Consultoria / Mentoria</span></label>
+                        <label class="cf-opt"><input type="radio" name="modelo_negocio"
+                                value="Prestação de Serviços B2B"><span class="cf-opt-n" aria-hidden="true">03</span><span>Prestação de Serviços B2B</span></label>
+                        <label class="cf-opt"><input type="radio" name="modelo_negocio"
+                                value="Prestação de Serviços B2C"><span class="cf-opt-n" aria-hidden="true">04</span><span>Prestação de Serviços B2C</span></label>
+                        <label class="cf-opt"><input type="radio" name="modelo_negocio" data-other="modelo_negocio_outro"
+                                value="Outro"><span class="cf-opt-n" aria-hidden="true">05</span><span>Outro</span></label>
                         <input type="text" class="oth h" name="modelo_negocio_outro" id="modelo_negocio_outro"
                             placeholder="Qual?" aria-label="Especifique o modelo de negócio">
                     </div>
@@ -589,13 +759,14 @@
 
             <!-- 6 — Quantidade de pessoas no time -->
             <div class="step" data-s="5">
+                <div class="cf-an" id="an-5" aria-live="off" hidden></div>
                 <fieldset>
-                    <legend>Quantidade de pessoas no time (CLT + PJ):</legend>
-                    <div class="rg">
-                        <label class="rl"><input type="radio" name="tamanho_equipe" value="Apenas eu">Apenas eu</label>
-                        <label class="rl"><input type="radio" name="tamanho_equipe" value="2 a 4">2 a 4</label>
-                        <label class="rl"><input type="radio" name="tamanho_equipe" value="5 a 15">5 a 15</label>
-                        <label class="rl"><input type="radio" name="tamanho_equipe" value="Mais de 15">Mais de 15</label>
+                    <legend id="q-tamanho_equipe">Quantidade de pessoas no time (CLT + PJ):</legend>
+                    <div class="cf-opts" role="radiogroup" aria-labelledby="q-tamanho_equipe">
+                        <label class="cf-opt"><input type="radio" name="tamanho_equipe" value="Apenas eu"><span class="cf-opt-n" aria-hidden="true">01</span><span>Apenas eu</span></label>
+                        <label class="cf-opt"><input type="radio" name="tamanho_equipe" value="2 a 4 colaboradores"><span class="cf-opt-n" aria-hidden="true">02</span><span>2 a 4 colaboradores</span></label>
+                        <label class="cf-opt"><input type="radio" name="tamanho_equipe" value="5 a 15 colaboradores"><span class="cf-opt-n" aria-hidden="true">03</span><span>5 a 15 colaboradores</span></label>
+                        <label class="cf-opt"><input type="radio" name="tamanho_equipe" value="Mais de 15 colaboradores"><span class="cf-opt-n" aria-hidden="true">04</span><span>Mais de 15 colaboradores</span></label>
                     </div>
                 </fieldset>
                 <p class="err" id="err-tamanho_equipe" aria-live="polite">Selecione uma opção.</p>
@@ -603,16 +774,17 @@
 
             <!-- 7 — Faturamento -->
             <div class="step" data-s="6">
+                <div class="cf-an" id="an-6" aria-live="off" hidden></div>
                 <fieldset>
-                    <legend>Faturamento médio mensal nos últimos 3 meses:</legend>
-                    <div class="rg">
-                        <label class="rl"><input type="radio" name="faturamento_mensal" value="Até R$ 30k">Até R$ 30k</label>
-                        <label class="rl"><input type="radio" name="faturamento_mensal"
-                                value="R$ 30k a R$ 100k">R$ 30k a R$ 100k</label>
-                        <label class="rl"><input type="radio" name="faturamento_mensal"
-                                value="R$ 100k a R$ 300k">R$ 100k a R$ 300k</label>
-                        <label class="rl"><input type="radio" name="faturamento_mensal"
-                                value="Acima de R$ 300k">Acima de R$ 300k</label>
+                    <legend id="q-faturamento_mensal">Faturamento médio mensal nos últimos 3 meses:</legend>
+                    <div class="cf-opts" role="radiogroup" aria-labelledby="q-faturamento_mensal">
+                        <label class="cf-opt"><input type="radio" name="faturamento_mensal" value="Até R$ 30 mil/mês"><span class="cf-opt-n" aria-hidden="true">01</span><span>Até R$ 30 mil/mês</span></label>
+                        <label class="cf-opt"><input type="radio" name="faturamento_mensal"
+                                value="R$ 30 mil a R$ 100 mil/mês"><span class="cf-opt-n" aria-hidden="true">02</span><span>R$ 30 mil a R$ 100 mil/mês</span></label>
+                        <label class="cf-opt"><input type="radio" name="faturamento_mensal"
+                                value="R$ 100 mil a R$ 300 mil/mês"><span class="cf-opt-n" aria-hidden="true">03</span><span>R$ 100 mil a R$ 300 mil/mês</span></label>
+                        <label class="cf-opt"><input type="radio" name="faturamento_mensal"
+                                value="Acima de R$ 300 mil/mês"><span class="cf-opt-n" aria-hidden="true">04</span><span>Acima de R$ 300 mil/mês</span></label>
                     </div>
                 </fieldset>
                 <p class="err" id="err-faturamento_mensal" aria-live="polite">Selecione uma opção.</p>
@@ -620,6 +792,7 @@
 
             <!-- 8 — Consentimento -->
             <div class="step" data-s="7">
+                <div class="cf-an" id="an-7" aria-live="off" hidden></div>
                 <div class="rg">
                     <label class="rl top"><input type="checkbox" name="consentimento" id="consentimento"
                             value="Sim"><span><strong>Termo de Consentimento.</strong> Concordo em ser contatado e
@@ -647,7 +820,7 @@
         </form>
     </main>
 
-    <script>
+    <script type="module">
         (function () {
             "use strict";
 
@@ -657,12 +830,72 @@
             var form = document.getElementById("f");
             var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
             var TOTAL = steps.length;
-            var bar = document.getElementById("pb");
+            var pb = document.getElementById("pb");
             var btnPrev = document.getElementById("prev");
             var btnNext = document.getElementById("next");
             var dotsWrap = document.getElementById("dots");
             var current = 0;
             var sending = false;
+            var advTimer = null;
+
+            /* Fase 5 — progresso em etapas nomeadas + avanço automático em radio
+             * docs/specs/pages/aplicacao-conversacional.md §4/§5 */
+            var STAGES = ["Contexto", "Contato", "Empresa", "Envio"];
+            var STAGE_OF = [0, 0, 1, 1, 2, 2, 2, 3];
+            var CHOICE_STEPS = [0, 4, 5, 6];
+            var ANALYSIS_SOURCE = { 1: "maior_problema_gestao", 5: "modelo_negocio", 6: "tamanho_equipe", 7: "faturamento_mensal" };
+
+            var stagesWrap = document.getElementById("stages");
+            STAGES.forEach(function (label) {
+                var span = document.createElement("span");
+                span.className = "cf-stage";
+                span.textContent = label;
+                stagesWrap.appendChild(span);
+            });
+            var stageEls = stagesWrap.querySelectorAll(".cf-stage");
+            var countEl = document.getElementById("count");
+
+            function fieldValue(name) {
+                var radio = form.querySelector('input[name="' + name + '"][type=radio]:checked');
+                if (radio) return radio.value;
+                if (form.querySelector('input[name="' + name + '"][type=radio]')) return "";
+                var el = form.querySelector('[name="' + name + '"]');
+                return el ? (el.value || "").trim() : "";
+            }
+
+            function firstNameCap(v) {
+                v = (v || "").trim();
+                if (!v) return "";
+                var first = v.split(/\s+/)[0];
+                return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+            }
+
+            function renderAnalysis() {
+                var src = ANALYSIS_SOURCE[current];
+                var box = document.getElementById("an-" + current);
+                if (!box) return;
+                var group = src && window.FormCopy && FormCopy.ANALISE[src];
+                var entry = group && group.by[fieldValue(src)];
+                if (!entry) { box.hidden = true; box.innerHTML = ""; return; }
+                box.hidden = false;
+                box.innerHTML = '<span class="cf-an-kicker">' + group.kicker + '</span>'
+                    + '<p class="cf-an-axis">' + entry.axis + '</p>'
+                    + '<p class="cf-an-text">' + entry.text + '</p>';
+            }
+
+            function renderAck() {
+                var el = document.getElementById("ack-nome");
+                if (!el || current !== 4) return;
+                var name = firstNameCap(fieldValue("nome_completo"));
+                el.hidden = !name;
+                el.textContent = name ? "Obrigada, " + name + "." : "";
+            }
+
+            function updateNextVisibility() {
+                if (CHOICE_STEPS.indexOf(current) === -1) { btnNext.classList.remove("h"); return; }
+                var picked = steps[current].querySelector("input[type=radio]:checked");
+                btnNext.classList.toggle("h", !(picked && picked.dataset.other));
+            }
 
             /* ---------------------------------------------------------------
              * 1. RASTREAMENTO — event_id, UTMs, fbc/fbp, IP
@@ -756,11 +989,15 @@
                     if (i === current) { s.style.animation = "none"; void s.offsetHeight; s.style.animation = null; }
                 });
                 Array.prototype.forEach.call(dots, function (d, i) { d.classList.toggle("act", i === current); });
+                Array.prototype.forEach.call(stageEls, function (el, i) { el.classList.toggle("a", i === STAGE_OF[current]); });
                 var pct = Math.round((current + 1) / TOTAL * 100);
-                bar.style.width = pct + "%";
-                bar.setAttribute("aria-valuenow", String(pct));
+                countEl.textContent = String(current + 1).padStart(2, "0") + " / " + String(TOTAL).padStart(2, "0");
+                pb.setAttribute("aria-valuenow", String(pct));
                 btnPrev.classList.toggle("h", current === 0);
                 btnNext.innerText = current === TOTAL - 1 ? "Enviar aplicação" : "Próximo";
+                renderAnalysis();
+                renderAck();
+                updateNextVisibility();
             }
 
             function showError(step, msg) {
@@ -835,6 +1072,7 @@
 
             function nav(dir) {
                 if (sending) return;
+                clearTimeout(advTimer);
                 if (dir === 1 && !validate(current)) return;
                 if (dir === 1 && current === TOTAL - 1) { submit(); return; }
                 var next = current + dir;
@@ -873,6 +1111,31 @@
                 if (!step) return;
                 syncOther(step);
                 clearError(step);
+                var idx = Number(step.dataset.s);
+                if (idx !== current) return;
+                updateNextVisibility();
+                renderAck();
+                if (e.target.type === "radio" && CHOICE_STEPS.indexOf(idx) !== -1) {
+                    clearTimeout(advTimer);
+                    if (e.target.dataset.other) {
+                        var otherField = document.getElementById(e.target.dataset.other);
+                        if (otherField) setTimeout(function () { otherField.focus(); }, 60);
+                    } else {
+                        advTimer = setTimeout(function () { nav(1); }, 380);
+                    }
+                }
+            });
+
+            // Atalhos 1–4: selecionam a opção correspondente numa etapa de radio
+            // (docs/specs/pages/aplicacao-conversacional.md §4.1).
+            document.addEventListener("keydown", function (e) {
+                if (!/^[1-4]$/.test(e.key)) return;
+                var tag = (document.activeElement || {}).tagName;
+                if (tag === "INPUT" || tag === "TEXTAREA") return;
+                if (CHOICE_STEPS.indexOf(current) === -1) return;
+                var radios = steps[current].querySelectorAll("input[type=radio]");
+                var radio = radios[Number(e.key) - 1];
+                if (radio) { radio.checked = true; radio.dispatchEvent(new Event("change", { bubbles: true })); }
             });
 
             form.addEventListener("input", function (e) {
@@ -943,6 +1206,19 @@
                         eid: EVENT_ID
                     }));
                 } catch (e) { /* modo privado: dedup por URL abaixo ainda funciona */ }
+
+                // be_perfil — conveniência de renderização do fechamento em obrigada.html.
+                // Nenhum dado novo: slugs derivados das próprias respostas (§3 da Fase 5).
+                try {
+                    var FC = window.FormCopy;
+                    localStorage.setItem("be_perfil", JSON.stringify({
+                        eixo: (FC && FC.AXIS_SLUG[payload.maior_problema_gestao]) || "outro",
+                        segmento: (FC && FC.SEG_SLUG[payload.modelo_negocio]) || "segmento_outro",
+                        nome: firstNameCap(payload.nome_completo),
+                        time: payload.tamanho_equipe,
+                        faturamento: payload.faturamento_mensal
+                    }));
+                } catch (e) { /* modo privado: obrigada.html cai no fechamento genérico */ }
 
                 function done() {
                     var sep = window.location.search ? window.location.search + "&" : "?";
