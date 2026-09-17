@@ -62,7 +62,29 @@ idêntica** à de produção — o canvas usa uma redação um pouco diferente
 passada da autora não é decisão de posicionamento, e o contrato de
 `aplicacao-conversacional.md` §2.3 já trata copy como decisão dela.
 
-## 3. Fora desta rodada — decisão pendente da autora
+## 3. Bug de fonte: `<legend>` e `.intro-title` caindo no default de corpo
+
+A autora comparou de novo produção vs. canvas e apontou que "Para começar,
+qual é o maior desafio..." aparecia em sans-serif bold na produção contra
+serif no canvas — não era posicionamento, era fonte. Causa raiz confirmada
+via `getComputedStyle` no build:
+
+- `body` calcula `Inter, sans-serif` em produção (de `src/style.css`, **e
+  está correto** — `STYLE_GUIDE.md` §Tipografia: "Serif para títulos, Sans-
+  Serif para corpo"). O `body{font-family:'Playfair Display',serif}` do
+  `<style>` inline de `formulario.html` nunca vence essa cascata.
+- `style.css` também tem `h1,h2,h3,h4{font-family:var(--font-playfair)}`
+  global — por isso `h2` (usado nas etapas de texto) já saía correto.
+- `<legend>` (heading das etapas de múltipla escolha) e `.intro-title` não
+  são `h1-h4`, então não pegavam essa regra e caíam no default de corpo
+  (Inter) — a mesma pergunta mudava de fonte dependendo do tipo de etapa.
+
+Corrigido: `font-family: 'Playfair Display', serif` explícito em `legend`,
+`.intro-title` e (defensivamente, já que dependia implicitamente da mesma
+cascata frágil entre stylesheets) `h2`, em `src/formulario.html`.
+Verificado com `getComputedStyle` antes/depois do fix e screenshot.
+
+## 4. Fora desta rodada — decisão pendente da autora
 
 Comparando o resto do canvas com a produção, três diferenças a mais
 apareceram. Nenhuma foi implementada:
@@ -83,8 +105,10 @@ apareceram. Nenhuma foi implementada:
 - [x] `.dots` continua funcionando como indicador de progresso residual.
 - [x] "O que analisamos na sua sessão" é `<details>` recolhível, fechado por
       padrão, copy inalterada.
+- [x] `legend`/`.intro-title`/`h2` calculam `'Playfair Display', serif`
+      (`getComputedStyle`), consistente entre os dois tipos de etapa.
 - [ ] `npm run gate` verde.
-- [ ] Autora decide se algum item da tabela do §3 entra em rodada futura.
+- [ ] Autora decide se algum item da tabela do §4 entra em rodada futura.
 
 ## Referência
 - Screenshot anotado da autora sobre `ConversationalForm.dc.html` no Claude
