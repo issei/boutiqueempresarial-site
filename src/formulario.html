@@ -70,9 +70,6 @@
             --hairline-inner: #EFEDE8;
             --opt-surface: #ffffff;
             --opt-hover: #FBFAF7;
-            /* #a39f95 do STYLE_GUIDE.md dá ~2,4:1 em #f5f2eb — reprova o critério 20
-               (≥4,5:1). Reaproveita --text-secondary, que já passa (6,9:1). */
-            --stage-idle: #555555;
         }
 
         * {
@@ -146,14 +143,16 @@
             display: block
         }
 
+        /* Sem opacity: um fade real deixa o texto abaixo de 4,5:1 de contraste
+           por parte da animação (400ms), o que reprova o critério de a11y
+           num scan logo após o load. Só o slide preserva a intenção visual
+           sem esse risco. */
         @keyframes f {
             from {
-                opacity: 0;
                 transform: translatex(10px)
             }
 
             to {
-                opacity: 1;
                 transform: translatex(0)
             }
         }
@@ -326,6 +325,43 @@
             font-weight: 600
         }
 
+        .intro-details {
+            margin-top: 1rem;
+            padding-top: .75rem;
+            border-top: 1px solid var(--hairline)
+        }
+
+        .intro-details summary {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            cursor: pointer;
+            list-style: none;
+            font-size: .7rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            padding: .4rem 0
+        }
+
+        .intro-details summary::-webkit-details-marker {
+            display: none
+        }
+
+        .intro-details summary::before {
+            content: "+";
+            color: var(--gold-text);
+            font-size: 1rem
+        }
+
+        .intro-details[open] summary::before {
+            content: "\2013"
+        }
+
+        .intro-details ul {
+            margin-top: .75rem
+        }
+
         .btns {
             margin-top: 2.5rem;
             display: flex;
@@ -439,34 +475,6 @@
             background: var(--text-primary)
         }
 
-        /* Fase 5 — progresso em etapas nomeadas (docs/specs/pages/aplicacao-conversacional.md §5.1/§5.2) */
-        .cf-prog {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            font-family: 'Inter', sans-serif;
-            font-size: .7rem;
-            letter-spacing: .14em;
-            text-transform: uppercase;
-            margin-bottom: 1.25rem
-        }
-
-        .cf-stages {
-            display: flex;
-            gap: 14px;
-            white-space: nowrap;
-            flex-wrap: wrap
-        }
-
-        .cf-stage {
-            color: var(--stage-idle);
-            transition: color .3s
-        }
-
-        .cf-stage.a {
-            color: var(--text-primary)
-        }
 
         .cf-count {
             font-family: 'Playfair Display', serif;
@@ -665,11 +673,6 @@
         <h1 class="vh">Aplicação para a Sessão Estratégica — Boutique Empresarial</h1>
         <div class="l-w"><img src="/boutiquelogo.webp" alt="Boutique Empresarial" class="l-img" width="200"
                 height="200"></div>
-        <div class="cf-prog" id="pb" role="progressbar" aria-label="Progresso da aplicação" aria-valuemin="0"
-            aria-valuemax="100" aria-valuenow="13">
-            <div class="cf-stages" id="stages"></div>
-            <span class="cf-count" id="count"></span>
-        </div>
         <form id="f" onsubmit="return!1" novalidate>
             <input type="hidden" name="event_id" id="eid">
 
@@ -678,12 +681,14 @@
                 <div class="intro">
                     <p class="intro-title">Sessão Estratégica de Diagnóstico BE</p>
                     <p class="hint intro-lead">Uma reunião individual de 45 minutos para identificar em quais etapas a sua operação trava e definir o que precisa ser ajustado para a sua equipe entregar com qualidade — sem precisar da sua aprovação em cada demanda.</p>
-                    <p class="hint"><strong>O que analisamos na sua sessão:</strong></p>
-                    <ul>
-                        <li><strong>Dependência de Aprovação:</strong> Mapeamos em quais momentos do dia a dia as tarefas param na sua mesa e quais decisões a sua equipe já deve tomar sozinha.</li>
-                        <li><strong>Erros de Execução e Retrabalho:</strong> Localizamos em qual etapa da prestação do serviço acontecem as falhas repetidas e o refazer de tarefas.</li>
-                        <li><strong>Fluxo de Informação:</strong> Avaliamos como estão organizadas as demandas no WhatsApp e nos canais internos para você acompanhar o andamento das entregas sem precisar perguntar o status o tempo todo.</li>
-                    </ul>
+                    <details class="intro-details">
+                        <summary>O que analisamos na sua sessão</summary>
+                        <ul>
+                            <li><strong>Dependência de Aprovação:</strong> Mapeamos em quais momentos do dia a dia as tarefas param na sua mesa e quais decisões a sua equipe já deve tomar sozinha.</li>
+                            <li><strong>Erros de Execução e Retrabalho:</strong> Localizamos em qual etapa da prestação do serviço acontecem as falhas repetidas e o refazer de tarefas.</li>
+                            <li><strong>Fluxo de Informação:</strong> Avaliamos como estão organizadas as demandas no WhatsApp e nos canais internos para você acompanhar o andamento das entregas sem precisar perguntar o status o tempo todo.</li>
+                        </ul>
+                    </details>
                 </div>
                 <fieldset>
                     <legend id="q-maior_problema_gestao">Para começar, qual é o maior desafio da sua operação hoje?</legend>
@@ -808,7 +813,7 @@
             </div>
 
             <div class="prg-inf">
-                <p class="prg-txt">⏳ <strong>Aplicação rápida (2 minutos).</strong> Por ser uma análise individual conduzida diretamente por Talita Issei, liberamos apenas <strong>3 vagas por semana</strong>. Preencha os dados abaixo para analisarmos o perfil da sua empresa.</p>
+                <p class="prg-txt" id="prg-txt">⏳ <strong>Aplicação rápida (2 minutos).</strong> Por ser uma análise individual conduzida diretamente por Talita Issei, liberamos apenas <strong>3 vagas por semana</strong>. Preencha os dados abaixo para analisarmos o perfil da sua empresa.</p>
                 <div class="dots" id="dots"></div>
             </div>
 
@@ -830,30 +835,18 @@
             var form = document.getElementById("f");
             var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
             var TOTAL = steps.length;
-            var pb = document.getElementById("pb");
             var btnPrev = document.getElementById("prev");
             var btnNext = document.getElementById("next");
             var dotsWrap = document.getElementById("dots");
+            var prgTxt = document.getElementById("prg-txt");
             var current = 0;
             var sending = false;
             var advTimer = null;
 
-            /* Fase 5 — progresso em etapas nomeadas + avanço automático em radio
+            /* Fase 5 — avanço automático em radio
              * docs/specs/pages/aplicacao-conversacional.md §4/§5 */
-            var STAGES = ["Contexto", "Contato", "Empresa", "Envio"];
-            var STAGE_OF = [0, 0, 1, 1, 2, 2, 2, 3];
             var CHOICE_STEPS = [0, 4, 5, 6];
             var ANALYSIS_SOURCE = { 1: "maior_problema_gestao", 5: "modelo_negocio", 6: "tamanho_equipe", 7: "faturamento_mensal" };
-
-            var stagesWrap = document.getElementById("stages");
-            STAGES.forEach(function (label) {
-                var span = document.createElement("span");
-                span.className = "cf-stage";
-                span.textContent = label;
-                stagesWrap.appendChild(span);
-            });
-            var stageEls = stagesWrap.querySelectorAll(".cf-stage");
-            var countEl = document.getElementById("count");
 
             function fieldValue(name) {
                 var radio = form.querySelector('input[name="' + name + '"][type=radio]:checked');
@@ -989,10 +982,7 @@
                     if (i === current) { s.style.animation = "none"; void s.offsetHeight; s.style.animation = null; }
                 });
                 Array.prototype.forEach.call(dots, function (d, i) { d.classList.toggle("act", i === current); });
-                Array.prototype.forEach.call(stageEls, function (el, i) { el.classList.toggle("a", i === STAGE_OF[current]); });
-                var pct = Math.round((current + 1) / TOTAL * 100);
-                countEl.textContent = String(current + 1).padStart(2, "0") + " / " + String(TOTAL).padStart(2, "0");
-                pb.setAttribute("aria-valuenow", String(pct));
+                prgTxt.hidden = current !== 0;
                 btnPrev.classList.toggle("h", current === 0);
                 btnNext.innerText = current === TOTAL - 1 ? "Enviar aplicação" : "Próximo";
                 renderAnalysis();

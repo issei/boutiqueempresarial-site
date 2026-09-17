@@ -76,7 +76,7 @@ O protótipo foi desenhado sem o spec em mão e divergiu dele em três pontos. N
 | 7 | Faturamento médio mensal | `faturamento_mensal` | radio 4 | ✅ de `tamanho_equipe` | automático |
 | 8 | Termo de Consentimento | `consentimento` | checkbox | ✅ de `faturamento_mensal` | botão (envio) |
 
-**Progresso**: quatro etapas nomeadas — **Contexto** (1) · **Contato** (2–4) · **Empresa** (5–7) · **Envio** (8) — mais contador `n/8`. Substitui `.bar`/`.step` percentual; `role="progressbar"` com `aria-valuenow` derivado de `steps.length` (a regra da correção D5 continua valendo: nada de índice hardcoded).
+**Progresso**: ~~quatro etapas nomeadas — Contexto (1) · Contato (2–4) · Empresa (5–7) · Envio (8) — mais contador `n/8`~~ **removido** — ver `docs/specs/design/formulario-progresso-topo.md`. Resta só `.dots` (indicador por etapa, sem contador nem rótulo). `.bar`/`.step` percentual segue fora de uso desde a Fase 5.
 
 ### 4.1 Regras de validação
 
@@ -95,7 +95,7 @@ Inalteradas em relação a `formulario.md` §4.3. Acrescenta:
 
 Regra da Fase 3 mantida: **nenhuma classe existente é renomeada ou removida.** `.rg` `.rl` `.err` `.shake` `.oth` `.hint` `.btn` `.b-bk` `.h` seguem em uso. `.bar` `.step` `.step.a` deixam de ser usadas pelo progresso novo mas **permanecem no CSS** (mesmo tratamento dado a `.rl.dis`).
 
-Classes novas, todas prefixadas `cf-`: `.cf-prog` `.cf-stage` `.cf-stage.a` `.cf-count` `.cf-an` `.cf-an-kicker` `.cf-an-axis` `.cf-an-text` `.cf-opts` `.cf-opt` `.cf-opt.sel` `.cf-opt-n`.
+Classes novas, todas prefixadas `cf-`: `.cf-an` `.cf-an-kicker` `.cf-an-axis` `.cf-an-text` `.cf-opts` `.cf-opt` `.cf-opt.sel` `.cf-opt-n`. `.cf-prog` `.cf-stage` `.cf-stage.a` `.cf-count` existiram nesta fase e foram removidas em `docs/specs/design/formulario-progresso-topo.md` — diferente do resto desta lista, elas **não** permanecem no CSS.
 
 ### 5.2 Valores exatos
 
