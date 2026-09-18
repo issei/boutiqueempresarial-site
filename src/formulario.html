@@ -99,23 +99,21 @@
 
         .c {
             width: 100%;
-            max-width: 680px;
+            max-width: 760px;
             padding: 2rem 1.5rem;
             position: relative
         }
 
         .l-w {
             text-align: center;
-            margin-bottom: .75rem;
-            opacity: .95
+            margin-bottom: .75rem
         }
 
-        .l-img {
-            width: 68px;
-            height: auto;
-            aspect-ratio: 200/200;
-            display: block;
-            margin: 0 auto
+        .wordmark {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.05rem, 4vw, 1.35rem);
+            font-weight: 600;
+            letter-spacing: .03em
         }
 
         .p-c {
@@ -288,18 +286,31 @@
             margin-bottom: 1.25rem
         }
 
-        .intro-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.25rem;
-            font-weight: 600;
-            line-height: 1.3;
-            padding-left: .75rem;
-            margin-bottom: .75rem;
-            border-left: 3px solid var(--gold-subtle)
+        .intro-eyebrow {
+            display: block;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+            font-size: .72rem;
+            letter-spacing: .2em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem
         }
 
-        .intro-lead {
-            font-style: italic
+        .intro-headline {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-size: clamp(1.9rem, 3.8vw, 2.9rem);
+            line-height: 1.12;
+            letter-spacing: -.025em;
+            margin: 0 0 1.1rem
+        }
+
+        .intro-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.3vw, 1.125rem);
+            line-height: 1.7;
+            color: var(--text-secondary);
+            max-width: 58ch
         }
 
         .intro ul {
@@ -640,14 +651,16 @@
             display: none !important
         }
 
+        @media(min-width:900px) {
+            .c {
+                padding: 4rem 2rem
+            }
+        }
+
         @media(max-height:600px) {
             body {
                 justify-content: flex-start;
                 padding-top: 2rem
-            }
-
-            .l-img {
-                width: 48px
             }
 
             .intro ul {
@@ -674,16 +687,16 @@
     /></noscript>
     <main class="c" id="conteudo">
         <h1 class="vh">Aplicação para a Sessão Estratégica — Boutique Empresarial</h1>
-        <div class="l-w"><img src="/boutiquelogo.webp" alt="Boutique Empresarial" class="l-img" width="200"
-                height="200"></div>
+        <div class="l-w"><span class="wordmark">Boutique Empresarial<span style="color:var(--gold-subtle)">.</span></span></div>
         <form id="f" onsubmit="return!1" novalidate>
             <input type="hidden" name="event_id" id="eid">
 
             <!-- 1 — Maior desafio da operação -->
             <div class="step a" data-s="0">
                 <div class="intro">
-                    <p class="intro-title">Sessão Estratégica de Diagnóstico BE</p>
-                    <p class="hint intro-lead">Uma reunião individual de 45 minutos para identificar em quais etapas a sua operação trava e definir o que precisa ser ajustado para a sua equipe entregar com qualidade — sem precisar da sua aprovação em cada demanda.</p>
+                    <p class="intro-eyebrow">Sessão Estratégica de Diagnóstico BE</p>
+                    <p class="intro-headline">Uma reunião individual de 45 minutos para identificar em quais etapas a sua operação trava.</p>
+                    <p class="intro-subtitle">E definir o que precisa ser ajustado para a sua equipe entregar com qualidade — sem precisar da sua aprovação em cada demanda.</p>
                     <details class="intro-details">
                         <summary>O que analisamos na sua sessão</summary>
                         <ul>
