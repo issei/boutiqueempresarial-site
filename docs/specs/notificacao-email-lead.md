@@ -32,6 +32,12 @@ Todas as decisões de arquitetura desta spec estão resolvidas. A implementaçã
 
 ---
 
+> **Atualização posterior — pré-captura.** `doPost` passou a sair cedo quando o payload tem
+> `parcial: true`, antes do CAPI, de `saveToSheet` e desta notificação
+> ([`design/formulario-envio-parcial.md`](design/formulario-envio-parcial.md)). RF3 continua valendo por
+> construção: o caminho parcial nunca chega a `saveToSheet`. A guarda `notify_<event_id>` fica intacta —
+> a pré-captura **não** grava essa chave, então o e-mail do lead completo não é engolido.
+
 ## 1. Contexto e estado atual
 
 ### 1.1 Fluxo hoje

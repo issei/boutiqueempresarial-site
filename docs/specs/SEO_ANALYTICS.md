@@ -19,6 +19,14 @@
 
 ## 3. Implementação Técnica
 
+### Consentimento antes das tags
+
+GA4 e Meta Pixel só coletam depois do consentimento. Cada página traz, **antes** do Pixel e do `gtag.js`,
+um bloco inline com `gtag('consent','default', …denied)`; a interface fica em `src/js/cookie-consent.js`.
+Ao criar página nova, replicar o bloco inline **junto** com os scripts abaixo — o contrato está em
+[`docs/specs/design/cookie-consent.md`](design/cookie-consent.md) e é cobrado por
+`e2e/cookie-consent.spec.js`.
+
 ### Injeção de Tags (Global)
 
 Todas as páginas HTML em `src/` devem conter o fragmento do GA4 dentro do `<head>`. A posição é
