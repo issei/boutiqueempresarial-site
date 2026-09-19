@@ -39,6 +39,13 @@ páginas; ver `docs/specs/HARNESS_AEO.md` §6.1.
 
 ```
 
+### Eventos do funil do formulário
+
+Catálogo e restrições em [`docs/specs/design/formulario-tracking-funil.md`](design/formulario-tracking-funil.md).
+Resumo: `form_step_view`, `form_answer`, `form_step_complete`, `form_back`, `form_validation_error`,
+`form_begin`, `form_contact_captured`, `form_submit_attempt`, `form_submit_error` em `formulario.html`;
+`generate_lead` (key event) em `obrigada.html`. Nenhum parâmetro leva PII.
+
 ### Estrutura de Metadados (SEO On-Page)
 
 Cada página deve seguir este padrão mínimo para garantir o "rankeamento" e a "vibe" profissional:

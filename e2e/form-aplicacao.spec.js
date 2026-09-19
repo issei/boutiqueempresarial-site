@@ -137,6 +137,54 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
   expect(texto).toContain('R$ 100 mil a R$ 300 mil/mês');
 });
 
+test('funil: eventos GA4/Meta por etapa, sem dado pessoal', async ({ page }) => {
+  await page.goto('/formulario.html');
+  const next = page.locator('#next');
+  const ga = () => page.evaluate(() =>
+    (window.dataLayer || []).map(a => Array.from(a)).filter(a => a[0] === 'event').map(a => [a[1], a[2]]));
+
+  await page.locator('input[name=maior_problema_gestao][value="Falta de padrão nas entregas e retrabalho"]').check({ force: true });
+  await expect(page.locator('#q-nome_completo')).toBeVisible({ timeout: 2000 });
+  await next.click(); // vazio -> erro de validação
+  await page.fill('#nome_completo', 'Maria Silva');
+  await next.click();
+  await page.fill('#whatsapp', '11987654321');
+  await next.click();
+  await page.fill('#email', 'maria@exemplo.com');
+  await next.click();
+  await page.locator('#prev').click();
+
+  const events = await ga();
+  expect(events.map(e => e[0])).toEqual([
+    'form_step_view',
+    'form_answer', 'form_step_complete', 'form_begin', 'form_step_view',
+    'form_validation_error',
+    'form_step_complete', 'form_step_view',
+    'form_step_complete', 'form_step_view',
+    'form_step_complete', 'form_contact_captured', 'form_step_view',
+    'form_back', 'form_step_view',
+  ]);
+  expect(events[0][1]).toEqual({ step_index: 0, step_name: 'maior_problema_gestao', direction: 'init' });
+  expect(events[1][1]).toEqual({ step_name: 'maior_problema_gestao', answer: 'Falta de padrão nas entregas e retrabalho' });
+  expect(events[5][1]).toEqual({ step_name: 'nome_completo' });
+  expect(events.at(-1)[1]).toMatchObject({ step_index: 3, step_name: 'email', direction: 'back' });
+
+  // Só valores de conjuntos fechados: nada do que foi digitado vaza para os parâmetros.
+  const flat = JSON.stringify(events);
+  for (const pii of ['Maria', 'maria@', '98765']) expect(flat).not.toContain(pii);
+
+  // Meta: só os eventos que viram público (o Lead fica em obrigada.html).
+  const meta = await page.evaluate(() => (window.fbq.queue || []).map(a => Array.from(a)).filter(a => a[0] === 'trackCustom').map(a => a[1]));
+  expect(meta).toEqual(['FormStart', 'ContactCaptured']);
+});
+
+test('obrigada.html envia generate_lead ao GA4 com o event_id', async ({ page }) => {
+  await page.goto('/obrigada.html?eid=test-event-id');
+  const ev = await page.evaluate(() =>
+    (window.dataLayer || []).map(a => Array.from(a)).filter(a => a[0] === 'event' && a[1] === 'generate_lead'));
+  expect(ev).toEqual([['event', 'generate_lead', { event_id: 'test-event-id' }]]);
+});
+
 test('utm persiste entre paginas (first-touch)', async ({ page }) => {
   await page.route('**/connect.facebook.net/**', r => r.abort());
   await page.route('**/googletagmanager.com/**', r => r.abort());

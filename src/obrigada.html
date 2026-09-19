@@ -44,6 +44,7 @@
             eid = ld.eid || '';
           } catch (e) { /* modo privado ou payload invalido */ }
         }
+        window.leadEid = eid; // lido pelo generate_lead do GA4, mais abaixo
         if (eid) {
           fbq('track', 'Lead', {}, { eventID: eid });
         } else {
@@ -70,6 +71,8 @@
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
         gtag('config', 'G-8HNXV7KTY9');
+        // Conversão do GA4 (marcar como key event). Depois do config: antes dele o evento não teria propriedade.
+        gtag('event', 'generate_lead', { event_id: window.leadEid || '' });
     </script>
 
     <title>Solicitação Recebida | Boutique Empresarial</title>

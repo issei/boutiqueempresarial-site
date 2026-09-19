@@ -970,6 +970,28 @@
             })();
 
             /* ---------------------------------------------------------------
+             * 1b. FUNIL — GA4 leva o detalhe; o Meta só o que vira público.
+             * docs/specs/design/formulario-tracking-funil.md
+             * Nunca enviar nome, e-mail, WhatsApp nem o texto livre de "Outro".
+             * ------------------------------------------------------------- */
+
+            function track(name, params, metaEvent) {
+                try { gtag("event", name, params || {}); } catch (e) { /* bloqueador: sem efeito no fluxo */ }
+                if (metaEvent) { try { fbq("trackCustom", metaEvent); } catch (e) { /* idem */ } }
+            }
+
+            // Nome da etapa = name do primeiro campo, o mesmo id usado no payload.
+            function stepName(step) { return step.querySelector("input[name]").name; }
+
+            var stepStart = 0, begun = false, captured = false;
+
+            // Mesmas regras de validate(), sem efeito colateral na interface.
+            function contactOk() {
+                var d = digits(fieldValue("whatsapp"));
+                return fieldValue("nome_completo").length >= 3 && isEmail(fieldValue("email")) && d.length >= 10 && d.length <= 11;
+            }
+
+            /* ---------------------------------------------------------------
              * 2. NAVEGAÇÃO — derivada de steps.length (sem índices fixos)
              * ------------------------------------------------------------- */
 
@@ -980,7 +1002,7 @@
             });
             var dots = dotsWrap.querySelectorAll(".dot");
 
-            function ui() {
+            function ui(dir) {
                 steps.forEach(function (s, i) {
                     s.classList.toggle("a", i === current);
                     if (i === current) { s.style.animation = "none"; void s.offsetHeight; s.style.animation = null; }
@@ -992,9 +1014,12 @@
                 renderAnalysis();
                 renderAck();
                 updateNextVisibility();
+                stepStart = Date.now();
+                track("form_step_view", { step_index: current, step_name: stepName(steps[current]), direction: dir });
             }
 
             function showError(step, msg) {
+                track("form_validation_error", { step_name: stepName(step) });
                 var e = step.querySelector(".err");
                 if (e) { if (msg) e.innerText = msg; e.style.display = "block"; }
                 step.classList.add("shake");
@@ -1063,11 +1088,20 @@
                 if (sending) return;
                 clearTimeout(advTimer);
                 if (dir === 1 && !validate(current)) return;
+                var here = { step_index: current, step_name: stepName(steps[current]) };
+                if (dir === 1) {
+                    here.duration_ms = Date.now() - stepStart;
+                    track("form_step_complete", here);
+                    if (!begun) { begun = true; track("form_begin", {}, "FormStart"); }
+                    if (!captured && contactOk()) { captured = true; track("form_contact_captured", {}, "ContactCaptured"); }
+                } else if (current > 0) {
+                    track("form_back", here);
+                }
                 if (dir === 1 && current === TOTAL - 1) { submit(); return; }
                 var next = current + dir;
                 if (next < 0 || next >= TOTAL) return;
                 current = next;
-                ui();
+                ui(dir === 1 ? "forward" : "back");
             }
             window.nav = nav;
 
@@ -1102,6 +1136,7 @@
                 clearError(step);
                 var idx = Number(step.dataset.s);
                 if (idx !== current) return;
+                if (e.target.type === "radio") track("form_answer", { step_name: e.target.name, answer: e.target.value });
                 updateNextVisibility();
                 renderAck();
                 if (e.target.type === "radio" && CHOICE_STEPS.indexOf(idx) !== -1) {
@@ -1181,6 +1216,7 @@
             function submit() {
                 if (sending) return;
                 sending = true;
+                track("form_submit_attempt");
                 btnNext.disabled = true;
                 btnNext.innerText = "Enviando...";
                 document.getElementById("l-msg").classList.remove("h");
@@ -1217,6 +1253,7 @@
                 }
 
                 function fail() {
+                    track("form_submit_error");
                     sending = false;
                     btnNext.disabled = false;
                     btnNext.innerText = "Enviar aplicação";
@@ -1235,7 +1272,7 @@
                 }).then(done).catch(fail);
             }
 
-            ui();
+            ui("init");
         })();
     </script>
 </body>

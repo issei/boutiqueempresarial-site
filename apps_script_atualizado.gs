@@ -344,6 +344,11 @@ function sendToMetaCAPI(data) {
       event_id: data.event_id,          // deduplicação com o Pixel do navegador
       event_source_url: data.page_url,
       action_source: 'website',
+      // LDU espelhando o Pixel do navegador (fbq dataProcessingOptions ['LDU'], 1, 1000):
+      // o mesmo evento não pode ter tratamento diferente por canal.
+      data_processing_options: ['LDU'],
+      data_processing_options_country: 1,
+      data_processing_options_state: 1000,
       user_data: userData,
       custom_data: {
         currency: 'BRL',
