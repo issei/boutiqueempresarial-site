@@ -49,6 +49,11 @@ Remover a pergunta explícita sobre consentimento (step 8) e expressar o consent
   - Altera `d.consentimento = document.getElementById("consentimento").checked;` para `d.consentimento = true;` (linha 1183)
   - O consentimento agora é implícito — sempre `true` para qualquer envio (qualquer um que chega ao botão "Enviar" já passou por todas as perguntas e está ciente)
 
+#### Última etapa não avança sozinha
+- `CHOICE_STEPS` passa de `[0, 4, 5, 6]` para `[0, 4, 5]`. Faturamento (etapa 7) é agora a última; se continuasse em `CHOICE_STEPS`, escolher uma faixa enviaria o formulário em 380 ms, sem o clique em "Enviar aplicação" e sem confirmar o aviso do rodapé.
+- A última etapa mostra o botão "Enviar aplicação"; o envio exige o clique explícito.
+- Efeito colateral aceito: os atalhos de teclado 1–4 continuam selecionando a opção só nas etapas de `CHOICE_STEPS`, então deixam de valer no faturamento.
+
 ## Mapa de etapas (antes → depois)
 
 | # | Antes | Depois |
