@@ -7,6 +7,34 @@
     <!-- Facebook Domain Verification -->
     <meta name="facebook-domain-verification" content="mwj9leq8r1nzwxtlmfc5ntempn8wst" />
 
+    <!-- Consent Mode v2 (padrão negado) — precede Pixel e GA4 de propósito: um
+         módulo é adiado e chegaria tarde. Interface em /js/cookie-consent.js;
+         contrato em docs/specs/design/cookie-consent.md -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        (function () {
+            var cat = null;
+            try {
+                var raw = JSON.parse(localStorage.getItem("be_consent") || "null");
+                if (raw && raw.v === 1) cat = raw.cat;
+            } catch (e) { /* modo privado: trata como quem ainda não decidiu */ }
+            window.__ccMarketing = !!(cat && cat.marketing);
+            gtag("consent", "default", {
+                ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied",
+                analytics_storage: "denied", functionality_storage: "granted",
+                security_storage: "granted", wait_for_update: 500
+            });
+            if (cat) {
+                var s = function (on) { return on ? "granted" : "denied"; };
+                gtag("consent", "update", {
+                    ad_storage: s(cat.marketing), ad_user_data: s(cat.marketing),
+                    ad_personalization: s(cat.marketing), analytics_storage: s(cat.analytics)
+                });
+            }
+        })();
+    </script>
+    <script type="module" src="/js/cookie-consent.js"></script>
     <!-- Meta Pixel Code 2026 Implementation -->
     <script>
     !function(f,b,e,v,n,t,s)
@@ -22,6 +50,8 @@
     fbq.disablePushState = true;
 
     // Ativa o Processamento Limitado de Dados (LDU) para LGPD/CCPA
+    // Pixel enfileira os eventos enquanto revogado e os libera no grant.
+    fbq('consent', window.__ccMarketing ? 'grant' : 'revoke');
     fbq('dataProcessingOptions', ['LDU'], 1, 1000);
 
     fbq('init', '1469019395044653');

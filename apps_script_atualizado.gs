@@ -7,6 +7,8 @@
  *   2. Gravar o lead na planilha, com proteção contra injeção de fórmula
  *   3. Enviar o evento "Lead" para a Meta Conversions API (server-side)
  *   4. Avisar a equipe por e-mail (docs/specs/notificacao-email-lead.md)
+ *   5. Guardar a pré-captura do contato na aba "Parciais", sem CAPI e sem
+ *      e-mail (docs/specs/design/formulario-envio-parcial.md)
  *
  * ----------------------------------------------------------------------------
  * SETUP OBRIGATÓRIO (uma única vez, antes do primeiro deploy)
@@ -48,6 +50,22 @@ const CONFIG = {
   NOTIFY_CACHE_TTL_S: 21600
 };
 
+/**
+ * Aba separada da pré-captura (docs/specs/design/formulario-envio-parcial.md).
+ * Separada de propósito: `Respostas` continua sendo só aplicação completa, e
+ * nenhuma fórmula, filtro ou integração apontada para ela enxerga lead parcial.
+ * Só as respostas que já existem quando o contato fica válido — as três últimas
+ * perguntas ainda não foram feitas.
+ */
+const PARTIAL_SHEET_NAME = 'Parciais';
+const PARTIAL_HEADERS = [
+  'Data', 'Event ID',
+  'Nome Completo', 'E-mail', 'WhatsApp',
+  'Maior Desafio (Equipe)', 'Maior Desafio (Outro)',
+  'utm_source', 'utm_medium', 'utm_campaign',
+  'Página', 'Referrer'
+];
+
 /** Ordem canônica das colunas. Alterar aqui exige republicar o Web App. */
 const HEADERS = [
   'Data', 'Event ID',
@@ -73,6 +91,11 @@ function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
 
+    // Pré-captura: sai daqui sem CAPI e sem e-mail. Um "Lead" server-side antes
+    // da qualificação passaria a otimizar a campanha para "deu o contato", e o
+    // aviso interno de um lead que ainda está preenchendo é ruído.
+    if (data.parcial === true) return savePartialLead(data);
+
     // O CAPI roda antes da gravação apenas para que seu status entre na mesma
     // linha; qualquer falha dele é capturada e nunca impede o registro do lead.
     let capiStatus = 'não enviado (sem consentimento)';
@@ -86,6 +109,17 @@ function doPost(e) {
     }
 
     saveToSheet(data, capiStatus);
+
+    // Marca o lead como concluído para que uma pré-captura atrasada (rede lenta,
+    // cold start) não grave em `Parciais` alguém que já aplicou.
+    const doneId = String(data.event_id || '');
+    if (doneId) {
+      try {
+        CacheService.getScriptCache().put('done_' + doneId, '1', CONFIG.NOTIFY_CACHE_TTL_S);
+      } catch (cacheError) {
+        console.error('Erro ao marcar lead concluído', cacheError);
+      }
+    }
 
     // O aviso é efeito colateral: o lead já está salvo. Qualquer falha aqui é
     // registrada e descartada — nunca transforma um registro válido em erro.
@@ -125,31 +159,83 @@ function jsonOut(obj) {
  * ela é ARQUIVADA por renomeação — nunca apagada — e uma nova é criada.
  * Sem isso, as linhas novas entrariam desalinhadas sob os títulos antigos.
  */
-function ensureSheet() {
+function ensureSheet(name, headers) {
+  // Sem argumentos = aba de leads completos. Chamadores antigos seguem válidos.
+  name = name || CONFIG.SHEET_NAME;
+  headers = headers || HEADERS;
+
   const doc = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = doc.getSheetByName(CONFIG.SHEET_NAME);
+  let sheet = doc.getSheetByName(name);
 
   if (!sheet) {
-    sheet = doc.insertSheet(CONFIG.SHEET_NAME);
-    sheet.appendRow(HEADERS);
+    sheet = doc.insertSheet(name);
+    sheet.appendRow(headers);
     sheet.setFrozenRows(1);
     return sheet;
   }
 
   const width = Math.max(sheet.getLastColumn(), 1);
   const current = sheet.getRange(1, 1, 1, width).getValues()[0];
-  const matches = current.length >= HEADERS.length &&
-    HEADERS.every(function (h, i) { return String(current[i]).trim() === h; });
+  const matches = current.length >= headers.length &&
+    headers.every(function (h, i) { return String(current[i]).trim() === h; });
 
   if (!matches) {
     const stamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd_HHmmss');
-    sheet.setName(CONFIG.SHEET_NAME + '_legado_' + stamp);
-    sheet = doc.insertSheet(CONFIG.SHEET_NAME);
-    sheet.appendRow(HEADERS);
+    sheet.setName(name + '_legado_' + stamp);
+    sheet = doc.insertSheet(name);
+    sheet.appendRow(headers);
     sheet.setFrozenRows(1);
   }
 
   return sheet;
+}
+
+/**
+ * Grava a pré-captura e devolve o mesmo formato de resposta do caminho completo.
+ * Roda dentro do lock do doPost, como todo o resto.
+ *
+ * Duas guardas, ambas por event_id e ambas best-effort (CacheService evicta sem
+ * garantia — ver a nota de notifyNewLead):
+ *   done_<id>    — o lead já aplicou; a linha parcial seria ruído.
+ *   partial_<id> — já gravamos a pré-captura desta sessão; não duplicar.
+ * Sem event_id as duas ficam desligadas: falta de chave não pode custar o lead.
+ */
+function savePartialLead(data) {
+  const eventId = String(data.event_id || '');
+  const cache = CacheService.getScriptCache();
+
+  if (eventId) {
+    if (cache.get('done_' + eventId)) {
+      console.log('Lead ' + eventId + ' já concluiu — pré-captura descartada.');
+      return jsonOut({ result: 'success', parcial: true, skipped: 'concluido', event_id: eventId });
+    }
+    if (cache.get('partial_' + eventId)) {
+      console.log('Pré-captura de ' + eventId + ' já gravada — pulando.');
+      return jsonOut({ result: 'success', parcial: true, skipped: 'duplicado', event_id: eventId });
+    }
+  }
+
+  ensureSheet(PARTIAL_SHEET_NAME, PARTIAL_HEADERS).appendRow([
+    new Date(),
+    sanitizeInput(data.event_id),
+
+    sanitizeInput(data.nome_completo),
+    sanitizeInput(data.email),
+    asText(onlyDigits(data.whatsapp)),
+
+    sanitizeInput(data.maior_problema_gestao),
+    sanitizeInput(data.maior_problema_gestao_outro),
+
+    sanitizeInput(data.utm_source),
+    sanitizeInput(data.utm_medium),
+    sanitizeInput(data.utm_campaign),
+
+    sanitizeInput(data.page_url),
+    sanitizeInput(data.referrer)
+  ]);
+
+  if (eventId) cache.put('partial_' + eventId, '1', CONFIG.NOTIFY_CACHE_TTL_S);
+  return jsonOut({ result: 'success', parcial: true, event_id: eventId });
 }
 
 function saveToSheet(data, capiStatus) {
@@ -436,10 +522,22 @@ function setupCredentials() {
   });
 }
 
-/** Cria/valida a aba com o cabeçalho canônico sem gravar nenhum lead. */
+/** Cria/valida as abas com o cabeçalho canônico sem gravar nenhum lead. */
 function testEnsureSheet() {
-  const sheet = ensureSheet();
-  console.log('Aba pronta: ' + sheet.getName() + ' (' + sheet.getLastColumn() + ' colunas)');
+  [ensureSheet(), ensureSheet(PARTIAL_SHEET_NAME, PARTIAL_HEADERS)].forEach(function (sheet) {
+    console.log('Aba pronta: ' + sheet.getName() + ' (' + sheet.getLastColumn() + ' colunas)');
+  });
+}
+
+/**
+ * Grava uma pré-captura de teste em "Parciais". Confirma o caminho curto:
+ * nenhuma linha em "Respostas", nenhum e-mail, nenhuma chamada ao CAPI.
+ */
+function testSavePartialLead() {
+  const fixture = leadFixture();
+  fixture.parcial = true;
+  fixture.event_id = 'parcial-teste-' + Date.now();
+  console.log(savePartialLead(fixture).getContent());
 }
 
 /** Lead fictício com todos os campos do contrato, para os testes manuais. */

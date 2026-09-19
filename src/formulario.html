@@ -7,6 +7,34 @@
     <!-- Facebook Domain Verification -->
     <meta name="facebook-domain-verification" content="mwj9leq8r1nzwxtlmfc5ntempn8wst" />
 
+    <!-- Consent Mode v2 (padrão negado) — precede Pixel e GA4 de propósito: um
+         módulo é adiado e chegaria tarde. Interface em /js/cookie-consent.js;
+         contrato em docs/specs/design/cookie-consent.md -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        (function () {
+            var cat = null;
+            try {
+                var raw = JSON.parse(localStorage.getItem("be_consent") || "null");
+                if (raw && raw.v === 1) cat = raw.cat;
+            } catch (e) { /* modo privado: trata como quem ainda não decidiu */ }
+            window.__ccMarketing = !!(cat && cat.marketing);
+            gtag("consent", "default", {
+                ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied",
+                analytics_storage: "denied", functionality_storage: "granted",
+                security_storage: "granted", wait_for_update: 500
+            });
+            if (cat) {
+                var s = function (on) { return on ? "granted" : "denied"; };
+                gtag("consent", "update", {
+                    ad_storage: s(cat.marketing), ad_user_data: s(cat.marketing),
+                    ad_personalization: s(cat.marketing), analytics_storage: s(cat.analytics)
+                });
+            }
+        })();
+    </script>
+    <script type="module" src="/js/cookie-consent.js"></script>
     <!-- Meta Pixel Code 2026 Implementation -->
     <script>
     !function(f,b,e,v,n,t,s)
@@ -22,6 +50,8 @@
     fbq.disablePushState = true;
 
     // Ativa o Processamento Limitado de Dados (LDU) para LGPD/CCPA
+    // Pixel enfileira os eventos enquanto revogado e os libera no grant.
+    fbq('consent', window.__ccMarketing ? 'grant' : 'revoke');
     fbq('dataProcessingOptions', ['LDU'], 1, 1000);
 
     fbq('init', '1469019395044653');
@@ -823,9 +853,13 @@
 
             <p id="l-msg" class="leg h" style="color:var(--text-primary);font-weight:600">Processando...</p>
 
-            <div class="leg">Esta é uma aplicação e não garante o agendamento. As vagas são limitadas. Ao enviar, você
+            <!-- "Ao responder" (e não "ao enviar"): o consentimento passa a valer desde a
+                 primeira resposta, que é o que sustenta a pré-captura do contato.
+                 docs/specs/design/formulario-envio-parcial.md -->
+            <div class="leg">Esta é uma aplicação e não garante o agendamento. As vagas são limitadas. Ao responder, você
                 concorda e autorizo com uso dos dados apenas para avaliação desta aplicação e com nossa <a href="/privacidade.html" target="_blank" rel="noopener">Política de
-                    Privacidade</a>.</div>
+                    Privacidade</a>. <button type="button" class="cc-reopen"
+                    onclick="window.cookieConsent && window.cookieConsent.open()">Preferências de cookies</button></div>
         </form>
     </main>
 
@@ -1093,7 +1127,11 @@
                     here.duration_ms = Date.now() - stepStart;
                     track("form_step_complete", here);
                     if (!begun) { begun = true; track("form_begin", {}, "FormStart"); }
-                    if (!captured && contactOk()) { captured = true; track("form_contact_captured", {}, "ContactCaptured"); }
+                    if (!captured && contactOk()) {
+                        captured = true;
+                        track("form_contact_captured", {}, "ContactCaptured");
+                        sendPartial();
+                    }
                 } else if (current > 0) {
                     track("form_back", here);
                 }
@@ -1213,6 +1251,35 @@
                 return d;
             }
 
+            // text/plain evita preflight CORS; no-cors garante a entrega mesmo com
+            // resposta opaca; keepalive mantém o POST vivo durante a navegação.
+            function post(payload) {
+                return fetch(G_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "text/plain;charset=UTF-8" },
+                    body: JSON.stringify(payload),
+                    keepalive: true
+                });
+            }
+
+            /**
+             * Pré-captura: assim que nome, WhatsApp e e-mail estão válidos, o contato
+             * vai para o backend, que o grava na aba "Parciais". Quem abandonar entre
+             * aqui e o faturamento deixa de se perder.
+             *
+             * Dispara uma vez só e é fire-and-forget: nada de `sending`, botão ou alert —
+             * uma falha aqui não pode atrapalhar quem ainda está preenchendo.
+             * O consentimento vale desde a primeira resposta ("Ao responder, você
+             * concorda", no rodapé), então o payload vai com consentimento como o final.
+             * Quem decide não chamar CAPI nem e-mail é o backend, pela flag `parcial`.
+             */
+            function sendPartial() {
+                var payload = collect();
+                payload.parcial = true;
+                post(payload).catch(function () { /* silencioso: o envio final é o que conta */ });
+            }
+
             function submit() {
                 if (sending) return;
                 sending = true;
@@ -1261,15 +1328,7 @@
                     alert("Não foi possível enviar sua aplicação. Verifique sua conexão e tente novamente.");
                 }
 
-                // text/plain evita preflight CORS; no-cors garante a entrega mesmo com
-                // resposta opaca; keepalive mantém o POST vivo durante a navegação.
-                fetch(G_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "text/plain;charset=UTF-8" },
-                    body: JSON.stringify(payload),
-                    keepalive: true
-                }).then(done).catch(fail);
+                post(payload).then(done).catch(fail);
             }
 
             ui("init");

@@ -9,6 +9,13 @@ test.beforeEach(async ({ page }) => {
   await page.route('**://fonts.gstatic.com/**', r => r.abort());
   await page.route('**://connect.facebook.net/**', r => r.abort());
   await page.route('**://www.googletagmanager.com/**', r => r.abort());
+  // Visitante que já decidiu sobre cookies: sem o banner, que é fixo no canto
+  // inferior e cobriria os botões do formulário. O banner tem suíte própria.
+  await page.addInitScript(() => {
+    localStorage.setItem('be_consent', JSON.stringify({
+      v: 1, ts: '2026-01-01T00:00:00.000Z', cat: { analytics: true, marketing: true },
+    }));
+  });
 });
 
 const URL = '/formulario.html?utm_source=meta&utm_medium=cpc&utm_campaign=aplicacao&fbclid=IwABC123&gclid=GC1';
@@ -87,8 +94,24 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
 
   await page.waitForURL(/obrigada\.html/, { timeout: 8000 });
 
-  expect(posts.length).toBe(1);
-  const d = JSON.parse(posts[0]);
+  // Dois POSTs: a pré-captura do contato e a aplicação completa.
+  expect(posts.length).toBe(2);
+
+  const parcial = JSON.parse(posts[0]);
+  expect(parcial.parcial).toBe(true);
+  expect(parcial.nome_completo).toBe('maria silva souza');
+  expect(parcial.email).toBe('Maria@Exemplo.COM');
+  expect(parcial.whatsapp).toBe('(11) 98765-4321');
+  expect(parcial.event_id).toBeTruthy();
+  // O desafio já foi respondido quando o contato fica válido; o resto, não.
+  expect(parcial.maior_problema_gestao).toBe('Outro');
+  expect(parcial.modelo_negocio).toBeUndefined();
+  expect(parcial.faturamento_mensal).toBeUndefined();
+
+  const d = JSON.parse(posts[1]);
+  // A flag só existe no parcial: é ela que faz o backend pular CAPI e e-mail.
+  expect(d.parcial).toBeUndefined();
+  expect(d.event_id).toBe(parcial.event_id);
 
   expect(d.nome_completo).toBe('maria silva souza');
   expect(d.email).toBe('Maria@Exemplo.COM');
@@ -176,6 +199,38 @@ test('funil: eventos GA4/Meta por etapa, sem dado pessoal', async ({ page }) => 
   // Meta: só os eventos que viram público (o Lead fica em obrigada.html).
   const meta = await page.evaluate(() => (window.fbq.queue || []).map(a => Array.from(a)).filter(a => a[0] === 'trackCustom').map(a => a[1]));
   expect(meta).toEqual(['FormStart', 'ContactCaptured']);
+});
+
+test('abandono após o e-mail deixa só a pré-captura', async ({ page }) => {
+  const posts = [];
+  await page.route('**/script.google.com/**', route => {
+    posts.push(route.request().postData());
+    route.fulfill({ status: 200, contentType: 'application/json', body: '{"result":"success"}' });
+  });
+
+  await page.goto('/formulario.html');
+  const next = page.locator('#next');
+  await page.locator('input[name=maior_problema_gestao][value="Falta de padrão nas entregas e retrabalho"]').check({ force: true });
+  await expect(page.locator('#q-nome_completo')).toBeVisible({ timeout: 2000 });
+  await page.fill('#nome_completo', 'João Abandono');
+  await next.click();
+  await page.fill('#whatsapp', '11912345678');
+  await next.click();
+  await page.fill('#email', 'joao@exemplo.com');
+  await next.click();
+
+  // Chegou na pergunta de modelo de negócio e parou por aqui.
+  await expect(page.locator('#q-modelo_negocio')).toBeVisible();
+  await expect.poll(() => posts.length).toBe(1);
+  const parcial = JSON.parse(posts[0]);
+  expect(parcial.parcial).toBe(true);
+  expect(parcial.email).toBe('joao@exemplo.com');
+
+  // Voltar e avançar de novo não pode gerar uma segunda pré-captura.
+  await page.locator('#prev').click();
+  await next.click();
+  await expect(page.locator('#q-modelo_negocio')).toBeVisible();
+  expect(posts.length).toBe(1);
 });
 
 test('obrigada.html envia generate_lead ao GA4 com o event_id', async ({ page }) => {

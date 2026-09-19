@@ -38,6 +38,11 @@ Remover a pergunta explícita sobre consentimento (step 8) e expressar o consent
     Esta é uma aplicação e não garante o agendamento. As vagas são limitadas. Ao enviar, você concorda e autorizo com uso dos dados apenas para avaliação desta aplicação e com nossa Política de Privacidade.
     ```
 
+> **Superado**: "Ao **enviar**" virou "Ao **responder**" para sustentar a pré-captura do contato —
+> ver [`formulario-envio-parcial.md`](formulario-envio-parcial.md). O rodapé também ganhou o botão
+> "Preferências de cookies" ([`cookie-consent.md`](cookie-consent.md)). O restante desta spec continua
+> valendo.
+
 ### 2. JavaScript (`src/formulario.html` `<script>`)
 
 #### Remove
