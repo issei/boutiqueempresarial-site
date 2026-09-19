@@ -1,6 +1,6 @@
 # Rastreamento do funil do formulário (GA4 + Meta Pixel) e LDU no CAPI
 
-**Status**: Implementada (PR: a preencher) — pendentes os passos manuais de §5
+**Status**: Implementada ([PR #25](https://github.com/issei/boutiqueempresarial-site/pull/25)) — pendentes os passos manuais de §5
 
 ## Objetivo
 
@@ -63,9 +63,16 @@ evento igual. **Não** reabre a decisão de negócio sobre LDU forçado a todos 
 
 ## 5. Passos manuais (fora do código)
 
-1. **GA4**: cadastrar dimensões personalizadas de evento (`step_name`, `step_index`, `answer`, `direction`,
-   `duration_ms`); marcar `generate_lead` como *key event*; desligar "Interações com formulário" na Medição
-   aprimorada (ou ignorá-la); montar a **Exploração de funil** com `form_step_view` → `generate_lead`.
+1. **GA4** (Administrador → Exibição de dados → Definições personalizadas), antes de o tráfego chegar — dados
+   coletados antes do cadastro não ganham a dimensão depois:
+   - **dimensões** personalizadas, escopo Evento: `step_name`, `step_index`, `answer`, `direction`;
+   - **métrica** personalizada, escopo Evento, unidade milissegundos: `duration_ms` (é número, não dimensão);
+   - marcar `generate_lead` como *key event*;
+   - desligar "Interações com formulário" na Medição aprimorada (ou ignorá-la);
+   - retenção de dados de eventos em 14 meses (o padrão de 2 limita as Explorações);
+   - filtro de tráfego interno, para os testes da equipe não poluírem o funil;
+   - **Exploração de funil**: etapas `form_step_view` com `step_name` = cada etapa, na ordem, terminando em
+     `generate_lead`, com funil fechado.
 2. **Apps Script**: publicar **nova versão da implantação existente** (nunca uma implantação nova — a URL `/exec` está
    fixa em `formulario.html`). Conferir no Events Manager → *Testar eventos* que o `Lead` do servidor chega
    com o LDU e continua deduplicado com o do navegador.
