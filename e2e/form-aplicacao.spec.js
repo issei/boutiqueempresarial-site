@@ -76,18 +76,13 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
   await page.locator('input[name=tamanho_equipe][value="5 a 15 colaboradores"]').check({ force: true });
   await expect(page.locator('#q-faturamento_mensal')).toBeVisible({ timeout: 2000 });
 
-  // 7 faturamento — bloco de análise vem do tamanho do time.
+  // 7 faturamento — bloco de análise vem do tamanho do time; envio após esta etapa.
   await expect(page.locator('#an-6')).toBeVisible();
   await expect(page.locator('#an-6 .cf-an-kicker')).toHaveText('A prioridade no seu tamanho de operação');
   await page.locator('input[name=faturamento_mensal][value="R$ 100 mil a R$ 300 mil/mês"]').check({ force: true });
 
-  // 8 consentimento — bloco de análise vem do faturamento; envio obrigatório.
-  await expect(page.locator('#an-7')).toBeVisible({ timeout: 2000 });
-  await expect(page.locator('#an-7 .cf-an-kicker')).toHaveText('Como eu calibro a sessão');
+  // Envio: consentimento é agora implícito (rodapé). Nenhuma step adicional.
   await expect(next).toHaveText('Enviar aplicação');
-  await next.click();
-  await expect(page.locator('#err-consentimento')).toBeVisible();
-  await page.locator('#consentimento').check();
   await next.click();
 
   await page.waitForURL(/obrigada\.html/, { timeout: 8000 });
