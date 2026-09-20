@@ -62,9 +62,10 @@ evento e passa a otimizar a campanha para "deu o contato" em vez de "aplicou". O
 as etapas, fora dos steps. Quem respondeu já consentiu. Atualiza
 [`formulario-fase5-rodape-consentimento.md`](formulario-fase5-rodape-consentimento.md).
 
-**Linha parcial não é apagada quando o lead completa.** `Parciais` pode conter quem depois aplicou;
-reconciliar por `event_id` (ou e-mail/telefone, se a pessoa recarregou a página e gerou outro `event_id`).
-Limpar exigiria varredura da planilha a cada POST.
+**Linha parcial é apagada quando o lead completa.** Depois de `saveToSheet`, `deletePartialLead()` remove
+de `Parciais` as linhas com o mesmo `event_id` **ou** o mesmo e-mail (quem recarregou a página gerou outro
+`event_id`, mas o e-mail é o mesmo). Best-effort: falha na limpeza é registrada e nunca derruba o lead
+completo. Um parcial atrasado que chegue *depois* do completo segue coberto só pela guarda `done_<id>`.
 
 ## Critérios de pronto
 
@@ -72,7 +73,8 @@ Limpar exigiria varredura da planilha a cada POST.
    mesmo `event_id`.
 2. Abandono depois do e-mail gera **um** POST, e voltar/avançar não gera outro.
 3. O parcial não leva modelo de negócio, equipe nem faturamento — as perguntas ainda não foram feitas.
-4. `npm run gate` verde.
+4. Lead completo não deixa linha em `Parciais` (`testDeletePartialLead()` no editor: 2 antes, 0 depois).
+5. `npm run gate` verde.
 
 Suíte: `e2e/form-aplicacao.spec.js`.
 
@@ -88,5 +90,5 @@ conferir: 1 linha em `Parciais`, nenhuma em `Respostas`, nenhum e-mail.
 
 ## Fora do escopo
 
-Aviso por e-mail de lead parcial (exigiria trigger com atraso para não virar ruído), limpeza da linha em
-`Parciais` quando o lead completa, reenvio ao editar o contato depois de voltar.
+Aviso por e-mail de lead parcial (exigiria trigger com atraso para não virar ruído), reenvio ao editar o
+contato depois de voltar.
