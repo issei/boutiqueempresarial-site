@@ -142,6 +142,14 @@ function doPost(e) {
 
     saveToSheet(data, capiStatus);
 
+    // A pré-captura deste lead já não faz sentido: só a aplicação completa fica.
+    // Efeito colateral — falhar aqui nunca pode transformar um lead salvo em erro.
+    try {
+      deletePartialLead(data);
+    } catch (cleanError) {
+      console.error('Erro ao limpar parcial', cleanError);
+    }
+
     // Marca o lead como concluído para que uma pré-captura atrasada (rede lenta,
     // cold start) não grave em `Parciais` alguém que já aplicou.
     const doneId = String(data.event_id || '');
@@ -374,6 +382,31 @@ function savePartialLead(data) {
 
   if (eventId) cache.put('partial_' + eventId, '1', CONFIG.NOTIFY_CACHE_TTL_S);
   return jsonOut({ result: 'success', parcial: true, event_id: eventId });
+}
+
+/**
+ * Apaga de `Parciais` as linhas do lead que acabou de concluir, para não duplicar
+ * com `Respostas`. Casa por event_id OU e-mail: quem recarregou a página no meio
+ * do formulário gerou outro event_id, mas o e-mail é o mesmo.
+ * Roda dentro do lock do doPost.
+ */
+function deletePartialLead(data) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(PARTIAL_SHEET_NAME);
+  if (!sheet || sheet.getLastRow() < 2) return;
+
+  const eventId = String(data.event_id || '').trim();
+  const email = String(data.email || '').trim().toLowerCase();
+  if (!eventId && !email) return;
+
+  // Colunas 2..4 = Event ID, Nome, E-mail (ver PARTIAL_HEADERS).
+  const rows = sheet.getRange(2, 2, sheet.getLastRow() - 1, 3).getValues();
+  for (let i = rows.length - 1; i >= 0; i--) { // de baixo para cima: deleteRow desloca o resto
+    const rowId = String(rows[i][0]).trim();
+    const rowEmail = String(rows[i][2]).trim().toLowerCase();
+    if ((eventId && rowId === eventId) || (email && rowEmail === email)) {
+      sheet.deleteRow(i + 2);
+    }
+  }
 }
 
 function saveToSheet(data, capiStatus) {
@@ -677,6 +710,29 @@ function testSavePartialLead() {
   fixture.parcial = true;
   fixture.event_id = 'parcial-teste-' + Date.now();
   console.log(savePartialLead(fixture).getContent());
+}
+
+/**
+ * Confirma a limpeza: grava dois parciais (mesmo e-mail, event_ids diferentes),
+ * conclui com um deles e espera que nenhum sobre em "Parciais".
+ */
+function testDeletePartialLead() {
+  const base = leadFixture();
+  base.parcial = true;
+  base.email = 'limpeza-' + Date.now() + '@exemplo.com.br';
+  const a = Object.assign({}, base, { event_id: 'parcial-a-' + Date.now() });
+  const b = Object.assign({}, base, { event_id: 'parcial-b-' + Date.now() });
+  savePartialLead(a);
+  savePartialLead(b);
+
+  const sheet = ensureSheet(PARTIAL_SHEET_NAME, PARTIAL_HEADERS);
+  const count = function () {
+    return sheet.getLastRow() < 2 ? 0 : sheet.getRange(2, 4, sheet.getLastRow() - 1, 1).getValues()
+      .filter(function (r) { return String(r[0]).toLowerCase() === base.email; }).length;
+  };
+  console.log('Antes: ' + count() + ' (esperado 2)');
+  deletePartialLead(a);
+  console.log('Depois: ' + count() + ' (esperado 0)');
 }
 
 /** Lead fictício com todos os campos do contrato, para os testes manuais. */
