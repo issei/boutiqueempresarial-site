@@ -1272,6 +1272,123 @@
                 }).then(done).catch(fail);
             }
 
+            /* ---------------------------------------------------------------
+             * 6. WEBMCP — o agente do visitante preenche; o envio segue humano.
+             * As tools só respondem e avançam (mesmas validate()/nav() da interface,
+             * então tracking e regras são os de sempre). Nenhuma chama submit():
+             * o clique em "Enviar aplicação" é de quem consente. docs/AGENT_READINESS.md §5
+             * ------------------------------------------------------------- */
+
+            function stepFields(step) {
+                var out = [], byName = {};
+                Array.prototype.forEach.call(step.querySelectorAll(
+                    "input[type=radio], input[type=text]:not(.oth), input[type=email], input[type=tel]"
+                ), function (el) {
+                    if (el.type !== "radio") { out.push({ name: el.name, tipo: el.type }); return; }
+                    var f = byName[el.name];
+                    if (!f) { f = byName[el.name] = { name: el.name, tipo: "radio", opcoes: [] }; out.push(f); }
+                    f.opcoes.push(el.value);
+                    if (el.dataset.other) f.opcao_que_exige_outro = el.value;
+                });
+                return out;
+            }
+
+            // Só `respondido` (booleano): o estado não devolve o que o visitante digitou.
+            function agentState() {
+                return {
+                    etapa_atual: current + 1,
+                    total_etapas: TOTAL,
+                    campos: stepFields(steps[current]).map(function (f) {
+                        f.respondido = fieldValue(f.name) !== "";
+                        return f;
+                    })
+                };
+            }
+
+            // 380 ms do auto-avanço (CHOICE_STEPS) + folga, para o estado refletir a etapa nova.
+            function settled() {
+                return new Promise(function (resolve) { setTimeout(function () { resolve(agentState()); }, 450); });
+            }
+
+            var modelContext = document.modelContext || navigator.modelContext; // navigator.* deprecado no Chromium 150
+            if (modelContext) {
+                try {
+                    var noParams = { type: "object", properties: {} };
+
+                    modelContext.registerTool({
+                        name: "get_form_state",
+                        description: "Devolve a etapa atual do formulário de aplicação ao Diagnóstico Gratuito e os campos dela (nome, tipo, opções literais e se já foi respondido).",
+                        inputSchema: noParams,
+                        annotations: { readOnlyHint: true },
+                        execute: function () { return agentState(); }
+                    });
+
+                    modelContext.registerTool({
+                        name: "answer_field",
+                        description: "Responde um campo da etapa atual, em nome do visitante e só com o que ele informou. Em campos de escolha, `valor` é uma das opções literais de get_form_state. Para a opção que exige detalhe (“Outro”), informe também `outro`.",
+                        inputSchema: {
+                            type: "object",
+                            properties: {
+                                campo: { type: "string", description: "name do campo, como em get_form_state." },
+                                valor: { type: "string" },
+                                outro: { type: "string", description: "Texto livre, só para a opção “Outro”." }
+                            },
+                            required: ["campo", "valor"]
+                        },
+                        execute: function (args) {
+                            var step = steps[current];
+                            var fields = stepFields(step);
+                            var f = fields.filter(function (x) { return x.name === args.campo; })[0];
+                            if (!f) throw new Error("Campo fora da etapa atual. Campos desta etapa: " + fields.map(function (x) { return x.name; }).join(", "));
+                            var valor = String(args.valor == null ? "" : args.valor);
+
+                            if (f.tipo === "radio") {
+                                var radio = Array.prototype.filter.call(
+                                    step.querySelectorAll("input[type=radio]"),
+                                    function (r) { return r.name === f.name && r.value === valor; }
+                                )[0];
+                                if (!radio) throw new Error("Valor fora das opções. Opções: " + f.opcoes.join(" | "));
+                                var other = radio.dataset.other && document.getElementById(radio.dataset.other);
+                                var outro = String(args.outro || "").trim();
+                                if (other && outro.length < 2) throw new Error("Informe `outro` (mínimo 2 caracteres) para a opção “" + valor + "”.");
+                                radio.checked = true;
+                                radio.dispatchEvent(new Event("change", { bubbles: true }));
+                                if (other) { other.value = outro; other.dispatchEvent(new Event("input", { bubbles: true })); }
+                            } else {
+                                var el = step.querySelector('input[name="' + f.name + '"]');
+                                el.value = valor;
+                                el.dispatchEvent(new Event("input", { bubbles: true }));
+                                el.dispatchEvent(new Event("change", { bubbles: true }));
+                            }
+                            return settled();
+                        }
+                    });
+
+                    modelContext.registerTool({
+                        name: "next_step",
+                        description: "Avança para a próxima etapa se a atual estiver válida. Não envia o formulário: na última etapa quem clica em “Enviar aplicação” é o visitante, depois de revisar as respostas.",
+                        inputSchema: noParams,
+                        execute: function () {
+                            if (sending) throw new Error("Envio em andamento.");
+                            if (current === TOTAL - 1) {
+                                var s = agentState();
+                                s.aguardando = "O visitante deve revisar e clicar em “Enviar aplicação”. O agente não envia.";
+                                return s;
+                            }
+                            var before = current;
+                            nav(1);
+                            if (current === before) {
+                                var err = steps[before].querySelector(".err");
+                                throw new Error((err && err.textContent.trim()) || "Etapa inválida.");
+                            }
+                            return settled();
+                        }
+                    });
+                } catch (err) {
+                    console.error("WebMCP: falha ao registrar tools", err);
+                }
+            }
+
             ui("init");
         })();
     </script>

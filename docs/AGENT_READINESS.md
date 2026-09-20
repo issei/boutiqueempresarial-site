@@ -30,7 +30,7 @@ uma, e nenhuma depende das outras:
 | **HTML** | `<link rel="api-catalog\|service-desc\|service-doc">` | quem lê o `<head>` | ✅ nas 7 páginas |
 | **Arquivo bem-conhecido** | `/.well-known/*`, `/llms.txt`, `/robots.txt` | convenção | ✅ |
 | **Autenticação** | `/auth.md` + metadados OAuth | quem precisa de escopo/credencial | ✅ |
-| **Runtime** | `navigator.modelContext` (WebMCP) | agente que executa a página | ✅ na home |
+| **Runtime** | `document.modelContext` / `navigator.modelContext` (WebMCP) | agente que executa a página | ✅ na home e no formulário |
 
 As três primeiras são resposta HTTP e DNS — não arquivo estático. Ficam em
 `scripts/setup-agent-discovery-aws.sh` e exigem execução manual contra a conta AWS.
@@ -77,6 +77,7 @@ As três primeiras são resposta HTTP e DNS — não arquivo estático. Ficam em
 | MCP server card | `public/.well-known/mcp/server-card.json` |
 | índice de skills + `SKILL.md` | `public/.well-known/agent-skills/` |
 | WebMCP (`get_overview`, `get_faq`) | `src/index.html`, antes de `</body>` |
+| WebMCP (`get_form_state`, `answer_field`, `next_step`) | `src/formulario.html`, fim do IIFE — preenchem e avançam, **nunca enviam** |
 
 ### Autenticação
 
@@ -120,6 +121,9 @@ manifesto — é publicar um que mente.
 
 O formulário em `/formulario.html` coleta dado pessoal sob consentimento LGPD explícito.
 `auth.md` e `llms.txt` declaram que **não é API e não deve ser submetido por agente**.
+O agente do visitante pode *preencher* pelas tools WebMCP da página; o clique em
+"Enviar aplicação" é sempre humano (as tools não chamam `submit()`). Teste:
+`tests/formulario-webmcp.spec.js`.
 
 ---
 
