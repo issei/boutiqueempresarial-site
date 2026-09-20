@@ -53,3 +53,6 @@ desktop.ini
 
 # APM — pacotes instalados a partir de apm.yml, reinstaláveis. Como node_modules.
 apm_modules/
+
+# Repowise — índice local (wiki.db, caches), regenerável com `repowise init`
+.repowise/
