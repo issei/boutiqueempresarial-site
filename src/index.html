@@ -682,7 +682,9 @@
          As duas tools leem o que já está na página: o companion Markdown e o FAQPage do
          JSON-LD. Nada de fonte paralela — o que a tool devolve é o que o humano lê. -->
     <script>
-        if (typeof navigator.modelContext !== 'undefined') {
+        // document.modelContext no rascunho de 27/05/2026; navigator.modelContext (deprecado no Chromium 150) como fallback.
+        const mc = document.modelContext ?? navigator.modelContext;
+        if (mc) {
             const { signal } = new AbortController();
             const faq = () => {
                 const grafo = JSON.parse(document.querySelector('script[type="application/ld+json"]').textContent);
@@ -691,14 +693,14 @@
             };
 
             try {
-                navigator.modelContext.registerTool({
+                mc.registerTool({
                     name: 'get_overview',
                     description: 'Recupera o resumo do Diagnóstico Gratuito da Boutique Empresarial — o que a sessão examina, quem conduz e para quem é — em Markdown.',
                     inputSchema: { type: 'object', properties: {} },
                     execute: async () => (await fetch('/index.md')).text(),
                 }, { signal });
 
-                navigator.modelContext.registerTool({
+                mc.registerTool({
                     name: 'get_faq',
                     description: 'Recupera as perguntas frequentes sobre o Diagnóstico Gratuito com as respostas literais publicadas na página.',
                     inputSchema: { type: 'object', properties: {} },
