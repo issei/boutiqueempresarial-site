@@ -134,21 +134,27 @@ test.describe('descoberta a partir da página', () => {
 
   // WebMCP ainda não existe em nenhum browser do Playwright: injeta-se um duplo
   // antes do load para provar que o registro roda e com que shape.
-  test('WebMCP registra get_overview e get_faq', async ({ page }) => {
-    await page.addInitScript(() => {
-      window.__tools = [];
-      navigator.modelContext = { registerTool: (t) => window.__tools.push(t) };
+  // document.modelContext é a API atual do rascunho; navigator.modelContext (deprecado
+  // no Chromium 150) segue como fallback — a home precisa funcionar nos dois.
+  for (const host of ['document', 'navigator']) {
+    test(`WebMCP registra get_overview e get_faq via ${host}.modelContext`, async ({ page }) => {
+      await page.addInitScript((h) => {
+        window.__tools = [];
+        (h === 'document' ? document : navigator).modelContext = {
+          registerTool: (t) => window.__tools.push(t),
+        };
+      }, host);
+      await page.goto('/');
+
+      const tools = await page.evaluate(() => window.__tools.map((t) => t.name));
+      expect(tools, 'tools WebMCP não registradas').toEqual(['get_overview', 'get_faq']);
+
+      // get_faq lê o FAQPage da própria página: o que a tool devolve é o que o
+      // humano lê. Sem essa amarra o agente ganharia uma fonte paralela.
+      const respostas = await page.evaluate(() => window.__tools[1].execute());
+      expect(respostas.length, 'get_faq devolveu FAQ vazio').toBeGreaterThan(0);
+      expect(respostas[0]).toHaveProperty('pergunta');
+      expect(respostas[0]).toHaveProperty('resposta');
     });
-    await page.goto('/');
-
-    const tools = await page.evaluate(() => window.__tools.map((t) => t.name));
-    expect(tools, 'tools WebMCP não registradas').toEqual(['get_overview', 'get_faq']);
-
-    // get_faq lê o FAQPage da própria página: o que a tool devolve é o que o
-    // humano lê. Sem essa amarra o agente ganharia uma fonte paralela.
-    const respostas = await page.evaluate(() => window.__tools[1].execute());
-    expect(respostas.length, 'get_faq devolveu FAQ vazio').toBeGreaterThan(0);
-    expect(respostas[0]).toHaveProperty('pergunta');
-    expect(respostas[0]).toHaveProperty('resposta');
-  });
+  }
 });
