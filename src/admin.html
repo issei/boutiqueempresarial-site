@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin — Boutique Empresarial</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    /* ── layout base ── */
+    body { font-family: var(--font-sans, system-ui, sans-serif); background: #f5f5f4; color: #1c1917; }
+    .admin-header { background: #fff; border-bottom: 1px solid #e7e5e4; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .admin-header h1 { font-size: 1rem; font-weight: 600; margin: 0; }
+    /* ── auth screen ── */
+    #auth-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .auth-box { background: #fff; border: 1px solid #e7e5e4; border-radius: 12px; padding: 2rem; width: 100%; max-width: 360px; }
+    .auth-box h2 { margin: 0 0 1.5rem; font-size: 1.125rem; font-weight: 600; }
+    /* ── filter chips ── */
+    .chips { display: flex; flex-wrap: wrap; gap: .5rem; padding: 1rem 1.5rem; background: #fff; border-bottom: 1px solid #e7e5e4; }
+    .chip { padding: .25rem .75rem; border-radius: 999px; font-size: .8125rem; cursor: pointer; border: 1px solid #d6d3d1; background: #fff; color: #57534e; transition: background .15s; white-space: nowrap; }
+    .chip.active { background: #1c1917; color: #fff; border-color: #1c1917; }
+    /* ── table ── */
+    .table-wrap { overflow-x: auto; padding: 1rem 1.5rem; }
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.07); }
+    thead { background: #f5f5f4; }
+    th { padding: .625rem 1rem; text-align: left; font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: #78716c; border-bottom: 1px solid #e7e5e4; white-space: nowrap; }
+    td { padding: .75rem 1rem; border-bottom: 1px solid #f5f5f4; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr.clickable:hover td { background: #fafaf9; cursor: pointer; }
+    .badge { display: inline-block; padding: .125rem .5rem; border-radius: 999px; font-size: .75rem; font-weight: 500; white-space: nowrap; }
+    .badge-novo { background: #e0f2fe; color: #0369a1; }
+    .badge-contato { background: #fef9c3; color: #854d0e; }
+    .badge-reuniao { background: #ede9fe; color: #6d28d9; }
+    .badge-proposta { background: #fce7f3; color: #9d174d; }
+    .badge-fechado { background: #dcfce7; color: #15803d; }
+    .badge-perdido { background: #f5f5f4; color: #78716c; }
+    /* ── modal ── */
+    #modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 100; }
+    #modal-overlay.open { display: flex; align-items: flex-start; justify-content: flex-end; }
+    #modal { background: #fff; width: 100%; max-width: 520px; height: 100vh; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    #modal h2 { margin: 0; font-size: 1.125rem; font-weight: 600; }
+    .modal-close { background: none; border: none; cursor: pointer; font-size: 1.25rem; padding: .25rem; color: #78716c; }
+    .section-title { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: #78716c; margin: 0 0 .5rem; }
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem 1rem; }
+    .field { display: flex; flex-direction: column; gap: .125rem; }
+    .field label { font-size: .75rem; color: #78716c; }
+    .field span { font-size: .875rem; }
+    /* ── crm form ── */
+    .crm-form { display: flex; flex-direction: column; gap: .875rem; }
+    .crm-form label { font-size: .8125rem; font-weight: 500; display: block; margin-bottom: .25rem; }
+    .crm-form select, .crm-form input, .crm-form textarea {
+      width: 100%; padding: .5rem .75rem; border: 1px solid #d6d3d1; border-radius: 6px;
+      font-size: .875rem; font-family: inherit; background: #fff; color: #1c1917;
+      box-sizing: border-box;
+    }
+    .crm-form textarea { resize: vertical; min-height: 80px; }
+    .crm-form .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .btn-save { padding: .625rem 1.5rem; background: #1c1917; color: #fff; border: none; border-radius: 6px; font-size: .875rem; font-weight: 600; cursor: pointer; }
+    .btn-save:hover { background: #292524; }
+    .btn-save:disabled { opacity: .5; cursor: default; }
+    .save-msg { font-size: .8125rem; color: #15803d; margin-left: .5rem; }
+    /* ── empty / loading ── */
+    .empty { text-align: center; padding: 3rem 1.5rem; color: #78716c; font-size: .875rem; }
+    input, select, textarea, button { font-family: inherit; }
+    @media (max-width: 640px) {
+      .table-wrap { padding: .75rem; }
+      #modal { max-width: 100%; }
+      .field-grid { grid-template-columns: 1fr; }
+      .crm-form .row2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── AUTH SCREEN ── -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <h2>Boutique Empresarial · Admin</h2>
+    <div style="display:flex;flex-direction:column;gap:.75rem;">
+      <div>
+        <label style="font-size:.8125rem;font-weight:500;display:block;margin-bottom:.25rem;">URL do Apps Script</label>
+        <input id="url-input" type="url" placeholder="https://script.google.com/macros/s/…/exec"
+               style="width:100%;padding:.5rem .75rem;border:1px solid #d6d3d1;border-radius:6px;font-size:.875rem;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:.8125rem;font-weight:500;display:block;margin-bottom:.25rem;">Senha</label>
+        <input id="pw-input" type="password" placeholder="senha admin"
+               style="width:100%;padding:.5rem .75rem;border:1px solid #d6d3d1;border-radius:6px;font-size:.875rem;box-sizing:border-box;">
+      </div>
+      <button onclick="login()" style="padding:.625rem;background:#1c1917;color:#fff;border:none;border-radius:6px;font-size:.875rem;font-weight:600;cursor:pointer;">Entrar</button>
+      <p id="auth-error" style="color:#dc2626;font-size:.8125rem;margin:0;display:none;"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN APP ── -->
+<div id="app" style="display:none;">
+  <div class="admin-header">
+    <h1>Boutique Empresarial · Leads</h1>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <span id="lead-count" style="font-size:.8125rem;color:#78716c;"></span>
+      <button onclick="logout()" style="font-size:.8125rem;color:#78716c;background:none;border:none;cursor:pointer;">Sair</button>
+    </div>
+  </div>
+
+  <div class="chips">
+    <button class="chip active" data-status="Todos" onclick="setFilter('Todos', this)">Todos</button>
+    <button class="chip" data-status="Novo" onclick="setFilter('Novo', this)">Novo</button>
+    <button class="chip" data-status="Em contato" onclick="setFilter('Em contato', this)">Em contato</button>
+    <button class="chip" data-status="Reunião marcada" onclick="setFilter('Reunião marcada', this)">Reunião marcada</button>
+    <button class="chip" data-status="Proposta enviada" onclick="setFilter('Proposta enviada', this)">Proposta enviada</button>
+    <button class="chip" data-status="Fechado" onclick="setFilter('Fechado', this)">Fechado</button>
+    <button class="chip" data-status="Perdido" onclick="setFilter('Perdido', this)">Perdido</button>
+  </div>
+
+  <div class="table-wrap">
+    <div id="table-container"><p class="empty">Carregando…</p></div>
+  </div>
+</div>
+
+<!-- ── MODAL ── -->
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div id="modal" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <h2 id="modal-name">—</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <!-- lead data -->
+    <div>
+      <p class="section-title">Dados do formulário</p>
+      <div class="field-grid">
+        <div class="field"><label>Data</label><span id="f-data"></span></div>
+        <div class="field"><label>Faturamento</label><span id="f-fat"></span></div>
+        <div class="field"><label>E-mail</label><span id="f-email"></span></div>
+        <div class="field"><label>WhatsApp</label><span id="f-whats"></span></div>
+        <div class="field"><label>Modelo de negócio</label><span id="f-modelo"></span></div>
+        <div class="field"><label>Tamanho da equipe</label><span id="f-equipe"></span></div>
+        <div class="field" style="grid-column:1/-1"><label>Maior desafio</label><span id="f-desafio"></span></div>
+        <div class="field"><label>Origem</label><span id="f-origem"></span></div>
+        <div class="field"><label>Consentimento</label><span id="f-consent"></span></div>
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #e7e5e4;margin:0;">
+
+    <!-- crm form -->
+    <div>
+      <p class="section-title">Acompanhamento comercial</p>
+      <div class="crm-form">
+        <div>
+          <label>Status</label>
+          <select id="crm-status">
+            <option>Novo</option>
+            <option>Em contato</option>
+            <option>Reunião marcada</option>
+            <option>Proposta enviada</option>
+            <option>Fechado</option>
+            <option>Perdido</option>
+          </select>
+        </div>
+        <div>
+          <label>Notas / observações</label>
+          <textarea id="crm-notas" placeholder="Contexto da conversa, impressões, histórico…"></textarea>
+        </div>
+        <div class="row2">
+          <div>
+            <label>Próxima ação</label>
+            <input id="crm-proxima" type="text" placeholder="Ex: Ligar, Enviar proposta…">
+          </div>
+          <div>
+            <label>Data da ação</label>
+            <input id="crm-data" type="date">
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;">
+          <button class="btn-save" id="btn-save" onclick="saveCrm()">Salvar</button>
+          <span class="save-msg" id="save-msg" style="display:none;">Salvo ✓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── configuração ───────────────────────────────────────────────────────────
+  var SCRIPT_URL_KEY = 'be_admin_url';
+  var currentLead = null;
+  var allLeads = [];
+  var activeFilter = 'Todos';
+
+  // ── auth ───────────────────────────────────────────────────────────────────
+  function getUrl() { try { return localStorage.getItem(SCRIPT_URL_KEY) || ''; } catch(e) { return ''; } }
+  function getPw()  { try { return sessionStorage.getItem('be_admin_pw') || ''; } catch(e) { return ''; } }
+
+  function login() {
+    var url = document.getElementById('url-input').value.trim();
+    var pw  = document.getElementById('pw-input').value;
+    var err = document.getElementById('auth-error');
+    if (!url) { err.textContent = 'Informe a URL do Apps Script.'; err.style.display = ''; return; }
+    if (!pw)  { err.textContent = 'Informe a senha.'; err.style.display = ''; return; }
+    err.style.display = 'none';
+    try { localStorage.setItem(SCRIPT_URL_KEY, url); } catch(e) {}
+    try { sessionStorage.setItem('be_admin_pw', pw); } catch(e) {}
+    showApp();
+  }
+
+  function logout() {
+    try { sessionStorage.removeItem('be_admin_pw'); } catch(e) {}
+    location.reload();
+  }
+
+  function showApp() {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = '';
+    loadLeads();
+  }
+
+  // ── init ───────────────────────────────────────────────────────────────────
+  (function init() {
+    var url = getUrl();
+    if (url) { try { document.getElementById('url-input').value = url; } catch(e) {} }
+    var pw = getPw();
+    if (url && pw) { showApp(); return; }
+    document.getElementById('pw-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') login();
+    });
+  })();
+
+  // ── data loading ───────────────────────────────────────────────────────────
+  function loadLeads() {
+    var url = getUrl() + '?action=leads&pw=' + encodeURIComponent(getPw());
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.result === 'error' && data.code === 403) {
+          try { sessionStorage.removeItem('be_admin_pw'); } catch(e) {}
+          location.reload();
+          return;
+        }
+        allLeads = data.leads || [];
+        renderTable();
+      })
+      .catch(function() {
+        document.getElementById('table-container').innerHTML =
+          '<p class="empty">Erro ao carregar leads. Verifique a URL e a senha.</p>';
+      });
+  }
+
+  // ── table render ───────────────────────────────────────────────────────────
+  function setFilter(status, el) {
+    activeFilter = status;
+    document.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('active'); });
+    el.classList.add('active');
+    renderTable();
+  }
+
+  function renderTable() {
+    var leads = activeFilter === 'Todos'
+      ? allLeads
+      : allLeads.filter(function(l) { return l.crm_status === activeFilter; });
+
+    document.getElementById('lead-count').textContent = leads.length + ' lead' + (leads.length !== 1 ? 's' : '');
+
+    if (!leads.length) {
+      document.getElementById('table-container').innerHTML = '<p class="empty">Nenhum lead encontrado.</p>';
+      return;
+    }
+
+    var rows = leads.map(function(l, i) {
+      var orig = [l['utm_source'], l['utm_medium'], l['utm_campaign']].filter(Boolean).join(' / ');
+      return '<tr class="clickable" onclick="openLead(' + allLeads.indexOf(l) + ')">' +
+        '<td>' + fmt(l['Data']) + '</td>' +
+        '<td style="font-weight:500">' + esc(l['Nome Completo'] || '—') + '</td>' +
+        '<td>' + esc(l['WhatsApp'] || '—') + '</td>' +
+        '<td style="color:#57534e">' + esc(l['E-mail'] || '—') + '</td>' +
+        '<td>' + esc(l['Faturamento Mensal'] || '—') + '</td>' +
+        '<td><span class="badge ' + badgeClass(l.crm_status) + '">' + esc(l.crm_status) + '</span></td>' +
+        '</tr>';
+    }).join('');
+
+    document.getElementById('table-container').innerHTML =
+      '<table><thead><tr>' +
+      '<th>Data</th><th>Nome</th><th>WhatsApp</th><th>E-mail</th><th>Faturamento</th><th>Status</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  function badgeClass(status) {
+    var map = {
+      'Novo': 'badge-novo',
+      'Em contato': 'badge-contato',
+      'Reunião marcada': 'badge-reuniao',
+      'Proposta enviada': 'badge-proposta',
+      'Fechado': 'badge-fechado',
+      'Perdido': 'badge-perdido'
+    };
+    return map[status] || 'badge-novo';
+  }
+
+  // ── modal ──────────────────────────────────────────────────────────────────
+  function openLead(idx) {
+    currentLead = allLeads[idx];
+    var l = currentLead;
+    var orig = [l['utm_source'], l['utm_medium'], l['utm_campaign']].filter(Boolean).join(' / ');
+    var desafio = [l['Maior Desafio (Equipe)'], l['Maior Desafio (Outro)']].filter(Boolean).join(' — ') || '—';
+    var modelo = [l['Modelo de Negócio'], l['Modelo (Outro)']].filter(Boolean).join(' — ') || '—';
+
+    document.getElementById('modal-name').textContent = l['Nome Completo'] || '—';
+    document.getElementById('f-data').textContent    = fmt(l['Data']);
+    document.getElementById('f-fat').textContent     = l['Faturamento Mensal'] || '—';
+    document.getElementById('f-email').textContent   = l['E-mail'] || '—';
+    document.getElementById('f-whats').textContent   = l['WhatsApp'] || '—';
+    document.getElementById('f-modelo').textContent  = modelo;
+    document.getElementById('f-equipe').textContent  = l['Tamanho da Equipe'] || '—';
+    document.getElementById('f-desafio').textContent = desafio;
+    document.getElementById('f-origem').textContent  = orig || '—';
+    document.getElementById('f-consent').textContent = l['Consentimento'] || '—';
+
+    document.getElementById('crm-status').value  = l.crm_status || 'Novo';
+    document.getElementById('crm-notas').value   = l.crm_notas || '';
+    document.getElementById('crm-proxima').value = l.crm_proxima_acao || '';
+    document.getElementById('crm-data').value    = l.crm_data_acao || '';
+
+    document.getElementById('save-msg').style.display = 'none';
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function closeModal(e) {
+    if (e && e.target !== document.getElementById('modal-overlay')) return;
+    document.getElementById('modal-overlay').classList.remove('open');
+    currentLead = null;
+  }
+
+  // ── save crm ───────────────────────────────────────────────────────────────
+  function saveCrm() {
+    if (!currentLead) return;
+    var btn = document.getElementById('btn-save');
+    btn.disabled = true;
+    btn.textContent = 'Salvando…';
+
+    var payload = {
+      action: 'update_crm',
+      pw: getPw(),
+      event_id: currentLead['Event ID'],
+      status: document.getElementById('crm-status').value,
+      notas: document.getElementById('crm-notas').value,
+      proxima_acao: document.getElementById('crm-proxima').value,
+      data_acao: document.getElementById('crm-data').value
+    };
+
+    fetch(getUrl(), {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'text/plain' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      btn.disabled = false;
+      btn.textContent = 'Salvar';
+      if (data.result === 'ok') {
+        // update local state
+        currentLead.crm_status = payload.status;
+        currentLead.crm_notas = payload.notas;
+        currentLead.crm_proxima_acao = payload.proxima_acao;
+        currentLead.crm_data_acao = payload.data_acao;
+        renderTable();
+        var msg = document.getElementById('save-msg');
+        msg.style.display = '';
+        setTimeout(function() { msg.style.display = 'none'; }, 2500);
+      }
+    })
+    .catch(function() {
+      btn.disabled = false;
+      btn.textContent = 'Salvar';
+      alert('Erro ao salvar. Tente novamente.');
+    });
+  }
+
+  // ── utils ──────────────────────────────────────────────────────────────────
+  function fmt(iso) {
+    if (!iso) return '—';
+    try {
+      var d = new Date(iso);
+      return d.toLocaleDateString('pt-BR') + ' ' +
+             d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    } catch(e) { return iso; }
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+
+</body>
+</html>

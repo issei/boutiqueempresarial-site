@@ -20,6 +20,7 @@
  *     META_PIXEL_ID     = 1469019395044653
  *     META_ACCESS_TOKEN = <token da Conversions API>
  *     META_TEST_CODE    = <opcional, só durante testes no Events Manager>
+ *     ADMIN_PASSWORD    = <senha para o painel admin em /admin>
  *
  * Alternativa: rode setupCredentials() uma vez, com os valores preenchidos,
  * e APAGUE os valores do corpo da função em seguida.
@@ -58,6 +59,8 @@ const CONFIG = {
  * perguntas ainda não foram feitas.
  */
 const PARTIAL_SHEET_NAME = 'Parciais';
+const CRM_SHEET_NAME = 'CRM';
+const CRM_HEADERS = ['Event ID', 'Status', 'Notas', 'Próxima Ação', 'Data Ação', 'Atualizado em'];
 const PARTIAL_HEADERS = [
   'Data', 'Event ID',
   'Nome Completo', 'E-mail', 'WhatsApp',
@@ -90,6 +93,13 @@ function doPost(e) {
   }
   try {
     const data = JSON.parse(e.postData.contents);
+
+    // Atualização de CRM vinda do painel admin.
+    if (data.action === 'update_crm') {
+      if (!checkPasswordFromData(data)) return jsonOut({ result: 'error', code: 403 });
+      upsertCrm(data);
+      return jsonOut({ result: 'ok' });
+    }
 
     // Pré-captura: sai daqui sem CAPI e sem e-mail. Um "Lead" server-side antes
     // da qualificação passaria a otimizar a campanha para "deu o contato", e o
@@ -138,8 +148,19 @@ function doPost(e) {
   }
 }
 
-/** Health check do endpoint (abrir a /exec no navegador). */
-function doGet() {
+/**
+ * API do painel admin + health check.
+ *
+ * ?action=leads&pw=<ADMIN_PASSWORD>      → retorna todos os leads com dados de CRM
+ * ?action=update_crm (POST JSON)         → upsert na aba CRM (aceito via doPost)
+ * (sem action)                           → health check
+ */
+function doGet(e) {
+  var action = (e && e.parameter && e.parameter.action) || '';
+  if (action === 'leads') {
+    if (!checkPassword(e)) return jsonOut({ result: 'error', code: 403 });
+    return jsonOut({ result: 'ok', leads: getAllLeads() });
+  }
   return jsonOut({ result: 'ok', service: 'boutique-leads', version: CONFIG.API_VERSION });
 }
 
@@ -147,6 +168,92 @@ function jsonOut(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+/* ========================================================================== */
+/* PAINEL ADMIN / CRM                                                         */
+/* ========================================================================== */
+
+function checkPassword(e) {
+  var pw = (e && e.parameter && e.parameter.pw) || '';
+  var expected = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD') || '';
+  return expected && pw === expected;
+}
+
+function checkPasswordFromData(data) {
+  var pw = String(data.pw || '');
+  var expected = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD') || '';
+  return expected && pw === expected;
+}
+
+/** Todos os leads da aba Respostas, enriquecidos com dados da aba CRM. */
+function getAllLeads() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
+  if (!sheet || sheet.getLastRow() < 2) return [];
+
+  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, HEADERS.length).getValues();
+  var crm = getCrmData();
+  var tz = Session.getScriptTimeZone();
+
+  return rows.map(function(row) {
+    var obj = {};
+    HEADERS.forEach(function(h, i) { obj[h] = row[i]; });
+    if (obj['Data'] instanceof Date) {
+      obj['Data'] = Utilities.formatDate(obj['Data'], tz, "yyyy-MM-dd'T'HH:mm:ss");
+    }
+    var eventId = String(obj['Event ID'] || '');
+    var crmRow = crm[eventId] || {};
+    obj['crm_status'] = crmRow.status || 'Novo';
+    obj['crm_notas'] = crmRow.notas || '';
+    obj['crm_proxima_acao'] = crmRow.proxima_acao || '';
+    obj['crm_data_acao'] = crmRow.data_acao || '';
+    return obj;
+  }).reverse(); // mais recentes primeiro
+}
+
+/** Map de event_id → dados CRM. */
+function getCrmData() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CRM_SHEET_NAME);
+  if (!sheet || sheet.getLastRow() < 2) return {};
+
+  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, CRM_HEADERS.length).getValues();
+  var map = {};
+  rows.forEach(function(row) {
+    var id = String(row[0]);
+    if (id) map[id] = { status: row[1], notas: row[2], proxima_acao: row[3], data_acao: row[4] };
+  });
+  return map;
+}
+
+/** Atualiza a linha de CRM existente ou insere uma nova. */
+function upsertCrm(data) {
+  var sheet = ensureSheet(CRM_SHEET_NAME, CRM_HEADERS);
+  var eventId = String(data.event_id || '');
+  if (!eventId) return;
+
+  var lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    var ids = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+    for (var i = 0; i < ids.length; i++) {
+      if (String(ids[i][0]) === eventId) {
+        sheet.getRange(i + 2, 2, 1, 5).setValues([[
+          sanitizeInput(data.status), sanitizeInput(data.notas),
+          sanitizeInput(data.proxima_acao), sanitizeInput(data.data_acao),
+          new Date()
+        ]]);
+        return;
+      }
+    }
+  }
+
+  sheet.appendRow([
+    eventId,
+    sanitizeInput(data.status), sanitizeInput(data.notas),
+    sanitizeInput(data.proxima_acao), sanitizeInput(data.data_acao),
+    new Date()
+  ]);
 }
 
 /* ========================================================================== */
@@ -518,7 +625,8 @@ function setupCredentials() {
   PropertiesService.getScriptProperties().setProperties({
     META_PIXEL_ID: '',      // ex.: 1469019395044653
     META_ACCESS_TOKEN: '',  // token da Conversions API
-    LEAD_NOTIFY_TO: ''      // destino(s) do aviso de novo lead, separados por vírgula
+    LEAD_NOTIFY_TO: '',     // destino(s) do aviso de novo lead, separados por vírgula
+    ADMIN_PASSWORD: ''      // senha do painel /admin
   });
 }
 
