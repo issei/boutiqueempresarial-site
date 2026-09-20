@@ -20,7 +20,7 @@
  *     META_PIXEL_ID     = 1469019395044653
  *     META_ACCESS_TOKEN = <token da Conversions API>
  *     META_TEST_CODE    = <opcional, só durante testes no Events Manager>
- *     ADMIN_PASSWORD    = <senha para o painel admin em /admin>
+ *     ADMIN_PASSWORD    = <frase longa (16+ caracteres) para o painel /admin>
  *
  * Alternativa: rode setupCredentials() uma vez, com os valores preenchidos,
  * e APAGUE os valores do corpo da função em seguida.
@@ -61,6 +61,16 @@ const CONFIG = {
 const PARTIAL_SHEET_NAME = 'Parciais';
 const CRM_SHEET_NAME = 'CRM';
 const CRM_HEADERS = ['Event ID', 'Status', 'Notas', 'Próxima Ação', 'Data Ação', 'Atualizado em'];
+
+/**
+ * Sessão do painel /admin: a senha só entra no login; depois vale um token no cache.
+ * ponytail: o contador de erros é GLOBAL (o Apps Script não expõe o IP), então 5 erros
+ * bloqueiam o login até para a dona por 15 min. CacheService evicta sem garantia: token
+ * perdido = novo login; contador perdido = a trava zera (best-effort).
+ */
+const ADMIN_MAX_FAILS = 5;
+const ADMIN_LOCK_S = 900;         // 15 min
+const ADMIN_TOKEN_TTL_S = 21600;  // 6 h, teto do CacheService
 const PARTIAL_HEADERS = [
   'Data', 'Event ID',
   'Nome Completo', 'E-mail', 'WhatsApp',
@@ -94,9 +104,21 @@ function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
 
-    // Atualização de CRM vinda do painel admin.
+    // Painel admin. Fica dentro do lock para o contador de tentativas ser atômico.
+    if (data.action === 'login') return adminLogin(data);
+    if (data.action === 'logout') {
+      const key = tokenKey(data.token);
+      if (key) CacheService.getScriptCache().remove(key);
+      return jsonOut({ result: 'ok' });
+    }
+    if (data.action === 'leads') {
+      if (!checkToken(data)) return jsonOut({ result: 'error', code: 403 });
+      // ponytail: leitura sob o lock (poucas centenas de ms); se a planilha crescer e
+      // atrasar o formulário, mover para antes do lock.
+      return jsonOut({ result: 'ok', leads: getAllLeads() });
+    }
     if (data.action === 'update_crm') {
-      if (!checkPasswordFromData(data)) return jsonOut({ result: 'error', code: 403 });
+      if (!checkToken(data)) return jsonOut({ result: 'error', code: 403 });
       upsertCrm(data);
       return jsonOut({ result: 'ok' });
     }
@@ -149,18 +171,10 @@ function doPost(e) {
 }
 
 /**
- * API do painel admin + health check.
- *
- * ?action=leads&pw=<ADMIN_PASSWORD>      → retorna todos os leads com dados de CRM
- * ?action=update_crm (POST JSON)         → upsert na aba CRM (aceito via doPost)
- * (sem action)                           → health check
+ * Health check. O painel admin não usa GET: credencial em URL vaza em log, então
+ * login, leads e CRM entram todos por doPost.
  */
-function doGet(e) {
-  var action = (e && e.parameter && e.parameter.action) || '';
-  if (action === 'leads') {
-    if (!checkPassword(e)) return jsonOut({ result: 'error', code: 403 });
-    return jsonOut({ result: 'ok', leads: getAllLeads() });
-  }
+function doGet() {
   return jsonOut({ result: 'ok', service: 'boutique-leads', version: CONFIG.API_VERSION });
 }
 
@@ -174,16 +188,33 @@ function jsonOut(obj) {
 /* PAINEL ADMIN / CRM                                                         */
 /* ========================================================================== */
 
-function checkPassword(e) {
-  var pw = (e && e.parameter && e.parameter.pw) || '';
+/** Troca a senha por um token de sessão. Após ADMIN_MAX_FAILS erros, recusa até a senha certa. */
+function adminLogin(data) {
+  var cache = CacheService.getScriptCache();
+  var fails = Number(cache.get('admin_fails') || 0);
+  if (fails >= ADMIN_MAX_FAILS) return jsonOut({ result: 'error', code: 429 });
+
   var expected = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD') || '';
-  return expected && pw === expected;
+  if (!expected || String(data.pw || '') !== expected) {
+    cache.put('admin_fails', String(fails + 1), ADMIN_LOCK_S);
+    return jsonOut({ result: 'error', code: 403 });
+  }
+
+  cache.remove('admin_fails');
+  var token = Utilities.getUuid() + Utilities.getUuid();
+  cache.put(tokenKey(token), '1', ADMIN_TOKEN_TTL_S);
+  return jsonOut({ result: 'ok', token: token });
 }
 
-function checkPasswordFromData(data) {
-  var pw = String(data.pw || '');
-  var expected = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD') || '';
-  return expected && pw === expected;
+/** Chave do token no cache, ou '' se o formato não for o emitido (2 UUIDs = 72 chars). */
+function tokenKey(token) {
+  token = String(token || '');
+  return token.length === 72 ? 'admin_tok_' + token : '';
+}
+
+function checkToken(data) {
+  var key = tokenKey(data.token);
+  return !!key && CacheService.getScriptCache().get(key) === '1';
 }
 
 /** Todos os leads da aba Respostas, enriquecidos com dados da aba CRM. */
@@ -626,7 +657,7 @@ function setupCredentials() {
     META_PIXEL_ID: '',      // ex.: 1469019395044653
     META_ACCESS_TOKEN: '',  // token da Conversions API
     LEAD_NOTIFY_TO: '',     // destino(s) do aviso de novo lead, separados por vírgula
-    ADMIN_PASSWORD: ''      // senha do painel /admin
+    ADMIN_PASSWORD: ''      // frase longa (16+ caracteres) do painel /admin
   });
 }
 
