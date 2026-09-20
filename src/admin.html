@@ -65,7 +65,7 @@
     .crm-form .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
     .btn-save { padding: .625rem 1.5rem; background: #1c1917; color: #fff; border: none; border-radius: 6px; font-size: .875rem; font-weight: 600; cursor: pointer; }
     .btn-save:hover { background: #292524; }
-    .btn-save:disabled { opacity: .5; cursor: default; }
+    .btn-save:disabled, #btn-login:disabled { opacity: .5; cursor: default; }
     .save-msg { font-size: .8125rem; color: #15803d; margin-left: .5rem; }
     /* ── empty / loading ── */
     .empty { text-align: center; padding: 3rem 1.5rem; color: #78716c; font-size: .875rem; }
@@ -85,20 +85,15 @@
 <div id="auth-screen">
   <div class="auth-box">
     <h2>Boutique Empresarial · Admin</h2>
-    <div style="display:flex;flex-direction:column;gap:.75rem;">
+    <form id="login-form" onsubmit="login(); return false;" style="display:flex;flex-direction:column;gap:.75rem;">
       <div>
-        <label style="font-size:.8125rem;font-weight:500;display:block;margin-bottom:.25rem;">URL do Apps Script</label>
-        <input id="url-input" type="url" placeholder="https://script.google.com/macros/s/…/exec"
+        <label for="pw-input" style="font-size:.8125rem;font-weight:500;display:block;margin-bottom:.25rem;">Senha</label>
+        <input id="pw-input" type="password" autocomplete="current-password" placeholder="senha admin"
                style="width:100%;padding:.5rem .75rem;border:1px solid #d6d3d1;border-radius:6px;font-size:.875rem;box-sizing:border-box;">
       </div>
-      <div>
-        <label style="font-size:.8125rem;font-weight:500;display:block;margin-bottom:.25rem;">Senha</label>
-        <input id="pw-input" type="password" placeholder="senha admin"
-               style="width:100%;padding:.5rem .75rem;border:1px solid #d6d3d1;border-radius:6px;font-size:.875rem;box-sizing:border-box;">
-      </div>
-      <button onclick="login()" style="padding:.625rem;background:#1c1917;color:#fff;border:none;border-radius:6px;font-size:.875rem;font-weight:600;cursor:pointer;">Entrar</button>
-      <p id="auth-error" style="color:#dc2626;font-size:.8125rem;margin:0;display:none;"></p>
-    </div>
+      <button id="btn-login" type="submit" style="padding:.625rem;background:#1c1917;color:#fff;border:none;border-radius:6px;font-size:.875rem;font-weight:600;cursor:pointer;">Entrar</button>
+      <p id="auth-error" role="alert" style="color:#dc2626;font-size:.8125rem;margin:0;display:none;"></p>
+    </form>
   </div>
 </div>
 
@@ -194,30 +189,66 @@
 
 <script>
   // ── configuração ───────────────────────────────────────────────────────────
-  var SCRIPT_URL_KEY = 'be_admin_url';
+  // Mesma URL de formulario.html (G_URL). Não é segredo: a proteção é senha + token.
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRfDJx9yIZcS-fFVjVAVQuAY-qVWvYKMs9KCHSbMRRE78LPjYjrnb20KJrAPlj_NIo/exec';
+  var TOKEN_KEY = 'be_admin_token';
   var currentLead = null;
   var allLeads = [];
   var activeFilter = 'Todos';
 
+  // POST text/plain é requisição "simples": sem preflight de CORS (padrão do formulário).
+  // keepalive deixa o "Sair" chegar ao servidor mesmo com o reload logo em seguida.
+  function api(payload, keepalive) {
+    return fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'text/plain' },
+      keepalive: !!keepalive
+    }).then(function(r) { return r.json(); });
+  }
+
   // ── auth ───────────────────────────────────────────────────────────────────
-  function getUrl() { try { return localStorage.getItem(SCRIPT_URL_KEY) || ''; } catch(e) { return ''; } }
-  function getPw()  { try { return sessionStorage.getItem('be_admin_pw') || ''; } catch(e) { return ''; } }
+  // A senha só vai no POST de login e nunca é guardada; depois vale o token (6 h).
+  function getToken() { try { return sessionStorage.getItem(TOKEN_KEY) || ''; } catch(e) { return ''; } }
+
+  function expireSession() {
+    try { sessionStorage.removeItem(TOKEN_KEY); } catch(e) {}
+    location.reload();
+  }
+
+  function showError(msg) {
+    var err = document.getElementById('auth-error');
+    err.textContent = msg;
+    err.style.display = '';
+  }
 
   function login() {
-    var url = document.getElementById('url-input').value.trim();
     var pw  = document.getElementById('pw-input').value;
-    var err = document.getElementById('auth-error');
-    if (!url) { err.textContent = 'Informe a URL do Apps Script.'; err.style.display = ''; return; }
-    if (!pw)  { err.textContent = 'Informe a senha.'; err.style.display = ''; return; }
-    err.style.display = 'none';
-    try { localStorage.setItem(SCRIPT_URL_KEY, url); } catch(e) {}
-    try { sessionStorage.setItem('be_admin_pw', pw); } catch(e) {}
-    showApp();
+    var btn = document.getElementById('btn-login');
+    if (!pw) { showError('Informe a senha.'); return; }
+    document.getElementById('auth-error').style.display = 'none';
+    btn.disabled = true;
+
+    api({ action: 'login', pw: pw })
+      .then(function(data) {
+        if (data.result === 'ok' && data.token) {
+          try { sessionStorage.setItem(TOKEN_KEY, data.token); } catch(e) {}
+          showApp();
+        } else if (data.code === 403) {
+          showError('Senha incorreta.');
+        } else if (data.code === 429) {
+          showError('Muitas tentativas. Aguarde 15 minutos.');
+        } else {
+          showError('Erro no servidor. Tente novamente.');
+        }
+      })
+      .catch(function() { showError('Sem conexão. Tente novamente.'); })
+      .then(function() { btn.disabled = false; });
   }
 
   function logout() {
-    try { sessionStorage.removeItem('be_admin_pw'); } catch(e) {}
-    location.reload();
+    api({ action: 'logout', token: getToken() }, true).catch(function() {});
+    expireSession();
   }
 
   function showApp() {
@@ -227,33 +258,20 @@
   }
 
   // ── init ───────────────────────────────────────────────────────────────────
-  (function init() {
-    var url = getUrl();
-    if (url) { try { document.getElementById('url-input').value = url; } catch(e) {} }
-    var pw = getPw();
-    if (url && pw) { showApp(); return; }
-    document.getElementById('pw-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') login();
-    });
-  })();
+  if (getToken()) showApp();
 
   // ── data loading ───────────────────────────────────────────────────────────
   function loadLeads() {
-    var url = getUrl() + '?action=leads&pw=' + encodeURIComponent(getPw());
-    fetch(url)
-      .then(function(r) { return r.json(); })
+    api({ action: 'leads', token: getToken() })
       .then(function(data) {
-        if (data.result === 'error' && data.code === 403) {
-          try { sessionStorage.removeItem('be_admin_pw'); } catch(e) {}
-          location.reload();
-          return;
-        }
+        if (data.code === 403) { expireSession(); return; }
+        if (data.result !== 'ok') throw new Error('api');
         allLeads = data.leads || [];
         renderTable();
       })
       .catch(function() {
         document.getElementById('table-container').innerHTML =
-          '<p class="empty">Erro ao carregar leads. Verifique a URL e a senha.</p>';
+          '<p class="empty">Erro ao carregar leads. Tente novamente.</p>';
       });
   }
 
@@ -344,40 +362,36 @@
   // ── save crm ───────────────────────────────────────────────────────────────
   function saveCrm() {
     if (!currentLead) return;
+    var lead = currentLead; // o modal pode fechar (currentLead = null) antes da resposta
     var btn = document.getElementById('btn-save');
     btn.disabled = true;
     btn.textContent = 'Salvando…';
 
     var payload = {
       action: 'update_crm',
-      pw: getPw(),
-      event_id: currentLead['Event ID'],
+      token: getToken(),
+      event_id: lead['Event ID'],
       status: document.getElementById('crm-status').value,
       notas: document.getElementById('crm-notas').value,
       proxima_acao: document.getElementById('crm-proxima').value,
       data_acao: document.getElementById('crm-data').value
     };
 
-    fetch(getUrl(), {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: { 'Content-Type': 'text/plain' }
-    })
-    .then(function(r) { return r.json(); })
+    api(payload)
     .then(function(data) {
       btn.disabled = false;
       btn.textContent = 'Salvar';
-      if (data.result === 'ok') {
-        // update local state
-        currentLead.crm_status = payload.status;
-        currentLead.crm_notas = payload.notas;
-        currentLead.crm_proxima_acao = payload.proxima_acao;
-        currentLead.crm_data_acao = payload.data_acao;
-        renderTable();
-        var msg = document.getElementById('save-msg');
-        msg.style.display = '';
-        setTimeout(function() { msg.style.display = 'none'; }, 2500);
-      }
+      if (data.code === 403) { expireSession(); return; }
+      if (data.result !== 'ok') throw new Error('api');
+      // update local state
+      lead.crm_status = payload.status;
+      lead.crm_notas = payload.notas;
+      lead.crm_proxima_acao = payload.proxima_acao;
+      lead.crm_data_acao = payload.data_acao;
+      renderTable();
+      var msg = document.getElementById('save-msg');
+      msg.style.display = '';
+      setTimeout(function() { msg.style.display = 'none'; }, 2500);
     })
     .catch(function() {
       btn.disabled = false;
