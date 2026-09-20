@@ -14,7 +14,7 @@
   },
   "status": {
     "endpoint": "planned",
-    "note": "Não há endpoint A2A nem MCP em operação neste domínio. Disponível hoje: as tools rodam na própria página via WebMCP (navigator.modelContext) em https://boutiqueempresarial.com.br, e todo recurso listado é acessível por GET HTTPS sem credencial.",
+    "note": "Não há endpoint A2A nem MCP em operação neste domínio. Disponível hoje: as tools rodam na própria página via WebMCP (navigator.modelContext) em https://boutiqueempresarial.com.br — na home leem conteúdo; no formulário só preenchem, o envio é humano —, e todo recurso listado é acessível por GET HTTPS sem credencial.",
     "availableToday": ["webmcp", "static-resources"]
   },
   "skills": [

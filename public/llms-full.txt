@@ -126,7 +126,7 @@ contato para agendar o horário.
 - **Home** — https://boutiqueempresarial.com.br/ (indexável; companion em `/index.md`; LP do
   Diagnóstico Gratuito)
 - **Aplicação** — https://boutiqueempresarial.com.br/formulario.html (`noindex`; preenchido
-  por humano, com consentimento LGPD explícito; não submeter por agente)
+  por humano, com consentimento LGPD explícito; não submeter por agente; o agente do visitante só preenche via WebMCP, o envio é humano)
 - **Política de Privacidade** — https://boutiqueempresarial.com.br/privacidade.html
   (`noindex`; governança de dados, LGPD, Meta Ads/Pixel, Data Deletion Callback)
 - **Termos de Uso** — https://boutiqueempresarial.com.br/termos.html (`noindex`; limites da

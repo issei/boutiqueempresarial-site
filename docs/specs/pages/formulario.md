@@ -135,6 +135,22 @@ FBCLID | GCLID | FBC | FBP | Página | Referrer | IP | User Agent | Status CAPI
 *   `ACCESS_TOKEN` e `PIXEL_ID` vêm de Script Properties; `setupCredentials()` documenta a configuração inicial.
 *   Versão da Graph API isolada em `CONFIG.API_VERSION` (v19.0 → **v21.0**).
 
+### 4.5 WebMCP (agente do visitante)
+
+`formulario.html` registra `get_form_state`, `answer_field` e `next_step` (fim do IIFE). Reusam
+`validate()`/`nav()` — tracking e regras iguais aos da interface — e leem opções e campos do DOM da
+etapa ativa (sem lista paralela). Regras fixas:
+
+*   **Nunca enviam:** nenhuma tool chama `submit()`; na última etapa `next_step` devolve `aguardando`
+    e o visitante clica em "Enviar aplicação". Mantém `auth.md`/`llms.txt` ("não submeter por agente").
+*   Só campos da **etapa atual**; valor fora das opções é erro; "Outro" exige `outro`.
+*   O estado devolve `respondido` (booleano), nunca o que o visitante digitou.
+*   Efeito conhecido: ao validar nome + WhatsApp + e-mail a interface faz a pré-captura (`parcial: true`,
+    `sendPartial()`), como para qualquer visitante — o agente age em nome do titular, que consente
+    ("Ao responder…") e envia.
+
+Cobertura: `tests/formulario-webmcp.spec.js`.
+
 ## 6. Fora de escopo
 
 *   Migração das linhas históricas da aba `Respostas` para o novo esquema (preservadas por renomeação).

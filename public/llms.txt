@@ -49,4 +49,5 @@ Endpoints legíveis por agente. Todos são `GET` público, sem credencial — ve
 - [oauth-protected-resource](https://boutiqueempresarial.com.br/.well-known/oauth-protected-resource) — metadados de acesso (RFC 9728). Acesso anônimo.
 
 O formulário em `/formulario.html` é preenchido por humano com consentimento LGPD. Não é
-API e não deve ser submetido por agente.
+API e não deve ser submetido por agente; o agente do visitante só preenche, via WebMCP na
+página, e o envio é um clique humano.

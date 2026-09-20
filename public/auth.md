@@ -45,7 +45,9 @@ domínio, que é um site estático servido por S3 + CloudFront.
 
 O único ponto do site que coleta dado pessoal é o formulário de aplicação
 (`/formulario.html`), preenchido por humanos com consentimento explícito de LGPD. Ele
-**não é uma API** e não deve ser submetido por agente. A governança está em
+**não é uma API** e não deve ser submetido por agente. O agente do visitante pode apenas
+preencher as etapas pelas tools WebMCP da própria página (`get_form_state`,
+`answer_field`, `next_step`); o envio é sempre um clique humano. A governança está em
 `/privacidade.html`.
 
 ## MCP
