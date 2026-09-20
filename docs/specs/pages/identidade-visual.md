@@ -2,7 +2,7 @@
 
 Baseado no template `docs/specs/PAGE_SPEC_TEMPLATE.md`, estendido com um mapeamento completo de design tokens (necessário porque esta página introduz um **segundo sistema visual**, à parte do `STYLE_GUIDE.md` atual do site institucional).
 
-**Status:** Proposta — aguardando aprovação antes da implementação (fluxo SDD do projeto).
+**Status:** Implementada — `src/identidade-visual.html` + `src/identidade-visual.css`, coberta por `tests/identidade-visual.spec.js`. (Redigida como proposta; o texto abaixo é a spec original.)
 **Origem:** `Especificação de Identidade Visual e UI Design` (sistema visual "Talita Issei", v1.0) — anexo fornecido pelo usuário, referente à identidade usada nos cards do Instagram.
 
 ---

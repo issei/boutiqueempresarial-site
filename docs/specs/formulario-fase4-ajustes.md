@@ -1,5 +1,7 @@
 # Formulário — Fase 4: reordenação de perguntas + hero visual
 
+**Status**: Implementada (PR #19). O contrato de dados resultante está em `pages/formulario.md` §3.
+
 > Especificação de mudanças a partir dos comentários de revisão de 2026-09-16 no doc
 > "COPY FORMULÁRIO" (Google Docs) e de pedido de ajuste visual da autora. Continuação da
 > Fase 3 (PR #17/#18 — apresentação na etapa 0 e blocos C/D da copy).

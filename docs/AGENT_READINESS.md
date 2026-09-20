@@ -27,7 +27,7 @@ uma, e nenhuma depende das outras:
 | **DNS** | registro HTTPS em `_agents.` | resolver, antes de qualquer HTTP | ✅ publicado, DNSSEC validando |
 | **Header HTTP** | `Link` (RFC 8288) em toda resposta | quem faz um `GET /` qualquer | função publicada, **falta anexar** |
 | **Negociação** | `Accept: text/markdown` → companion `.md` | agente que prefere Markdown | ✅ no ar |
-| **HTML** | `<link rel="api-catalog\|service-desc\|service-doc">` | quem lê o `<head>` | ✅ nas 7 páginas |
+| **HTML** | `<link rel="api-catalog\|service-desc\|service-doc">` | quem lê o `<head>` | ✅ nas 8 páginas |
 | **Arquivo bem-conhecido** | `/.well-known/*`, `/llms.txt`, `/robots.txt` | convenção | ✅ |
 | **Autenticação** | `/auth.md` + metadados OAuth | quem precisa de escopo/credencial | ✅ |
 | **Runtime** | `document.modelContext` / `navigator.modelContext` (WebMCP) | agente que executa a página | ✅ na home e no formulário |

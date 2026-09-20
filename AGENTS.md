@@ -28,6 +28,10 @@ texto.
 | [`ASSETS_GUIDE.md`](docs/specs/ASSETS_GUIDE.md) | imagem, vídeo, peso de arquivo |
 | [`CICD_OIDC.md`](docs/specs/CICD_OIDC.md) | pipeline AWS e permissões |
 | [`PLANO_MULTIAGENTE.md`](docs/specs/PLANO_MULTIAGENTE.md) | ao delegar trabalho a subagentes |
+| `docs/specs/pages/<página>.md` | ao mexer numa página — a spec dela (home, formulário, guia de identidade) |
+| `docs/specs/design/<feature>.md` | ao mexer numa feature de UI: cookies, tracking do funil, pré-captura do formulário |
+| [`notificacao-email-lead.md`](docs/specs/notificacao-email-lead.md) | ao mexer no `apps_script_atualizado.gs` (backend do formulário) |
+| [`CLAUDE.md`](CLAUDE.md) | ciclo Claude Design ↔ Code e o que `design-system/` é (e não é) |
 
 ---
 
@@ -57,8 +61,9 @@ Se uma verificação não está no gate, ela não existe.
 1. Spec em `docs/specs/pages/` a partir do template.
 2. `src/<nome>.html` — o Vite descobre sozinho.
 3. `<head>` conforme `HARNESS_AEO.md` §B1; JSON-LD conforme §B2; bloco AEO conforme §B3.
-4. Teste em `tests/<nome>.spec.js`.
-5. `npm run gate` verde.
+4. Replicar o bloco inline de consentimento (antes do Pixel e do `gtag.js`) e o módulo `js/cookie-consent.js` — `SEO_ANALYTICS.md` §3.
+5. Teste em `tests/<nome>.spec.js`.
+6. `npm run gate` verde.
 
 ### Alteração de copy público
 Vocabulário controlado e verbos proibidos: `HARNESS_AEO.md` §B6. Se a página tem bloco AEO,
@@ -97,12 +102,16 @@ O mesmo gate roda no laptop e no ambiente cloud do Claude Code. Para isso valer:
 
 | Path | Conteúdo |
 | :-- | :-- |
-| `src/` | páginas `.html`, CSS |
-| `public/` | assets servidos na raiz, `llms*.txt`, `robots.txt`, `auth.md` |
+| `src/` | páginas `.html` (8), `style.css`, `assets/fonts/`, `js/` (`cookie-consent.js`, `form-copy.js`) |
+| `public/` | assets servidos na raiz, `llms*.txt`, `robots.txt`, `index.md`, `auth.md` |
 | `public/.well-known/` | manifestos para agentes — ver `docs/AGENT_READINESS.md` |
-| `docs/specs/` | os contratos |
-| `tests/`, `e2e/` | Playwright |
-| `scripts/` | gate, bootstrap |
+| `docs/specs/` | os contratos; `pages/` e `design/` guardam as specs por página e por feature |
+| `tests/` | Playwright — contratos (SEO, AEO, a11y, agent-readiness, smoke, páginas) |
+| `e2e/` | Playwright — fluxos de usuário (formulário, cookies) |
+| `scripts/` | gate, bootstrap, geração de OG, setup de descoberta agêntica na AWS |
+| `infra/cloudfront-functions/` | as duas CloudFront Functions (Markdown e header `Link`) |
+| `apps_script_atualizado.gs` | backend do formulário — Google Apps Script, publicado à mão |
+| `design-system/` | export do Claude Design (readme, `styles.css`, templates) — referência, não produção |
 | `.claude/agents/` | os cinco subagentes do pipeline |
 | `dist/` | gerado — nunca editar |
 

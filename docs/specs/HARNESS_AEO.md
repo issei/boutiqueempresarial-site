@@ -1,6 +1,6 @@
 # SDD — Harness Agêntico e Contrato AEO/SEO
 
-**Status:** Implementado na branch `spec/harness-aeo` — fases 0 a 5 concluídas, gate verde (276 testes)
+**Status:** Implementado (PR #5, mergeado) — fases 0 a 5 concluídas; o gate tinha 276 testes na entrega e hoje cobre também o formulário, o consentimento e a camada agêntica. Ver `TESTING_GUIDE.md` para o inventário atual
 **Branch de origem:** `spec/harness-aeo`
 **Escopo:** repositório inteiro (`src/`, `public/`, `docs/specs/`, `tests/`, `.github/`)
 
@@ -308,10 +308,10 @@ verificação via DOM passaria mesmo com a página errada.
 
 | Item | Motivo |
 | :-- | :-- |
-| `apm.yml` / manifesto multi-harness | um único harness em uso; ver gatilho em §A5 |
+| `apm.yml` / manifesto multi-harness | um único harness em uso; ver gatilho em §A5. **Superado:** `apm.yml` existe hoje, com `target: [claude]` — declara o contexto do harness, não um segundo harness |
 | Gerador de `<head>` a partir de fonte única | 7 páginas não amortizam o custo; ver gatilho em §A5 |
 | Gêmeo `/en/` e pipeline i18n | não há decisão de negócio para conteúdo em inglês |
-| CodeGraph | o repositório é HTML-first e o CodeGraph não indexa HTML |
+| CodeGraph | o repositório é HTML-first e o CodeGraph não indexa HTML. **Superado:** `src/js/` e `infra/` são JS, o índice `.codegraph/` existe e é a primeira ferramenta de busca do agente (`apm.yml`) |
 | Orçamento de peso por página (KB) | adicionar quando houver página com JS próprio relevante |
 
 ---

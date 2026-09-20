@@ -11,9 +11,12 @@
 | Ferramenta | ID / Tipo | Método de Verificação |
 | --- | --- | --- |
 | **Google Analytics 4** | `G-8HNXV7KTY9` | Script `gtag.js` no `<head>` |
+| **Meta Pixel** | `1469019395044653` | `fbq('init', …)` no `<head>`; verificação de domínio por `<meta name="facebook-domain-verification">` |
 | **Google Search Console** | Domínio Raiz | Registro DNS TXT no Route 53 |
-| **Sitemap** | `/sitemap.xml` | Gerado via `vite-plugin-sitemap` |
+| **Sitemap** | `/sitemap.xml` | Gerado via `vite-plugin-sitemap` — só rotas indexáveis |
 | **Robots.txt** | `/robots.txt` | Arquivo estático em `public/` |
+
+O Pixel também alimenta o servidor: o Apps Script envia o mesmo evento pela Conversions API, deduplicado por `event_id` (`docs/specs/pages/formulario.md` §2).
 
 ---
 
@@ -29,7 +32,7 @@ Ao criar página nova, replicar o bloco inline **junto** com os scripts abaixo �
 
 ### Injeção de Tags (Global)
 
-Todas as páginas HTML em `src/` devem conter o fragmento do GA4 dentro do `<head>`. A posição é
+Todas as páginas HTML em `src/` (as 8, inclusive `404.html`) devem conter o fragmento do GA4 dentro do `<head>`. A posição é
 livre: o `gtag.js` é `async`, então ele não bloqueia o parser nem executa antes de chegar da rede —
 a ordem entre ele e o Meta Pixel não altera a medição. Hoje o Pixel vem primeiro em todas as
 páginas; ver `docs/specs/HARNESS_AEO.md` §6.1.
@@ -82,18 +85,14 @@ Para garantir que o link do site apareça com imagem e título corretos no Linke
 O plugin `vite-plugin-sitemap` no `vite.config.js` é o responsável por listar todas as rotas `.html` encontradas em `src/`.
 
 * **Frequência de Atualização:** Automática a cada build.
+* **Só o que é indexável:** o `vite.config.js` lê o `meta robots` de cada `src/*.html` e exclui do sitemap as páginas `noindex`. Hoje só a home (`/`) entra; formulário, obrigada, legais, legado, guia de identidade e 404 ficam de fora.
 * **Submissão:** O arquivo é enviado ao S3 e o Google Search Console o lê diretamente na raiz.
 
 ### Robots.txt
 
-Localizado em `public/robots.txt`.
+Localizado em `public/robots.txt` — **é a fonte; leia o arquivo, não uma cópia aqui.** Além do `Allow: /` e do `Sitemap`, ele carrega `Content-Signal` (`ai-train=no, search=yes, ai-input=yes`), `Agentmap`, `LLMs` e `LLMs-full` (`docs/AGENT_READINESS.md`).
 
-```text
-User-agent: *
-Allow: /
-Sitemap: https://boutiqueempresarial.com.br/sitemap.xml
-
-```
+O plugin de sitemap gera um `robots.txt` próprio por padrão e sobrescreveria este no `dist`; por isso `generateRobotsTxt: false` em `vite.config.js`. `tests/agent-readiness.spec.js` cobra o arquivo publicado.
 
 ---
 
@@ -104,6 +103,7 @@ Sempre que o agente de **Vibe Coding** atuar no projeto, ele deve validar:
 * [ ] A nova página possui um `<h1>` único e relevante?
 * [ ] As imagens possuem atributo `alt` descritivo?
 * [ ] O script do GA4 está presente e com o ID correto?
-* [ ] A página foi adicionada ao fluxo de build para constar no sitemap?
+* [ ] A página tem o `meta robots` certo? (é ele que decide se entra no sitemap — não há lista manual)
+* [ ] O bloco inline de consentimento vem antes do Pixel e do `gtag.js`?
 
 ---

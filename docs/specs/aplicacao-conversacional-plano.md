@@ -1,5 +1,7 @@
 # Plano de execução — Fase 5 (formulário conversacional)
 
+**Status:** Executado (PR #20 e #21). A spec que ele implementa, `pages/aplicacao-conversacional.md`, está marcada como Implementada.
+
 **Implementa:** `docs/specs/pages/aplicacao-conversacional.md`
 **Contrato de dados:** `docs/specs/pages/formulario.md` §3 (inalterado nesta fase)
 **Pipeline:** `docs/specs/PLANO_MULTIAGENTE.md` — mesmas regras de protocolo (§6), mesma matriz de modelos (§2), mesmo árbitro (`npm run gate`)

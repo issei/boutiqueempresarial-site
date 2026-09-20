@@ -19,7 +19,8 @@ O design deve transmitir autoridade sem gritar.
 | **Texto Primário** | `--text-primary` | `text-gray-900` ou `text-[#1f1f1f]` | `#1f1f1f` | Títulos e texto principal. |
 | **Texto Secundário** | `--text-secondary` | `text-gray-600` ou `text-[#555555]` | `#555555` | Descrições e notas. |
 | **Destaque (Accent)** | `--accent-color` | `text-black` ou `bg-black` | `#1C1C1C` | Botões e elementos de ênfase máxima. |
-| **Ouro Sutil (Detalhe)** | `--gold-subtle` | `text-gold-400` ou `text-[#C5A059]` | `#C5A059` | Pontos, linhas finas e números. |
+| **Ouro Sutil (Detalhe)** | `--gold-subtle` | `text-gold-400` ou `text-[#C5A059]` | `#C5A059` | Filetes, bordas, o ponto do wordmark. **Não** para texto — 2.20:1 sobre o creme. |
+| **Ouro para texto** | `--gold-text` | `text-[#886829]` | `#886829` | O único ouro que pode carregar uma palavra (≥ 4.5:1). `HARNESS_AEO.md` §B5. |
 | **Borda** | `--border-color` | `border-gray-200` ou `border-[#E5E5E5]` | `#E5E5E5` | Divisórias sutis. |
 
 ## Tipografia
@@ -62,11 +63,13 @@ Botões devem ser sólidos, com bordas retas e transições suaves.
 
 ---
 
-## Migração para Tailwind v4
+## Tailwind v4 — estado atual
 
-Atualmente, o projeto utiliza variáveis CSS no `<style>` do `index.html`. Para migrar totalmente para o **Tailwind v4**, devemos:
+`src/style.css` **já existe** e é a fonte da verdade dos tokens: `@import "tailwindcss"`, as fontes auto-hospedadas (`@font-face`), o bloco `@theme` e as variáveis `:root` da tabela acima. O `design-system/` (Claude Design) é derivado dele — se divergirem, `src/style.css` vence.
 
-1.  Criar um arquivo `src/style.css` com:
+As páginas ainda carregam CSS próprio no `<style>` de cada `.html` (ex.: `formulario.html`, `index.html`); a migração das classes manuais `.btn` / `.container` para utilitários é incremental e ainda não terminou. O trecho abaixo é o `@theme` original, mantido como referência de intenção:
+
+1.  `src/style.css` começa assim:
     ```css
     @import "tailwindcss";
 
@@ -79,7 +82,7 @@ Atualmente, o projeto utiliza variáveis CSS no `<style>` do `index.html`. Para 
       --color-brand-black: #1f1f1f;
     }
     ```
-2.  Importar este CSS no `index.html` (ou via módulo Vite).
-3.  Substituir as classes manuais `.btn` e `.container` pelas classes utilitárias configuradas acima.
+2.  Cada página importa `/style.css` (módulo Vite). A exceção é `identidade-visual.html`, que tem o próprio `identidade-visual.css` — é um segundo sistema visual, por decisão (`pages/identidade-visual.md`).
+3.  Meta: substituir as classes manuais `.btn` e `.container` pelas utilitárias acima, página a página, sem alterar o visual.
 
-Isso garantirá que o design system seja escalável e consistente em todas as novas páginas.
+Isso mantém o design system escalável e consistente em todas as novas páginas.

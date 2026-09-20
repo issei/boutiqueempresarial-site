@@ -1,6 +1,6 @@
 # Pré-captura do contato no formulário (envio parcial)
 
-**Status**: Implementada (PR: a preencher) — pendente o deploy do Apps Script
+**Status**: Implementada (PR #27); Apps Script publicado (confirmado em 2026-09-20)
 
 ## Problema
 

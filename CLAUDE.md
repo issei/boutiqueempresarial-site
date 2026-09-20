@@ -7,14 +7,20 @@
 ## Contexto do projeto
 
 - **Produto:** site institucional da Boutique Empresarial — funil único do
-  **Diagnóstico Gratuito** (landing + formulário de 9 etapas + confirmação).
+  **Diagnóstico Gratuito** (landing + formulário de 7 etapas + confirmação).
 - **Stack:** Vite 6 + Tailwind v4, MPA estático, HTML/CSS, mínimo de JS possível
   (zero runtime CSS, zero hidratação — ver `AGENTS.md`).
-- **Design system:** [`design-system/`](design-system/readme.md) — tokens CSS
-  (`design-system/tokens/`), componentes React-shaped para prototipagem
-  (`design-system/components/`), kits navegáveis (`design-system/ui_kits/`).
-  Gerado pela skill `boutique-empresarial-design`, a partir do código-fonte real
-  (não de screenshot).
+- **Design system:** [`design-system/`](design-system/readme.md) — tokens CSS,
+  componentes React-shaped para prototipagem e kits navegáveis, gerados pela
+  skill `boutique-empresarial-design` a partir do código-fonte real (não de
+  screenshot). **O repositório guarda só parte dele:** `readme.md`, `SKILL.md`,
+  `github.md`, `styles.css`, `thumbnail.html`, `templates/conversational-form/`
+  e `uploads/`. As pastas `tokens/`, `components/`, `ui_kits/` e `guidelines/`,
+  que o `readme.md` descreve no "Index", vivem no projeto do Claude Design
+  (id em `.design-sync/config.json`) e **não** estão versionadas — o
+  `styles.css` importa `./tokens/*.css`, que aqui não existe. Para os valores
+  reais, a fonte é `src/style.css`; para as primitivas, o projeto no Claude
+  Design (`/design-sync` traz de volta).
 - **Ambiente de produção:** <https://boutiqueempresarial.com.br/>
 - **Onde ficam as specs de design:** `docs/specs/design/` — dentro da árvore de
   specs que já existe (`docs/specs/`), não uma pasta paralela.
@@ -26,7 +32,7 @@ O `design-system/` usa primitivos **React** (`FormStep`, `ScaleSelect`,
 é **HTML/CSS estático** em `src/*.html`. Handoff aqui nunca é "importar o
 componente" — é traduzir o primitivo para o padrão HTML/Tailwind já usado nas
 páginas existentes, reaproveitando as custom properties de
-`design-system/tokens/*.css`. Se um token do design-system divergir de
+`src/style.css` (as mesmas que o `design-system/tokens/*.css` espelha). Se um token do design-system divergir de
 `src/style.css`, **`src/style.css` é a fonte da verdade** (o próprio
 `design-system/readme.md`, seção "Known gaps", já documenta um caso assim).
 
@@ -59,7 +65,7 @@ No prompt do handoff, deixe explícito:
 ```
 Implemente esta spec (docs/specs/design/<arquivo>.md) traduzindo os
 primitivos do design-system para HTML/Tailwind estático em src/ —
-sem introduzir React. Reaproveite os tokens de design-system/tokens/
+sem introduzir React. Reaproveite os tokens de src/style.css
 e os padrões já usados em src/*.html. Ao final, liste arquivos alterados
 e qualquer divergência entre spec e implementação, com a justificativa.
 ```

@@ -80,6 +80,10 @@ test('preferências permitem aceitar só análise', async ({ page }) => {
   await dlg.locator('#cc-ana').check();
   await dlg.getByRole('button', { name: 'Salvar' }).click();
 
+  // O <dialog> só grava a escolha no evento `close`, que o navegador dispara depois
+  // do clique; ele se remove logo em seguida. Ler o dataLayer antes disso pega o
+  // estado antigo — falhava na CI (runner lento), nunca no laptop.
+  await expect(dlg).toHaveCount(0);
   const state = await consentState(page);
   expect(state.analytics_storage).toBe('granted');
   expect(state.ad_storage).toBe('denied');

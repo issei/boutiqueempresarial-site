@@ -9,7 +9,7 @@
 
 ## 1. Objetivo
 
-Substituir as perguntas do funil de captação por 8 perguntas de qualificação + termo de consentimento, **preservando integralmente**:
+Substituir as perguntas do funil de captação por 7 perguntas de qualificação (originalmente 8 + termo de consentimento; o termo virou aviso no rodapé na Fase 5 — ver §4.2), **preservando integralmente**:
 
 1.  O rastreamento de origem (UTMs, `fbclid`, `event_id`, `fbc`, `fbp`, `ip_address`, `user_agent`).
 2.  A identidade visual ("Silêncio e Elegância" — `docs/specs/STYLE_GUIDE.md`) e as classes CSS existentes.
@@ -54,7 +54,7 @@ Antes de escrever qualquer linha, o fluxo legado foi auditado. Os defeitos abaix
 | 5b | ↳ especificação de "Outro" | `modelo_negocio_outro` | string | ➖ | `input[type=text]` condicional |
 | 6 | Quantidade de pessoas no time (CLT + PJ) | `tamanho_equipe` | string | ✅ | `radio` |
 | 7 | Faturamento médio mensal nos últimos 3 meses | `faturamento_mensal` | string | ✅ | `radio` |
-| 8 | Termo de Consentimento | `consentimento` | boolean | ✅ | `checkbox` único |
+| 8 | ~~Termo de Consentimento~~ | `consentimento` | boolean | ✅ | **Sem controle.** Implícito desde a Fase 5: o rodapé diz "Ao responder, você concorda…" e `collect()` grava sempre `true`. A chave e a coluna da planilha seguem no contrato |
 
 > **`email` e `whatsapp` são chaves congeladas.** São as entradas de `sendToMetaCAPI()` (`em` / `ph`). Renomeá-las quebra o casamento de conversões — qualquer mudança futura nessas duas chaves exige atualização simultânea do `.gs`.
 
@@ -89,11 +89,11 @@ Antes de escrever qualquer linha, o fluxo legado foi auditado. Os defeitos abaix
 *   A apresentação da etapa 0 usa `.intro` / `.intro-title` / `.intro-lead` (bloco novo, conteúdo literal da copy `COPY FORMULÁRIO.md`); segue exibida só na 1ª pergunta.
 *   Removidas: `.cnt` (contador do "até 2", que deixou de existir). `.rl.dis` segue no CSS, sem uso ativo. `.scale`/`.sc` (escala 0–10) foram removidas na Fase 4 junto com a pergunta.
 
-### 4.2 Fluxo de 8 etapas
+### 4.2 Fluxo de 7 etapas
 
-`maior_problema_gestao` → `nome_completo` → `whatsapp` → `email` → `modelo_negocio` → `tamanho_equipe` → `faturamento_mensal` → `consentimento`
+`maior_problema_gestao` → `nome_completo` → `whatsapp` → `email` → `modelo_negocio` → `tamanho_equipe` → `faturamento_mensal`
 
-Consentimento fica **na última etapa, adjacente ao botão de envio** — a LGPD exige que a manifestação seja inequívoca e contextual ao ato de envio.
+> **Fase 5 (`design/formulario-fase5-rodape-consentimento.md`):** a 8ª etapa (checkbox de consentimento) foi removida. O consentimento é expresso por um aviso no rodapé — "Ao **responder**, você concorda…" (não "ao enviar": sustenta a pré-captura, `design/formulario-envio-parcial.md`). Ganho registrado: formulário mais ágil; a redação do aviso está na spec da Fase 5. A última etapa não avança sozinha: o envio exige o clique em "Enviar aplicação".
 
 ### 4.3 Regras de validação
 
@@ -103,7 +103,7 @@ Consentimento fica **na última etapa, adjacente ao botão de envio** — a LGPD
 | `email` | regex `^[^\s@]+@[^\s@]+\.[^\s@]+$` — **obrigatório** (era condicional no legado; o CAPI depende dele) |
 | `whatsapp` | 10 ou 11 dígitos após remover a máscara |
 | radios (`modelo_negocio`, `tamanho_equipe`, `faturamento_mensal`, `maior_problema_gestao`) | exatamente 1 selecionado; se `Outro`, texto ≥ 2 caracteres |
-| `consentimento` | marcado |
+| ~~`consentimento`~~ | removida na Fase 5 — sem validação, o valor é sempre `true` |
 
 ### 4.4 Acessibilidade
 
@@ -133,6 +133,8 @@ FBCLID | GCLID | FBC | FBP | Página | Referrer | IP | User Agent | Status CAPI
 *   O CAPI **só dispara com `consentimento === true`** — sem base legal, sem envio a terceiro.
 *   `user_data` enriquecido para elevar o EMQ: `em`, `ph`, `fn`, `ln`, `country` (`br`), `external_id` (hash do `event_id`), `client_ip_address`, `client_user_agent`, `fbc`, `fbp`.
 *   `ACCESS_TOKEN` e `PIXEL_ID` vêm de Script Properties; `setupCredentials()` documenta a configuração inicial.
+*   `data.parcial === true` (pré-captura do contato) sai de `doPost` em `savePartialLead()`: grava na aba `Parciais`, sem CAPI e sem e-mail (`design/formulario-envio-parcial.md`).
+*   Depois de `saveToSheet()`, `notifyNewLead()` envia o aviso interno por e-mail, dentro de `try/catch` — falha de e-mail nunca derruba o registro (`notificacao-email-lead.md`).
 *   Versão da Graph API isolada em `CONFIG.API_VERSION` (v19.0 → **v21.0**).
 
 ### 4.5 WebMCP (agente do visitante)
@@ -160,9 +162,9 @@ Cobertura: `tests/formulario-webmcp.spec.js`.
 ## 7. Critérios de aceite
 
 1.  `npm run build` conclui sem erro e `formulario.html` entra no bundle.
-2.  As 7 perguntas + o termo de consentimento aparecem com o texto **literal** da copy `COPY FORMULÁRIO.md`, incluindo a opção "Outro" do modelo de negócio e do maior desafio.
+2.  As 7 perguntas aparecem com o texto **literal** da copy `COPY FORMULÁRIO.md`, incluindo a opção "Outro" do modelo de negócio e do maior desafio, e o aviso de consentimento no rodapé.
 3.  `modelo_negocio`, `tamanho_equipe`, `faturamento_mensal` e `maior_problema_gestao` exigem exatamente 1 seleção.
-4.  Envio bloqueado sem consentimento.
+4.  ~~Envio bloqueado sem consentimento~~ — substituído na Fase 5: o payload sempre leva `consentimento: true` e o envio só ocorre por clique explícito na última etapa.
 5.  `event_id` no `payload` é um UUID válido — não `"[object HTMLInputElement]"`.
 6.  `fbc`, `fbp`, `ip_address`, `page_url`, UTMs e `gclid` presentes no payload.
 7.  `obrigada.html` dispara `fbq('track','Lead', {}, {eventID})` com o mesmo `event_id`.

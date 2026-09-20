@@ -1,6 +1,6 @@
 # Rastreamento do funil do formulário (GA4 + Meta Pixel) e LDU no CAPI
 
-**Status**: Implementada ([PR #25](https://github.com/issei/boutiqueempresarial-site/pull/25)) — pendentes os passos manuais de §5
+**Status**: Implementada ([PR #25](https://github.com/issei/boutiqueempresarial-site/pull/25)) — o passo 2 de §5 (Apps Script) está feito; os passos 1 e 3 (GA4 e Meta) seguem manuais e não verificáveis pelo repositório
 
 ## Objetivo
 
@@ -73,7 +73,7 @@ evento igual. **Não** reabre a decisão de negócio sobre LDU forçado a todos 
    - filtro de tráfego interno, para os testes da equipe não poluírem o funil;
    - **Exploração de funil**: etapas `form_step_view` com `step_name` = cada etapa, na ordem, terminando em
      `generate_lead`, com funil fechado.
-2. **Apps Script**: publicar **nova versão da implantação existente** (nunca uma implantação nova — a URL `/exec` está
+2. **Apps Script** (feito — publicado, confirmado em 2026-09-20): publicar **nova versão da implantação existente** (nunca uma implantação nova — a URL `/exec` está
    fixa em `formulario.html`). Conferir no Events Manager → *Testar eventos* que o `Lead` do servidor chega
    com o LDU e continua deduplicado com o do navegador.
 3. **Meta**: validar `FormStart` e `ContactCaptured` no Pixel Helper / Testar eventos; criar os públicos.

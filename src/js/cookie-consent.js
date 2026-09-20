@@ -57,7 +57,10 @@ function styles() {
  border-top:2px solid var(--gold-subtle,#C5A059);border-radius:4px;padding:18px 20px;
  box-shadow:0 8px 30px rgba(31,31,31,.15);font-family:var(--font-inter,'Inter',system-ui,sans-serif);
  font-size:.85rem;line-height:1.55;animation:cc-in .25s ease-out}
-@keyframes cc-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* Sem opacity: um fade real deixa o texto abaixo de 4,5:1 durante a animação, e o
+   axe do WebKit na CI pegava o banner no meio dele (color-contrast, página
+   aleatória a cada rodada). Mesmo motivo do slide de etapa em formulario.html. */
+@keyframes cc-in{from{transform:translateY(12px)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){.cc-card{animation:none}}
 .cc-card p{margin:0 0 14px;color:var(--text-secondary,#555)}
 /* Sublinhado obrigatório: dentro de um parágrafo o link não pode se distinguir

@@ -22,7 +22,7 @@ em estrutura."*
 
 | Surface | What it is | Palette | Recreated in |
 | --- | --- | --- | --- |
-| **Site institucional** | `boutiqueempresarial.com.br` — the Diagnóstico landing page, the 9-step application form, the confirmation page, plus the legacy programme page still in the repo | Cream `#f5f2eb` / ink `#1f1f1f` / one gold hairline | `ui_kits/site/` |
+| **Site institucional** | `boutiqueempresarial.com.br` — the Diagnóstico landing page, the 7-step application form, the confirmation page, plus the legacy programme page still in the repo | Cream `#f5f2eb` / ink `#1f1f1f` / one gold hairline | `ui_kits/site/` |
 | **Cards sociais** | Instagram carousels for `@issei.talita`, governed by an internal guide page | Light "Fachada Editorial" ↔ dark "Bastidores" with iOS amber `#EAA034` | `ui_kits/social/` |
 
 **These two palettes do not mix.** The site never uses amber; the cards never
@@ -43,7 +43,7 @@ Everything here was read from source, not inferred from screenshots.
   - `src/style.css` — the institutional token source of truth
   - `src/index.html` — home (Diagnóstico Gratuito), with page-specific CSS
   - `src/index-legado.html` — the legacy programme page
-  - `src/formulario.html` — the 9-step application form
+  - `src/formulario.html` — the 7-step application form
   - `src/obrigada.html` — confirmation page
   - `src/identidade-visual.css` + `src/identidade-visual.html` — the internal
     Instagram visual guide
@@ -159,7 +159,7 @@ The scale is multiples of 8 with 4 and 20 as inherited exceptions. The single
 most important layout decision is the **measure contrast**: body content sits
 in a 900px container while the hero and the one inverted section break out to
 1200px. Within the hero, a 12-column grid keeps the title in columns 1–7 — that
-column, not the viewport, is what caps the H1 clamp. Forms are 680px; social
+column, not the viewport, is what caps the H1 clamp. Forms are 760px; social
 reading width is 680–760px.
 
 Alignment is **left**, always. Centring is reserved for three places: the
@@ -177,7 +177,7 @@ cream and white alternate; that alternation is the whole background language.
 
 ### Borders, corners, cards
 Corners are essentially **square**. The only radii in the system: 2px (site
-button), 4px (form button and 0–10 chips), 3px (checkbox), 6px (social check
+button), 4px (form button), 3px (checkbox), 6px (social check
 tile), 50% (avatars, radio dots, progress dots). Cards are white, **0px
 radius**, 1px `#E5E5E5` border, 40px padding — no shadow.
 
@@ -200,9 +200,9 @@ The home spec states it outright: *"Sem movimento não solicitado."* Nothing
 animates on load. Nothing animates on scroll. No parallax, no reveal, no
 counter. Motion exists only as feedback:
 
-- **200ms** — radio dot scales in; 0–10 chip fills.
+- **200ms** — radio dot scales in.
 - **300ms** `ease` — button swaps background/colour; link swaps underline colour.
-- **400ms** `ease-out` — form step slides in 10px from the right; progress bar advances.
+- **400ms** `ease-out` — form step slides in 10px from the right (transform only, no fade — an opacity fade fails the axe contrast scan mid-animation).
 - **400ms** `cubic-bezier(.36,.07,.19,.97)` — horizontal shake on an invalid step.
 
 No bounce, no spring, no overshoot. `prefers-reduced-motion` disables all of it.
@@ -239,7 +239,7 @@ fold.
 **The institutional website has no icons at all.** Not one. Hierarchy is done
 with type, space and a gold rule; lists use a gold left-border instead of a
 bullet; the FAQ marker is the typographic characters `+` and `–`; the form's
-progress is dots and a bar.
+progress is a row of dots (the top progress bar was removed from the form in production).
 
 The only icons in the brand belong to the **social card system**, and they are
 hand-authored inline SVGs in `identidade-visual.html`. All six are copied here
@@ -281,12 +281,13 @@ through the CSS custom properties in `tokens/`.
 ### `components/forms/` — the application form
 `FormStep` · `TextField` (with `Hint`, `FieldError`) · `RadioGroup` ·
 `CheckboxOption` · `ScaleSelect` · `ProgressBar` · `StepDots`
+*(production no longer uses `ScaleSelect` — the 0–10 question was dropped from the form — nor `CheckboxOption` — consent became a footer notice — nor `ProgressBar` — the top bar was removed. They stay here as prototyping primitives.)*
 
 ### `components/social/` — Instagram content cards
 `ContentCard` (with `StepTitle`) · `AuthorHeader` · `NotesBar` · `ModeTag` ·
 `EditorialDivider` · `Checklist` · `SelectionHighlight`
 
-Every component corresponds to something that exists in the source. There are
+Every component was extracted from something that existed in the source at sync time. There are
 no invented primitives — no Toast, no Avatar, no Tabs, no Tooltip, because the
 brand has none.
 
@@ -305,7 +306,7 @@ readme.md                   this file
 SKILL.md                    Agent Skills wrapper
 github.md                   upstream source association
 
-tokens/
+tokens/                     (design project only)
   fonts.css                 @font-face for Inter + Playfair Display
   colors.css                --be-* institutional, --ti-* social, semantic aliases
   typography.css            families, weights, fluid scale, measures
@@ -313,7 +314,7 @@ tokens/
   borders.css               radii, borders, the one shadow, focus ring
   motion.css                durations, easings, @keyframes (step-in, shake)
 
-assets/
+assets/                     (design project only)
   fonts/                    inter-latin.woff2, playfair-latin.woff2
   logo/                     boutiquelogo.webp, boutiqueempresarial.png,
                             favicon.svg, apple-touch-icon.png
@@ -321,29 +322,43 @@ assets/
   fotos/                    talita-issei.webp
   og/                       og-image.jpg
 
-components/site/            14 institutional primitives + site.card.html
-components/forms/            7 form primitives + forms.card.html
-components/social/           7 content-card primitives + social.card.html
+components/                  (design project only)
+  site/                     14 institutional primitives + site.card.html
+  forms/                    7 form primitives + forms.card.html
+  social/                   7 content-card primitives + social.card.html
 
-guidelines/                 23 foundation specimen cards
+guidelines/                 (design project only)
+                            23 foundation specimen cards
                             (Colors · Type · Spacing · Brand)
 
-ui_kits/site/               Home, Aplicação, Obrigada, Programa — clickable
-ui_kits/social/              Instagram carousel, 1080×1350 artboards
+ui_kits/                    (design project only)
+  site/                     Home, Aplicação, Obrigada, Programa — clickable
+  social/                   Instagram carousel, 1080×1350 artboards
 
-templates/conversational-form/
+templates/conversational-form/      (in the repo)
                             One-question-at-a-time application (DC template)
                             + README.md with the full UX spec (A–H)
+
+uploads/                    (in the repo) form copy sources — copy_v4.json and
+                            the "Formulário – Sessão Estratégica" markdown
 ```
 
 ## Known gaps
 
 - **Fonts** are the real self-hosted files from the repo, so no Google Fonts
-  substitution was needed. Note the repo's `ASSETS_GUIDE.md` still recommends
-  loading them from Google; `style.css` (newer) self-hosts them for privacy.
-  Self-hosting is treated as current here.
+  substitution was needed. The repo's `ASSETS_GUIDE.md` now agrees: fonts are
+  self-hosted from `src/assets/fonts/`, never loaded from Google.
 - `identidade-visual.html`'s swatch table documents `--text-ink-muted` as
   `#92949B` while the stylesheet ships `#5F6368`. The code value is the token;
   the documented value is kept as `--ti-ink-muted-documented`.
 - No slide template was provided, so this system contains no slide layouts.
 - Legal pages (`privacidade.html`, `termos.html`) were not recreated.
+- The cookie-consent banner and preferences dialog (`src/js/cookie-consent.js`) are
+  not represented here. Their spec is `docs/specs/design/cookie-consent.md`.
+- **Repository vs Claude Design project.** Only part of this system is versioned
+  in the repo: `readme.md`, `SKILL.md`, `github.md`, `styles.css`,
+  `thumbnail.html`, `templates/conversational-form/` and `uploads/`. The
+  folders in the Index below marked *(design project only)* — `tokens/`,
+  `assets/`, `components/`, `guidelines/`, `ui_kits/` — live in the Claude Design
+  project. `styles.css` imports `./tokens/*.css`, which does not resolve inside
+  the repo. For token values in production, `src/style.css` is the source of truth.

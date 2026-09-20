@@ -1,18 +1,17 @@
 # Boutique Empresarial — Site
 
-Site estático simples para a Boutique Empresarial.
+Site institucional da Boutique Empresarial — <https://boutiqueempresarial.com.br/>.
 
 ## Descrição
 
-Este repositório contém o site público da Boutique Empresarial (páginas estáticas gerenciadas com Vite). O projeto é leve, orientado a conteúdo estático (`src/` + `public/`) e utiliza Vite como bundler/dev server.
+Este repositório contém o site público da Boutique Empresarial: um MPA estático (Vite 6 + Tailwind v4, HTML/CSS, o mínimo de JavaScript) cujo produto é um **funil único** — a landing do **Diagnóstico Gratuito** → formulário de aplicação de 7 etapas → página de confirmação. O lead segue para um Google Apps Script (planilha, e-mail de aviso, Meta Conversions API); GA4 e Meta Pixel só coletam depois do consentimento de cookies. O site também é legível por agentes de IA (`llms.txt`, `.well-known/`, WebMCP) — ver [`docs/AGENT_READINESS.md`](docs/AGENT_READINESS.md).
 
 ## Tecnologias
 
-- Node.js (recomendado v20 conforme CI)
-- Vite
-- Tailwind CSS
-
-(O projeto declara dependências de desenvolvimento: `vite`, `tailwindcss`, `@tailwindcss/vite`, `glob`.)
+- Node.js 20 (a versão do `deploy.yml` e do `.idx/dev.nix`)
+- Vite 6 + Tailwind CSS v4 (`@tailwindcss/vite`), `vite-plugin-sitemap`
+- Playwright + `@axe-core/playwright` (testes e acessibilidade)
+- AWS: S3 + CloudFront + Route 53, deploy por GitHub Actions com OIDC
 
 ## Pré-requisitos
 
@@ -41,8 +40,8 @@ Por padrão o Vite serve em http://localhost:5173 — abra esse endereço no nav
 - `npm run build` — gera os arquivos de produção (build)
 - `npm run preview` — faz preview do build localmente
 - `npm run start` — alias para `npm run dev`
-- `npm run gate` — **o quality gate**: `vite build` + Playwright (smoke, SEO, AEO, a11y). Fail-closed, para no primeiro erro. Único comando que a CI e o desenvolvedor rodam para dizer "está verde".
-- `npm run test` / `npm run test:smoke` — Playwright direto (suíte completa / só smoke)
+- `npm run gate` — **o quality gate**: `vite build` + a suíte Playwright inteira (`tests/` + `e2e/`, em Chromium, Firefox e WebKit). Fail-closed, para no primeiro erro. Único comando que a CI e o desenvolvedor rodam para dizer "está verde".
+- `npm run test` / `npm run test:smoke` — Playwright direto (suíte completa / só o crawl de links)
 
 ## Fluxo DevOps
 
@@ -50,7 +49,7 @@ Arquitetura: MPA estático → **AWS S3** (origin) → **CloudFront** (edge) →
 
 ### Branches de trabalho (`.github/workflows/playwright.yml`)
 
-Todo push em branch que **não** é `main` roda `npm run gate` (build + Playwright). É o portão antes do PR.
+Todo push em branch que **não** é `main` roda `npm run gate` (build + Playwright, Node `lts/*`). É o portão antes do PR.
 
 ### Deploy em `main` (`.github/workflows/deploy.yml`)
 
@@ -60,9 +59,11 @@ Push/merge em `main` dispara o deploy automático:
 2. **Job `deploy`** (`needs: test`, environment `production`):
    1. `npm run build` → `dist/` (o `vite.config.js` usa `outDir: '../dist'`, então `dist/` cai na raiz do repo).
    2. Autentica na AWS via **OIDC** (`aws-actions/configure-aws-credentials`) — sem chave de acesso de longa duração, a role é assumida por token JWT.
-   3. `aws s3 sync dist/ s3://<bucket> --delete` — o S3 vira espelho exato do build.
-   4. Corrige o `Content-Type` dos companions Markdown e `llms.txt` para `text/markdown; charset=utf-8` (senão o answer engine baixa em vez de ler — `HARNESS_AEO.md` §B4).
+   3. Dois `aws s3 sync --delete` escopados: `dist/assets/` (arquivos com hash) com cache de 1 ano `immutable`; o resto de `dist/` com `max-age=0, must-revalidate`. O S3 vira espelho exato do build.
+   4. Corrige o `Content-Type` dos companions Markdown e `llms*.txt` (`text/markdown; charset=utf-8`, senão o answer engine baixa em vez de ler — `HARNESS_AEO.md` §B4) e dos manifestos `.well-known` sem extensão (`application/json`).
    5. `aws cloudfront create-invalidation --paths "/*"` — cache limpo, mudança visível na hora.
+
+O pipeline **não** publica as CloudFront Functions (`infra/`), o DNS-AID nem o Apps Script do formulário — são passos manuais, documentados em `CICD_OIDC.md` e `AGENT_READINESS.md`.
 
 ### Secrets do repositório (Settings → Secrets and variables → Actions)
 
@@ -77,15 +78,18 @@ Regra: toda mudança de infra atualiza `CICD_OIDC.md` **antes** e vira script ex
 
 ## Estrutura do projeto
 
-- `src/` — páginas `.html` do site (cada rota é um arquivo físico) e CSS
-- `public/` — assets servidos na raiz (favicon, manifest, sitemap, 404, `robots.txt`, `llms.txt`)
-- `docs/specs/` — os contratos (arquitetura, style guide, harness/AEO, CI/CD, testes)
-- `tests/`, `e2e/` — suítes Playwright
-- `scripts/` — `quality-gate.mjs`, bootstrap, geração de OG
+- `src/` — páginas `.html` (cada rota é um arquivo físico, incluindo `404.html`), `style.css`, fontes auto-hospedadas em `assets/fonts/` e `js/` (`cookie-consent.js`, `form-copy.js`)
+- `public/` — assets servidos na raiz: favicons, `og-image.jpg`, `robots.txt`, `llms.txt`, `llms-full.txt`, `index.md`, `auth.md`, `.well-known/` (o `sitemap.xml` é gerado no build)
+- `docs/` — `AGENT_READINESS.md` e `specs/`: os contratos (arquitetura, style guide, harness/AEO, CI/CD, testes), as specs de página (`specs/pages/`) e de design (`specs/design/`)
+- `tests/`, `e2e/` — suítes Playwright: contratos em `tests/`, fluxos de usuário em `e2e/` (ver `docs/specs/TESTING_GUIDE.md`)
+- `scripts/` — `quality-gate.mjs`, `bootstrap.sh`, `gen-og.mjs`, `setup-agent-discovery-aws.sh`
+- `infra/cloudfront-functions/` — as duas CloudFront Functions (negociação de Markdown e header `Link`)
+- `apps_script_atualizado.gs` — backend do formulário (Google Apps Script), publicado à mão
+- `design-system/` — design system exportado do Claude Design; **não** é código de produção (ver `CLAUDE.md`)
 - `.claude/agents/` — os cinco subagentes do pipeline
 - `.github/workflows/` — `deploy.yml` (deploy AWS em `main`), `playwright.yml` (gate nas demais branches)
 - `apm.yml` — manifesto do harness agêntico
-- `AGENTS.md` — índice de leitura obrigatória para o agente
+- `AGENTS.md` — índice de leitura obrigatória para o agente; `CLAUDE.md` — o ciclo Claude Design ↔ Code
 - `package.json` — scripts e dependências
 - `dist/` — gerado pelo build, nunca editar
 
@@ -148,7 +152,7 @@ O harness é o contexto que o agente recebe, declarado em [`apm.yml`](apm.yml) n
     *   `caveman` (MCP) — mede para onde o contexto vai (`npm run cost:report`).
 *   **MCP servers do fluxo:** `context7` (docs versionadas de Vite/Tailwind/Playwright), `codegraph` (grafo de símbolos — primeira ferramenta antes de grep onde existe `.codegraph/`), `playwright-mcp`, `filesystem` (escopo fechado em `src/ public/ docs/`).
 *   **Onde roda:** o mesmo gate roda no laptop e no VM cloud do Claude Code. Por isso: nada de caminho absoluto, `.exe` ou comando PowerShell em script/hook/agente. A sessão cloud clona do GitHub no branch atual — **faça push antes** ou ela não vê seu trabalho.
-*   **`apm run <script>`:** `start`, `gate`, `test`, `preflight` (= gate antes de push pra `main`), `cost:report`, `cost:gain`.
+*   **`apm run <script>`:** `start`, `gate`, `test`, `preflight` (= gate antes de push pra `main`), `cost:report`, `cost:gain` — os dois últimos existem só no `apm.yml`, não no `package.json`.
 
 
 ## Testes e Qualidade (QA)
@@ -157,29 +161,24 @@ A garantia de qualidade é fundamental para evitar regressões em um ambiente de
 
 ### 1. Tipos de Testes
 
-*   **Smoke Tests (Testes de Fumaça)**:
-    *   Verificam se as páginas principais carregam corretamente (Status 200).
-    *   Validam se não há links quebrados (404) internos ou assets ausentes.
-    *   Garantem que o site está "de pé" após um deploy.
-    *   Arquivo: `tests/smoketest.spec.js`
+Detalhe arquivo por arquivo em [`docs/specs/TESTING_GUIDE.md`](docs/specs/TESTING_GUIDE.md). Em resumo:
 
-*   **Testes E2E (Ponta a Ponta)**:
-    *   Simulam a navegação do usuário real.
-    *   Validam fluxos críticos, como funcionamento de menus, formulários e renderização de componentes chave.
-    *   Arquivo: `tests/home.spec.js`
+*   **Contratos por glob** (`tests/seo`, `aeo`, `a11y`, `smoketest`): iteram sobre `src/*.html`, então página nova entra sozinha. Cobram `<head>`, JSON-LD, bloco AEO, axe (zero `serious`/`critical`) e links/assets sem 404.
+*   **Contratos de página ou camada** (`tests/home`, `home-legado`, `identidade-visual`, `agent-readiness`, `formulario-webmcp`).
+*   **Fluxos E2E** (`e2e/form-aplicacao`, `e2e/cookie-consent`): o formulário de ponta a ponta e o consentimento de cookies.
 
 ### 2. Executando os Testes
 
 Para rodar os testes localmente:
 
-1.  **Smoke Test**: Executa a validação rápida de links e assets.
+1.  **Smoke Test**: Executa só o crawl de links e assets.
     ```bash
     npm run test:smoke
     ```
 
-2.  **Todos os Testes (Playwright)**: Executa a suíte completa (E2E + Smoke).
+2.  **Todos os Testes (Playwright)**: Executa a suíte completa (`tests/` + `e2e/`).
     ```bash
-    npx playwright test
+    npm run test
     ```
 
 3.  **Relatório Visual**:
@@ -187,7 +186,7 @@ Para rodar os testes localmente:
     npx playwright show-report
     ```
 
-> **Nota**: O projeto atualmente foca em testes E2E/Smoke devido à natureza estática do site. Testes unitários (Vitest/Jest) podem ser adicionados futuramente caso haja introdução de lógica complexa em JavaScript.
+> **Nota**: O projeto foca em testes de contrato e E2E devido à natureza estática do site. Testes unitários (Vitest/Jest) podem entrar se a lógica em JavaScript deixar de caber nos módulos pequenos de `src/js/` e no script inline do formulário.
 
 
 ## Como contribuir
