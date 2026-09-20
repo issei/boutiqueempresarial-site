@@ -1,8 +1,8 @@
 # Formulário — ajustes de posicionamento a partir do canvas do Claude Design
 
 ## Status
-Parcialmente implementado em `src/formulario.html` (2026-09-17). Ver §3 para
-o que ficou de fora e por quê.
+Implementado em `src/formulario.html` (2026-09-17; PR #22 e #23), exceto o que o
+§4 deixa como decisão pendente da autora. Ver §3 para o que ficou de fora e por quê.
 
 ## Correção de referência
 A primeira versão desta spec citava `ui_kits/site/FormScreen.jsx` como
@@ -174,7 +174,7 @@ o teto). Mobile/tablet inalterados.
 - [x] `.intro-eyebrow` e `.intro-headline` calculam as fontes acima
       (`getComputedStyle`), sem `border-left`.
 - [x] Copy da tela 1 idêntica à anterior, char a char.
-- [ ] `npm run gate` verde.
+- [x] `npm run gate` verde (PR #22 e #23 mergeados).
 
 ## Critérios de pronto
 - [x] `.cf-prog` (stages nomeadas + contador) não existe mais no DOM em

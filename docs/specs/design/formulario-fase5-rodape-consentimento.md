@@ -1,6 +1,6 @@
 # Fase 5 — Consentimento no rodapé e redução de steps
 
-**Status**: Especificação aguardando implementação
+**Status**: Implementada (PR #24: commits `28f5f5c`, `058073d`, `41a9ae4`). O texto do rodapé evoluiu depois — ver o bloco "Superado" abaixo.
 
 ## Objetivo
 
@@ -77,7 +77,7 @@ Remover a pergunta explícita sobre consentimento (step 8) e expressar o consent
 - **Apps Script** (`apps_script_atualizado.gs`): **sem mudanças**. A coluna `consentimento` na planilha continuará sendo preenchida com `true` para todos os leads (automaticamente via `d.consentimento = true` no frontend).
 - **Meta CAPI**: a deduplicação e tracking continuam funcionando normalmente (o `event_id` segue o mesmo padrão).
 - **Analytics (GA4)**: nenhuma mudança necessária.
-- **Testes** (`tests/aplicacao.spec.js`): remover a etapa de clique no consentimento; o formulário agora termina em step 6 (Faturamento).
+- **Testes** (`e2e/form-aplicacao.spec.js`): remover a etapa de clique no consentimento; o formulário agora termina em step 6 (Faturamento).
 
 ## Contrato visual
 

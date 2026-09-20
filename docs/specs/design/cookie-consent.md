@@ -1,12 +1,12 @@
 # Banner de cookies e Google Consent Mode v2
 
-**Status**: Implementada (PR: a preencher)
+**Status**: Implementada (PR #27)
 
 ## Objetivo
 
 Deixar de carregar GA4 e Meta Pixel sem consentimento, com um aviso **discreto mas visível**, e dar à
-pessoa como rever a escolha depois. Referência de arquitetura: `D:\projetos\mauricio-site`
-(`src/js/cookie-consent.js`) — adaptada, não copiada.
+pessoa como rever a escolha depois. Referência de arquitetura: o `src/js/cookie-consent.js` do site irmão
+`mauricio-site` — adaptada, não copiada.
 
 ## Por que duas partes
 
@@ -38,17 +38,24 @@ disparar sem consentimento.
 ## Interface
 
 - **Banner**: cartão de até 380 px no canto inferior **direito**, fundo branco, filete dourado no topo —
-  discreto, sem cobrir a página, sem escurecer o fundo. **Aceitar**, **Recusar** e **Preferências**,
-  com Recusar do mesmo peso visual de Aceitar (a ANPD não admite recusa mais difícil que aceite).
+  discreto, sem cobrir a página, sem escurecer o fundo. **Aceitar**, **Recusar** e **Preferências**.
+  A recusa precisa ser tão fácil quanto o aceite (a ANPD não admite o contrário): os dois são botões do
+  mesmo tamanho, na mesma linha, com um clique cada.
+  > **Divergência conhecida:** a intenção original era "mesmo peso visual", mas o código dá ênfase a
+  > Aceitar (fundo escuro, `.cc-btn--on`) e deixa Recusar só com contorno. É um destaque, não um
+  > obstáculo — mas se a revisão de privacidade (ver Pendências) pedir paridade estrita, é uma classe em
+  > `src/js/cookie-consent.js`.
   O canto direito não é estética: o conteúdo é alinhado à esquerda e a primeira versão, à esquerda,
   cobria o botão "Solicitar Diagnóstico Gratuito" do hero. Abaixo de 768 px o cartão ocupa a largura
   e sobe para 96 px do rodapé, acima da barra fixa de CTA da home.
-- **Preferências**: `<dialog>` nativo. Backdrop, trava de foco e Esc vêm do navegador; checkboxes reais
-  em vez de toggles com `aria-pressed`. Bem menos código que a referência, e acessível de origem.
+- **Preferências**: `<dialog>` nativo com **Cancelar** e **Salvar**. Backdrop, trava de foco e Esc vêm do
+  navegador; checkboxes reais em vez de toggles com `aria-pressed`. "Necessários" aparece marcado e
+  desabilitado. Bem menos código que a referência, e acessível de origem.
 - **Reabrir**: o módulo injeta um botão "Preferências de cookies" em `footer .footer-legal` (ou no
-  `footer`). Nas páginas sem rodapé, `formulario.html` chama `window.cookieConsent.open()` do próprio
-  texto legal; `obrigada.html` e `404.html` ficam sem — são páginas terminais e a escolha vale para todo
-  o domínio.
+  `footer`) — `index`, `index-legado`, `privacidade`, `termos` e `identidade-visual`. Páginas sem
+  `<footer>` (`formulario`, `obrigada`, `404`): o `formulario.html` tem um botão próprio no texto
+  legal que chama `window.cookieConsent.open()`; `obrigada.html` e `404.html` ficam sem — são páginas
+  terminais e a escolha vale para todo o domínio.
 - **Cores e tipografia**: tokens de `src/style.css` com fallback literal, porque `identidade-visual.html`
   não carrega a folha. Nenhuma cor nova — sem desvio de paleta, sem ADR.
 

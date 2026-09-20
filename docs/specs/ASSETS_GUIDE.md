@@ -8,10 +8,12 @@ Para manter o tempo de carregamento inferior a **1 segundo**, toda mídia deve s
 
 | Local | Conteúdo | Comportamento do Vite |
 | --- | --- | --- |
-| `public/fotos/` | Imagens de alta resolução, banners, portfólio. | Copiado diretamente para a `dist/` sem alteração de nome. |
-| `public/videos/` | Arquivos `.mp4` ou `.webm`. | Copiado sem processamento (ideal para CloudFront). |
-| `public/` | `favicon.ico`, `robots.txt`, `og-image.jpg`. | Disponível na raiz do domínio. |
-| `src/assets/` | Ícones pequenos ou imagens que precisam de *hash* de cache. | Processados pelo Vite (minificação e cache busting). |
+| `public/fotos/` | Imagens de alta resolução, banners, portfólio (hoje: `talita-issei.webp`). | Copiado diretamente para a `dist/` sem alteração de nome. |
+| `public/videos/` | Arquivos `.mp4` ou `.webm`. **Não existe hoje** — criar a pasta ao adicionar o primeiro vídeo. | Copiado sem processamento (ideal para CloudFront). |
+| `public/` | Favicons, `site.webmanifest`, logos, `robots.txt`, `og-image.jpg`. | Disponível na raiz do domínio. |
+| `src/assets/` | Fontes (`fonts/`) e o que precisa de *hash* de cache. | Processados pelo Vite (minificação e cache busting). Em produção sobem para `/assets/` com cache de 1 ano `immutable`. |
+
+`public/og-image.jpg` (1200×630) é gerada por `node scripts/gen-og.mjs`, não desenhada à mão — regenere em vez de editar o JPG.
 
 ---
 
@@ -57,7 +59,7 @@ Para manter a performance, evite vídeos pesados.
 Conforme definido no `STYLE_GUIDE.md`:
 
 * **Fontes Principais:** *Playfair Display* e *Inter*.
-* **Implementação:** Preferencialmente via **Google Fonts** no `<head>` para aproveitar o cache do navegador, ou locais em `public/fonts/` se houver necessidade de privacidade total.
+* **Implementação:** **auto-hospedadas.** Os dois arquivos variáveis (`inter-latin.woff2`, `playfair-latin.woff2`, subset latin) ficam em `src/assets/fonts/` e são declarados por `@font-face` em `src/style.css`. Motivo: elimina o CSS bloqueante do Google, o preflight em `fonts.gstatic` e o envio de dados do visitante ao Google. Não voltar para o Google Fonts.
 * **Display:** Usar `font-display: swap;` no CSS para evitar o efeito de texto invisível durante o carregamento.
 
 ---

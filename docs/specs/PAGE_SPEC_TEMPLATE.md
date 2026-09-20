@@ -45,7 +45,14 @@ descreva a ordem e o objetivo de cada bloco.
 *   **Paleta Dominante**: (Clara / Escura / Destaque)
 *   **Feeling**: (Autoridade / Urgência / Institucional / Vendas)
 
+## 5. Contrato (`HARNESS_AEO.md`)
+*   **Indexável?**: (Sim / Não — decide o `meta robots`, e o `vite.config.js` tira do sitemap toda página `noindex`.) Página `noindex` fica isenta de canonical, OG e Twitter.
+*   **Tipo no JSON-LD**: (`WebPage` + `FAQPage`… / `ContactPage` / `WebPage` simples — §B2)
+*   **Bloco AEO** ("Em síntese" + FAQ, §B3): (Sim / Não — só páginas indexáveis). Se sim, liste as perguntas e respostas aqui: o texto visível e o do JSON-LD são o mesmo.
+*   **Companion Markdown** (`public/<slug>.md`, §B4): (Sim / Não — só páginas indexáveis). Se sim, acrescentar a rota em `MARKDOWN_MAP` de `infra/cloudfront-functions/viewer-request.js`.
+*   **Rastreamento e consentimento**: bloco inline de consentimento antes do Pixel e do `gtag.js` (`SEO_ANALYTICS.md` §3). Eventos novos exigem spec em `docs/specs/design/`.
+
 ---
 
 **Nota para o Desenvolvedor**:
-Ao implementar, lembre-se de registrar a nova página no `vite.config.js` se necessário (embora o script atual detecte `src/*.html` automaticamente) e verificar se o sitemap será atualizado.
+O Vite detecta `src/*.html` sozinho — não registre a página em lugar nenhum. Os testes de SEO, AEO, a11y e smoke também iteram por glob, então a página nova já entra no `npm run gate`. Se ela tiver comportamento próprio, acrescente `tests/<nome>.spec.js`.

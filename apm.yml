@@ -8,9 +8,11 @@
 # Contrato que este manifesto serve: docs/specs/HARNESS_AEO.md
 # Pipeline e matriz de modelos:   docs/specs/PLANO_MULTIAGENTE.md
 #
-# NOTA DE ESTADO: os primitivos em `.claude/` listados abaixo são criados na
-# Fase 0 do PLANO_MULTIAGENTE.md. Até lá este arquivo é declaração de intenção,
-# não inventário. O `apm` CLI ainda não está instalado nesta máquina.
+# NOTA DE ESTADO: os cinco subagentes de `.claude/agents/` existem. As skills
+# `new-page` e `ship-page` de `.claude/skills/` **não** foram criadas (gatilho em
+# HARNESS_AEO.md §A5: a terceira página feita à mão) — o restante deste arquivo
+# é declaração de intenção, não inventário. O `apm` CLI não está instalado
+# nesta máquina e não há `apm.lock.yaml` no repositório.
 
 name: boutique-empresarial-site
 version: 1.0.0
@@ -34,7 +36,7 @@ target: [claude]
 #
 #   .claude/agents/   page-auditor · head-fixer · copy-writer ·
 #                     test-author · gate-runner
-#   .claude/skills/   new-page · ship-page
+#   .claude/skills/   new-page · ship-page   (ainda não criadas)
 #
 # Registrar o campo (em vez de omiti-lo) evita o audit advisory de
 # consentimento implícito.
@@ -110,8 +112,8 @@ dependencies:
     #   bootstrap: codegraph init   (cria .codegraph/ + índice inicial)
     #   sync:      codegraph sync   (incremental, após mudanças)
     #   CLI equivalente ao MCP:  codegraph explore "<pergunta ou símbolos>"
-    # NOTA: npm global (@colbymchenry/codegraph, v1.5.0 nesta máquina). Ainda
-    # não há `.codegraph/` neste repo — rodar `codegraph init` na Fase 0.
+    # NOTA: npm global (@colbymchenry/codegraph, v1.5.0 nesta máquina). O índice
+    # `.codegraph/` já existe neste repo (só o `.gitignore` dele é versionado).
     - name: codegraph
       registry: false
       transport: stdio

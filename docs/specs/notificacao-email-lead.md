@@ -1,6 +1,6 @@
 # SDD — Notificação por E-mail de Novo Lead
 
-*   **Status**: **Implementada** (Etapas 1–6) — pendente Etapa 7, o deploy, que é ação manual no editor do Apps Script
+*   **Status**: **Implementada e publicada** — o Apps Script atualizado está no ar (confirmado em 2026-09-20)
 *   **Arquivo afetado**: `apps_script_atualizado.gs` (único)
 *   **Arquivos NÃO afetados**: `src/formulario.html`, `src/obrigada.html`, cabeçalho da planilha `Respostas`, testes Playwright
 *   **Depende de**: [`docs/specs/pages/formulario.md`](pages/formulario.md) — contrato de dados do lead
@@ -412,7 +412,7 @@ O faturamento no assunto é o que permite priorizar sem abrir o e-mail. Os desti
 
 ## 17. Plano de implementação em etapas
 
-**Estado**: Etapas 0–6 concluídas em `apps_script_atualizado.gs`. Etapas 7 e 8 pendentes.
+**Estado**: Etapas 0–8 concluídas. O deploy (Etapa 7) foi confirmado em 2026-09-20; a Etapa 8 está em `pages/formulario.md` §5.2.
 
 Funções entregues: `notifyNewLead()`, `buildLeadEmail()`, `plainText()`, `optionalLine()`, `withOther()`, `leadFixture()`, `testBuildLeadEmail()`, `testNotifyNewLead()`.
 
