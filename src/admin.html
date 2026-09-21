@@ -52,7 +52,9 @@
     .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem 1rem; }
     .field { display: flex; flex-direction: column; gap: .125rem; }
     .field label { font-size: .75rem; color: #78716c; }
-    .field span { font-size: .875rem; }
+    .field span { font-size: .875rem; overflow-wrap: anywhere; }
+    .field.full { grid-column: 1 / -1; }
+    summary.section-title { cursor: pointer; }
     /* ── crm form ── */
     .crm-form { display: flex; flex-direction: column; gap: .875rem; }
     .crm-form label { font-size: .8125rem; font-weight: 500; display: block; margin-bottom: .25rem; }
@@ -131,21 +133,8 @@
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
 
-    <!-- lead data -->
-    <div>
-      <p class="section-title">Dados do formulário</p>
-      <div class="field-grid">
-        <div class="field"><label>Data</label><span id="f-data"></span></div>
-        <div class="field"><label>Faturamento</label><span id="f-fat"></span></div>
-        <div class="field"><label>E-mail</label><span id="f-email"></span></div>
-        <div class="field"><label>WhatsApp</label><span id="f-whats"></span></div>
-        <div class="field"><label>Modelo de negócio</label><span id="f-modelo"></span></div>
-        <div class="field"><label>Tamanho da equipe</label><span id="f-equipe"></span></div>
-        <div class="field" style="grid-column:1/-1"><label>Maior desafio</label><span id="f-desafio"></span></div>
-        <div class="field"><label>Origem</label><span id="f-origem"></span></div>
-        <div class="field"><label>Consentimento</label><span id="f-consent"></span></div>
-      </div>
-    </div>
+    <!-- lead data (montado por openLead a partir de SECTIONS) -->
+    <div id="lead-sections" style="display:flex;flex-direction:column;gap:1.25rem;"></div>
 
     <hr style="border:none;border-top:1px solid #e7e5e4;margin:0;">
 
@@ -326,23 +315,64 @@
   }
 
   // ── modal ──────────────────────────────────────────────────────────────────
+  // Campos do modal: [rótulo, coluna | [colunas] | função(lead), largura total?].
+  // Várias colunas se unem com " — ". Tudo aqui vem de quem preencheu o formulário
+  // público (e o token da sessão está no sessionStorage): entra sempre como texto via
+  // esc(), nunca como atributo nem como link.
+  var SECTIONS = [
+    { title: 'Dados do formulário', fields: [
+      ['Data', function(l) { return fmt(l['Data']); }],
+      ['Faturamento', 'Faturamento Mensal'],
+      ['E-mail', 'E-mail'],
+      ['WhatsApp', 'WhatsApp'],
+      ['Modelo de negócio', ['Modelo de Negócio', 'Modelo (Outro)']],
+      ['Tamanho da equipe', 'Tamanho da Equipe'],
+      ['Maior desafio', ['Maior Desafio (Equipe)', 'Maior Desafio (Outro)'], true],
+      ['Consentimento', 'Consentimento']
+    ] },
+    { title: 'Origem e campanha', fields: [
+      ['Fonte', 'utm_source'],
+      ['Mídia', 'utm_medium'],
+      ['Campanha', 'utm_campaign'],
+      ['Conteúdo', 'utm_content'],
+      ['Termo', 'utm_term'],
+      ['Referrer', 'Referrer'],
+      ['Página de entrada', 'Página', true]
+    ] },
+    { title: 'Dados técnicos', collapsed: true, fields: [
+      ['Event ID', 'Event ID', true],
+      ['Status CAPI', 'Status CAPI'],
+      ['IP', 'IP'],
+      ['FBCLID', 'FBCLID'],
+      ['GCLID', 'GCLID'],
+      ['FBC', 'FBC'],
+      ['FBP', 'FBP'],
+      ['User Agent', 'User Agent', true]
+    ] }
+  ];
+
+  function renderSections(l) {
+    return SECTIONS.map(function(s) {
+      var fields = s.fields.map(function(f) {
+        var value = typeof f[1] === 'function'
+          ? f[1](l)
+          : [].concat(f[1]).map(function(k) { return l[k]; }).filter(Boolean).join(' — ') || '—';
+        return '<div class="field' + (f[2] ? ' full' : '') + '">' +
+          '<label>' + esc(f[0]) + '</label><span>' + esc(value) + '</span></div>';
+      }).join('');
+      var grid = '<div class="field-grid">' + fields + '</div>';
+      return s.collapsed
+        ? '<details><summary class="section-title">' + esc(s.title) + '</summary>' + grid + '</details>'
+        : '<div><p class="section-title">' + esc(s.title) + '</p>' + grid + '</div>';
+    }).join('');
+  }
+
   function openLead(idx) {
     currentLead = allLeads[idx];
     var l = currentLead;
-    var orig = [l['utm_source'], l['utm_medium'], l['utm_campaign']].filter(Boolean).join(' / ');
-    var desafio = [l['Maior Desafio (Equipe)'], l['Maior Desafio (Outro)']].filter(Boolean).join(' — ') || '—';
-    var modelo = [l['Modelo de Negócio'], l['Modelo (Outro)']].filter(Boolean).join(' — ') || '—';
 
     document.getElementById('modal-name').textContent = l['Nome Completo'] || '—';
-    document.getElementById('f-data').textContent    = fmt(l['Data']);
-    document.getElementById('f-fat').textContent     = l['Faturamento Mensal'] || '—';
-    document.getElementById('f-email').textContent   = l['E-mail'] || '—';
-    document.getElementById('f-whats').textContent   = l['WhatsApp'] || '—';
-    document.getElementById('f-modelo').textContent  = modelo;
-    document.getElementById('f-equipe').textContent  = l['Tamanho da Equipe'] || '—';
-    document.getElementById('f-desafio').textContent = desafio;
-    document.getElementById('f-origem').textContent  = orig || '—';
-    document.getElementById('f-consent').textContent = l['Consentimento'] || '—';
+    document.getElementById('lead-sections').innerHTML = renderSections(l);
 
     document.getElementById('crm-status').value  = l.crm_status || 'Novo';
     document.getElementById('crm-notas').value   = l.crm_notas || '';
@@ -411,7 +441,8 @@
   }
 
   function esc(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
 </script>
 

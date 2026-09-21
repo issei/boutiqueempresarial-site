@@ -4,6 +4,35 @@ import { test, expect } from '@playwright/test';
 // fixas, então nenhum teste toca a planilha nem a rede real.
 const APPS_SCRIPT = 'https://script.google.com/macros/s/**';
 const TOKEN = 'T'.repeat(72);
+const XSS = '<img src=x onerror="window.__xss=1">';
+
+// Uma linha da aba Respostas, com as colunas que o modal exibe.
+const LEAD = {
+    'Event ID': 'e1',
+    'Data': '2026-09-20T10:00:00',
+    'Nome Completo': 'Ana Teste',
+    'E-mail': 'ana@example.com',
+    'WhatsApp': '11999990000',
+    'Faturamento Mensal': 'R$ 50 mil',
+    'utm_source': 'meta',
+    'utm_medium': 'cpc',
+    'utm_campaign': 'campanha-x',
+    'utm_content': 'anuncio-1',
+    'utm_term': 'gestao',
+    'Página': 'https://boutiqueempresarial.com.br/formulario?utm_source=meta',
+    'Referrer': 'https://l.instagram.com/',
+    'IP': '203.0.113.7',
+    'User Agent': 'Mozilla/5.0 (Teste)',
+    'Status CAPI': 'enviado',
+    crm_status: 'Novo',
+};
+
+/** Login OK e a lista de leads dada; abre o painel. */
+async function abrirPainel(page, leads) {
+    await mockApi(page, (payload) =>
+        payload.action === 'login' ? { result: 'ok', token: TOKEN } : { result: 'ok', leads });
+    await login(page, 'certa');
+}
 
 /** Responde cada POST com `reply(payload)` e devolve a lista do que o painel enviou. */
 async function mockApi(page, reply) {
@@ -50,17 +79,8 @@ test.describe('Painel admin (página interna, não indexada)', () => {
     });
 
     test('senha certa abre o painel, e senha e token nunca vão na URL', async ({ page }) => {
-        const leads = [{
-            'Event ID': 'e1',
-            'Data': '2026-09-20T10:00:00',
-            'Nome Completo': 'Ana Teste',
-            'E-mail': 'ana@example.com',
-            'WhatsApp': '11999990000',
-            'Faturamento Mensal': 'R$ 50 mil',
-            crm_status: 'Novo',
-        }];
         const seen = await mockApi(page, (payload) =>
-            payload.action === 'login' ? { result: 'ok', token: TOKEN } : { result: 'ok', leads });
+            payload.action === 'login' ? { result: 'ok', token: TOKEN } : { result: 'ok', leads: [LEAD] });
 
         await login(page, 'certa');
         await expect(page.locator('#table-container')).toContainText('Ana Teste');
@@ -71,5 +91,33 @@ test.describe('Painel admin (página interna, não indexada)', () => {
         expect(seen[1].payload.token).toBe(TOKEN);
         expect(seen[1].payload.pw).toBeUndefined();
         for (const { url } of seen) expect(url).not.toMatch(/[?&](pw|token)=/);
+    });
+
+    test('detalhes do lead mostram origem, campanha e dados técnicos', async ({ page }) => {
+        await abrirPainel(page, [LEAD]);
+        await page.click('#table-container tr.clickable');
+
+        const modal = page.locator('#modal');
+        for (const valor of ['meta', 'cpc', 'campanha-x', 'anuncio-1', 'gestao', 'https://l.instagram.com/', 'utm_source=meta']) {
+            await expect(modal).toContainText(valor);
+        }
+
+        // Os dados técnicos começam fechados e abrem com um clique.
+        const tecnicos = modal.locator('details');
+        await expect(tecnicos).toHaveJSProperty('open', false);
+        await tecnicos.locator('summary').click();
+        await expect(tecnicos).toHaveJSProperty('open', true);
+        await expect(tecnicos).toContainText('203.0.113.7');
+        await expect(tecnicos).toContainText('Mozilla/5.0 (Teste)');
+    });
+
+    test('dados vindos do formulário público entram como texto, nunca como HTML', async ({ page }) => {
+        const hostil = { ...LEAD, 'Nome Completo': XSS, 'Referrer': XSS, 'User Agent': XSS };
+        await abrirPainel(page, [hostil]);
+        await page.click('#table-container tr.clickable');
+
+        await expect(page.locator('#modal')).toContainText(XSS);
+        await expect(page.locator('img')).toHaveCount(0);
+        expect(await page.evaluate(() => window.__xss)).toBeUndefined();
     });
 });
