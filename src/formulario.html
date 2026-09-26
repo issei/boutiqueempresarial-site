@@ -1021,7 +1021,7 @@
 
             // Mesmas regras de validate(), sem efeito colateral na interface.
             function contactOk() {
-                var d = digits(fieldValue("whatsapp"));
+                var d = localDigits(fieldValue("whatsapp"));
                 return fieldValue("nome_completo").length >= 3 && isEmail(fieldValue("email")) && d.length >= 10 && d.length <= 11;
             }
 
@@ -1077,6 +1077,8 @@
 
             var isEmail = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); };
             var digits = function (v) { return (v || "").replace(/\D/g, ""); };
+            // Ignora o DDI (ex.: 55) quando o usuário digita o telefone com código do país.
+            var localDigits = function (v) { var d = digits(v); return d.length > 11 ? d.slice(d.length - 11) : d; };
 
             /* ---------------------------------------------------------------
              * 3. VALIDAÇÃO declarativa por etapa
@@ -1101,7 +1103,7 @@
                 }
 
                 if (name === "whatsapp") {
-                    var d = digits(text.value);
+                    var d = localDigits(text.value);
                     if (d.length < 10 || d.length > 11) { markInvalid(text); showError(step, "Informe um WhatsApp válido com DDD."); return false; }
                 }
 
@@ -1148,10 +1150,12 @@
              * ------------------------------------------------------------- */
 
             var mask = function (v) {
-                v = digits(v).slice(0, 11);
+                v = digits(v).slice(0, 13);
+                var ddi = "";
+                if (v.length > 11) { ddi = "+" + v.slice(0, v.length - 11) + " "; v = v.slice(v.length - 11); }
                 if (v.length > 2) v = "(" + v.substring(0, 2) + ") " + v.substring(2);
                 if (v.length > 9) v = v.substring(0, 10) + "-" + v.substring(10);
-                return v;
+                return ddi + v;
             };
             document.getElementById("whatsapp").addEventListener("input", function (e) {
                 e.target.value = mask(e.target.value);
