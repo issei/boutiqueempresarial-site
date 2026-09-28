@@ -9,6 +9,8 @@
  *   4. Avisar a equipe por e-mail (docs/specs/notificacao-email-lead.md)
  *   5. Guardar a pré-captura do contato na aba "Parciais", sem CAPI e sem
  *      e-mail (docs/specs/design/formulario-envio-parcial.md)
+ *   6. Repassar o envio (final e parcial) ao CRM, depois da planilha
+ *      (Spec 006 do repositório boutiqueempresarial-crm)
  *
  * ----------------------------------------------------------------------------
  * SETUP OBRIGATÓRIO (uma única vez, antes do primeiro deploy)
@@ -39,6 +41,14 @@
  * "Gerenciar implantações > editar a implantação existente > Nova versão".
  * Criar uma implantação NOVA geraria outra URL /exec, e a atual está fixa em
  * src/formulario.html.
+ *
+ * ----------------------------------------------------------------------------
+ * INTEGRAÇÃO COM O CRM (opcional — sem isto, o fluxo é o de sempre)
+ * ----------------------------------------------------------------------------
+ *     CRM_SITE_TOKEN = mesmo valor do secret crm/integracao-site/token do CRM
+ *
+ * Ausente/vazia, o repasse é pulado em silêncio. Falha do CRM só vai para o
+ * log de execução: a planilha já foi gravada e o CRM reconcilia pelo event_id.
  * ----------------------------------------------------------------------------
  */
 
@@ -48,7 +58,8 @@ const CONFIG = {
   LOCK_TIMEOUT_MS: 10000,
   DEFAULT_COUNTRY: 'br',
   CONTENT_NAME: 'Sessão Estratégica de Análise Operacional',
-  NOTIFY_CACHE_TTL_S: 21600
+  NOTIFY_CACHE_TTL_S: 21600,
+  CRM_URL: 'https://api.boutiqueempresarial.com.br/integrations/site/leads'
 };
 
 /**
@@ -141,6 +152,7 @@ function doPost(e) {
     }
 
     saveToSheet(data, capiStatus);
+    sendToCrm(data);
 
     // A pré-captura deste lead já não faz sentido: só a aplicação completa fica.
     // Efeito colateral — falhar aqui nunca pode transformar um lead salvo em erro.
@@ -379,6 +391,7 @@ function savePartialLead(data) {
     sanitizeInput(data.page_url),
     sanitizeInput(data.referrer)
   ]);
+  sendToCrm(data);
 
   if (eventId) cache.put('partial_' + eventId, '1', CONFIG.NOTIFY_CACHE_TTL_S);
   return jsonOut({ result: 'success', parcial: true, event_id: eventId });
@@ -553,6 +566,39 @@ function withOther(value, other) {
   const extra = plainText(other);
   if (base && extra) return base + ' — ' + extra;
   return base || extra;
+}
+
+/* ========================================================================== */
+/* CRM                                                                        */
+/* ========================================================================== */
+
+/**
+ * Repassa o envio, como chegou do formulário, a POST /integrations/site/leads.
+ * Chamada DEPOIS de gravar a planilha: falha aqui só vai para o log — nunca
+ * transforma um lead salvo em erro. Reenvio do mesmo event_id é idempotente
+ * no CRM (200), então não há guarda de cache aqui.
+ * ponytail: UrlFetchApp não aceita timeout; o teto é o do API Gateway (30 s),
+ * com o lock do doPost preso, como no CAPI. Mover para depois do releaseLock
+ * se isso atrasar o formulário.
+ */
+function sendToCrm(data) {
+  const token = PropertiesService.getScriptProperties().getProperty('CRM_SITE_TOKEN');
+  if (!token) return;
+  try {
+    const response = UrlFetchApp.fetch(CONFIG.CRM_URL, {
+      method: 'post',
+      contentType: 'application/json',
+      headers: { Authorization: 'Bearer ' + token },
+      payload: JSON.stringify(data),
+      muteHttpExceptions: true
+    });
+    const code = response.getResponseCode();
+    if (code !== 200 && code !== 201) {
+      console.error('CRM HTTP ' + code + ' event_id=' + (data.event_id || '') + ': ' + response.getContentText());
+    }
+  } catch (crmError) {
+    console.error('Erro CRM event_id=' + (data.event_id || ''), crmError);
+  }
 }
 
 /* ========================================================================== */
@@ -744,8 +790,9 @@ function leadFixture() {
     whatsapp: '(11) 98888-7777',
     modelo_negocio: 'Outro',
     modelo_negocio_outro: 'Consultoria de nicho',
-    tamanho_equipe: '5 a 15',
-    faturamento_mensal: 'R$ 100k a R$ 300k',
+    // Valores reais do formulário: o CRM recusa (422) opção fora do catálogo.
+    tamanho_equipe: '5 a 15 colaboradores',
+    faturamento_mensal: 'R$ 100 mil a R$ 300 mil/mês',
     maior_problema_gestao: 'Falta de padrão nas entregas e retrabalho',
     maior_problema_gestao_outro: '',
     consentimento: true,
@@ -754,6 +801,19 @@ function leadFixture() {
     utm_campaign: 'teste',
     page_url: 'https://exemplo.com.br/formulario.html'
   };
+}
+
+/**
+ * Envia o lead fictício ao CRM de PRODUÇÃO — cria um lead de teste real lá.
+ * Sem linha "CRM HTTP"/"Erro CRM" no log = 200/201.
+ */
+function testSendToCrm() {
+  if (!PropertiesService.getScriptProperties().getProperty('CRM_SITE_TOKEN')) {
+    console.log('CRM_SITE_TOKEN não configurada — o repasse ao CRM está desligado.');
+    return;
+  }
+  sendToCrm(leadFixture());
+  console.log('Repasse ao CRM executado; veja acima se houve erro.');
 }
 
 /** Mostra o e-mail que SERIA enviado. Não envia nada, não consome quota. */
