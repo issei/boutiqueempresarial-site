@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="noindex,nofollow">
+
+    <!-- Captura do link pessoal: PRIMEIRO script da página, antes do consentimento,
+         do Pixel e do gtag. Lê #t=<token>, guarda na sessionStorage e apaga o
+         fragmento da URL, para que PageView e page_location nunca o carreguem.
+         O token é opaco: só se confere o formato. docs/specs/pages/agendar.md §4 -->
+    <script>
+        (function () {
+            var re = /^[A-Za-z0-9_.-]{20,200}$/;
+            var h = location.hash;
+            if (!h) return;
+            var m = /^#t=([^&]*)/.exec(h);
+            var t = m && re.test(m[1]) ? m[1] : null;
+            try {
+                if (t) sessionStorage.setItem("be_agendar_t", t);
+                else sessionStorage.removeItem("be_agendar_t");
+            } catch (e) {
+                window.__be_agendar_t = t; // sessionStorage bloqueada: vale só nesta carga
+            }
+            history.replaceState(null, "", location.pathname + location.search);
+        })();
+    </script>
+
+    <!-- Consent Mode v2 (padrão negado) — precede Pixel e GA4 de propósito: um
+         módulo é adiado e chegaria tarde. Interface em /js/cookie-consent.js;
+         contrato em docs/specs/design/cookie-consent.md -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        (function () {
+            var cat = null;
+            try {
+                var raw = JSON.parse(localStorage.getItem("be_consent") || "null");
+                if (raw && raw.v === 1) cat = raw.cat;
+            } catch (e) { /* modo privado: trata como quem ainda não decidiu */ }
+            window.__ccMarketing = !!(cat && cat.marketing);
+            gtag("consent", "default", {
+                ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied",
+                analytics_storage: "denied", functionality_storage: "granted",
+                security_storage: "granted", wait_for_update: 500
+            });
+            if (cat) {
+                var s = function (on) { return on ? "granted" : "denied"; };
+                gtag("consent", "update", {
+                    ad_storage: s(cat.marketing), ad_user_data: s(cat.marketing),
+                    ad_personalization: s(cat.marketing), analytics_storage: s(cat.analytics)
+                });
+            }
+        })();
+    </script>
+    <script type="module" src="/js/cookie-consent.js"></script>
+    <!-- Meta Pixel Code 2026 Implementation -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+
+    // Previne disparos fantasmas de rotas virtuais (Padrão 2026)
+    fbq.disablePushState = true;
+
+    // Ativa o Processamento Limitado de Dados (LDU) para LGPD/CCPA
+    // Pixel enfileira os eventos enquanto revogado e os libera no grant.
+    fbq('consent', window.__ccMarketing ? 'grant' : 'revoke');
+    fbq('dataProcessingOptions', ['LDU'], 1, 1000);
+
+    fbq('init', '1469019395044653');
+    fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="BoutiqueEmp" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8HNXV7KTY9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-8HNXV7KTY9');
+    </script>
+
+    <title>Agendar Diagnóstico Gratuito | Boutique Empresarial</title>
+    <meta name="description" content="Escolha o horário do seu Diagnóstico Gratuito com a Boutique Empresarial. A conversa acontece por Google Meet.">
+    <link rel="stylesheet" href="/style.css">
+    <script type="module" src="/js/agendar.js"></script>
+
+    <style>
+        [hidden] { display: none !important; }
+
+        body {
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ag-header {
+            text-align: center;
+            padding: 32px 24px 8px;
+        }
+
+        .ag-header img { width: 120px; height: auto; opacity: .9; }
+
+        .ag-main {
+            flex: 1;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 24px 24px 48px;
+        }
+
+        .ag-main h1 {
+            font-size: 1.75rem;
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        .ag-main h1:focus { outline: none; }
+
+        .ag-main h2 {
+            font-family: var(--font-inter);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0;
+            margin: 28px 0 10px;
+        }
+
+        .ag-main p { color: var(--text-secondary); margin-bottom: 12px; }
+
+        .ag-sr {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        .ag-skel { display: grid; gap: 12px; margin-top: 24px; }
+        .ag-skel span {
+            display: block;
+            height: 44px;
+            background: #e9e4d8;
+            border-radius: 2px;
+        }
+
+        .ag-opcoes { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .ag-opcao { position: relative; }
+
+        .ag-opcao input {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .ag-opcao span {
+            display: flex;
+            align-items: center;
+            min-height: 44px;
+            padding: 8px 16px;
+            background: #fff;
+            border: 1px solid var(--text-primary);
+            border-radius: 2px;
+            color: var(--text-primary);
+            font-weight: 400;
+            line-height: 1.3;
+        }
+
+        .ag-opcao input:checked + span {
+            background: var(--text-primary);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .ag-opcao input:focus-visible + span {
+            outline: 2px solid var(--gold-text);
+            outline-offset: 2px;
+        }
+
+        .ag-btn {
+            font: inherit;
+            font-weight: 600;
+            min-height: 44px;
+            padding: 10px 24px;
+            border-radius: 2px;
+            border: 1px solid var(--text-primary);
+            background: #fff;
+            color: var(--text-primary);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .ag-btn--principal { background: var(--text-primary); color: #fff; }
+        .ag-btn[aria-disabled="true"] { opacity: .75; cursor: progress; }
+        .ag-btn:focus-visible,
+        .ag-main a:focus-visible {
+            outline: 2px solid var(--gold-text);
+            outline-offset: 2px;
+        }
+
+        .ag-acoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+
+        .ag-apoio { margin-top: 12px; min-height: 1.8em; }
+
+        .ag-aviso {
+            border-left: 2px solid var(--gold-subtle);
+            padding: 2px 0 2px 16px;
+            margin: 16px 0;
+            color: var(--text-primary);
+        }
+
+        .ag-main a { color: var(--text-primary); text-decoration: underline; }
+        .ag-main a.ag-btn--principal { color: #fff; text-decoration: none; }
+
+        .ag-rodape {
+            text-align: center;
+            padding: 24px;
+            font-size: .8rem;
+            color: var(--text-secondary);
+        }
+
+        .ag-rodape a,
+        .ag-rodape button { color: var(--text-primary); }
+    </style>
+</head>
+
+<body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+    <header class="ag-header">
+        <img src="/boutiquelogo.webp" alt="Boutique Empresarial" width="120" height="120">
+    </header>
+
+    <main class="ag-main" id="conteudo" aria-busy="false">
+        <h1 id="titulo" tabindex="-1">Agende seu Diagnóstico Gratuito</h1>
+        <p class="ag-sr" id="anuncio" role="status" aria-live="polite"></p>
+
+        <noscript>
+            <p>Ative o JavaScript para escolher o horário ou fale com a gente:
+                <a href="mailto:talita@boutiqueempresarial.com.br">talita@boutiqueempresarial.com.br</a>.</p>
+        </noscript>
+
+        <!-- 6.1 Carregando -->
+        <section id="est-carregando" hidden>
+            <div class="ag-skel" aria-hidden="true"><span></span><span></span><span></span></div>
+        </section>
+
+        <!-- 6.2 Escolha (e 6.4 Remarcar) -->
+        <section id="est-escolha" hidden>
+            <p id="aviso" class="ag-aviso" role="status" hidden></p>
+            <p id="alerta" class="ag-aviso" role="alert" hidden></p>
+            <p id="atual" hidden></p>
+            <p id="subtitulo"></p>
+
+            <h2 id="rot-dias">Dia</h2>
+            <div class="ag-opcoes" id="dias" role="radiogroup" aria-labelledby="rot-dias"></div>
+
+            <div id="bloco-horarios" hidden>
+                <h2 id="rot-horarios">Horário (horário de Brasília)</h2>
+                <div class="ag-opcoes" id="horarios" role="radiogroup" aria-labelledby="rot-horarios"></div>
+            </div>
+
+            <p class="ag-apoio" id="apoio" aria-live="polite"></p>
+            <div class="ag-acoes">
+                <button type="button" class="ag-btn ag-btn--principal" id="confirmar" aria-describedby="apoio">Confirmar horário</button>
+                <button type="button" class="ag-btn" id="manter" hidden>Manter o horário atual</button>
+            </div>
+        </section>
+
+        <!-- 6.3 Confirmado -->
+        <section id="est-confirmado" hidden>
+            <p id="conf-texto"></p>
+            <div class="ag-acoes" id="conf-meet-bloco">
+                <a class="ag-btn ag-btn--principal" id="conf-meet" rel="noopener" target="_blank" hidden>Abrir o Google Meet</a>
+            </div>
+            <p id="conf-sem-meet" hidden>O convite do Google Agenda chega ao seu e-mail com o link do Meet.</p>
+            <div class="ag-acoes" id="conf-acoes">
+                <button type="button" class="ag-btn" id="remarcar">Remarcar</button>
+                <button type="button" class="ag-btn" id="cancelar">Cancelar agendamento</button>
+            </div>
+            <p id="conf-contato" hidden>Para alterar este horário, fale com a gente:
+                <a href="mailto:talita@boutiqueempresarial.com.br">talita@boutiqueempresarial.com.br</a>.</p>
+
+            <!-- 6.5 Cancelar: confirmação inline, sem window.confirm -->
+            <div id="cancelar-conf" class="ag-aviso" hidden>
+                <p id="cancelar-pergunta" tabindex="-1">Cancelar este horário?</p>
+                <div class="ag-acoes">
+                    <button type="button" class="ag-btn ag-btn--principal" id="cancelar-sim">Sim, cancelar</button>
+                    <button type="button" class="ag-btn" id="cancelar-nao">Manter</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6.6 Erros -->
+        <section id="est-erro" hidden>
+            <p id="erro-msg"></p>
+            <div class="ag-acoes">
+                <button type="button" class="ag-btn ag-btn--principal" id="erro-retry" hidden>Tentar novamente</button>
+                <a class="ag-btn" id="erro-contato" href="mailto:talita@boutiqueempresarial.com.br" hidden>Falar com a gente</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="ag-rodape">
+        <p class="footer-legal">&copy; 2026 Boutique Empresarial ·
+            <a href="/privacidade.html">Política de Privacidade</a></p>
+    </footer>
+</body>
+
+</html>

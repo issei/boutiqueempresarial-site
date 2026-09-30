@@ -1,0 +1,82 @@
+{
+  "semAgendamento": {
+    "primeiro_nome": "Ana",
+    "duracao_min": 60,
+    "fuso": "America/Sao_Paulo",
+    "dias": [
+      {
+        "data": "2026-10-06",
+        "horarios": [
+          "2026-10-06T09:00:00-03:00",
+          "2026-10-06T10:00:00-03:00",
+          "2026-10-06T11:00:00-03:00"
+        ]
+      }
+    ],
+    "agendamento_atual": null
+  },
+  "comAgendamento": {
+    "primeiro_nome": "Ana",
+    "duracao_min": 60,
+    "fuso": "America/Sao_Paulo",
+    "dias": [
+      {
+        "data": "2026-10-09",
+        "horarios": [
+          "2026-10-09T09:00:00-03:00"
+        ]
+      }
+    ],
+    "agendamento_atual": {
+      "inicio": "2026-10-08T10:00:00-03:00",
+      "fim": "2026-10-08T11:00:00-03:00",
+      "meet_url": "https://meet.google.com/abc-defg-hij",
+      "pode_alterar": true
+    }
+  },
+  "derivadas": {
+    "_nota": "Nao constam como exemplo no OpenAPI 1.0.0. naoPodeAlterar e semHorarios: derivadas do texto da rota slots (dias vazio quando pode_alterar = false) e do schema. doisDias: o exemplo semAgendamento com um segundo dia (2026-10-07) e um horario 15:30, para testar troca de dia.",
+    "doisDias": {
+      "primeiro_nome": "Ana",
+      "duracao_min": 60,
+      "fuso": "America/Sao_Paulo",
+      "dias": [
+        {
+          "data": "2026-10-06",
+          "horarios": [
+            "2026-10-06T09:00:00-03:00",
+            "2026-10-06T10:00:00-03:00",
+            "2026-10-06T11:00:00-03:00"
+          ]
+        },
+        {
+          "data": "2026-10-07",
+          "horarios": [
+            "2026-10-07T14:00:00-03:00",
+            "2026-10-07T15:30:00-03:00"
+          ]
+        }
+      ],
+      "agendamento_atual": null
+    },
+    "naoPodeAlterar": {
+      "primeiro_nome": "Ana",
+      "duracao_min": 60,
+      "fuso": "America/Sao_Paulo",
+      "dias": [],
+      "agendamento_atual": {
+        "inicio": "2026-10-08T10:00:00-03:00",
+        "fim": "2026-10-08T11:00:00-03:00",
+        "meet_url": null,
+        "pode_alterar": false
+      }
+    },
+    "semHorarios": {
+      "primeiro_nome": "Ana",
+      "duracao_min": 60,
+      "fuso": "America/Sao_Paulo",
+      "dias": [],
+      "agendamento_atual": null
+    }
+  }
+}
