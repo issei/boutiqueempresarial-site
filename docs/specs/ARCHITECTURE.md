@@ -66,6 +66,7 @@ Contratos: `docs/specs/pages/formulario.md` (dados), `docs/specs/notificacao-ema
 | `index.html` | `/` | ✅ | Home — LP do Diagnóstico Gratuito |
 | `formulario.html` | `/formulario` | ❌ | Formulário de 7 etapas, conversacional |
 | `obrigada.html` | `/obrigada` | ❌ | Confirmação e disparo do `Lead` |
+| `agendar.html` | `/agendar` | ❌ | Escolha, remarcação e cancelamento do horário do Diagnóstico Gratuito (consome a API pública do CRM; spec em `pages/agendar.md`) |
 | `privacidade.html`, `termos.html` | `/privacidade`, `/termos` | ❌ | Páginas legais |
 | `index-legado.html` | `/index-legado` | ❌ | Home anterior, mantida como backup |
 | `identidade-visual.html` | `/identidade-visual` | ❌ | Guia interno dos cards do Instagram, não linkado |

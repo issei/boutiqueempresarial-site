@@ -1,6 +1,6 @@
 # SDD — Página de Agendamento do Diagnóstico (`agendar`)
 
-*   **Status**: Rascunho para aprovação (v1.1, alinhada à Spec 017 v1.1 do CRM). Nenhum código foi escrito.
+*   **Status**: Implementada localmente (v1.1, alinhada à Spec 017 v1.1 do CRM; contrato OpenAPI 1.0.0). Aguarda revisão da copy, publicação e liberação coordenada (F7). Divergências e decisões da implementação em §14.
 *   **Arquivos afetados (na implementação)**: `src/agendar.html`, `src/js/agendar.js`, `tests/agendar.spec.js`, `e2e/agendar.spec.js`, `docs/specs/ARCHITECTURE.md` (tabela de páginas), `src/privacidade.html` (uso do e-mail e do Google Agenda para agendamento)
 *   **Contrato da API que a página consome**: `boutiqueempresarial-crm/docs/openapi/agendamento.json`, congelado ao fim da fatia F2 da Spec 017 (campo `info.version`). É a única fonte do contrato: as respostas simuladas dos testes (§11) são copiadas dos exemplos desse arquivo, com a versão anotada em `tests/fixtures/agendar/VERSION`. Em divergência sobre a API, **o CRM vence**; a página se adapta.
 *   **Substitui**: nada. Substitui apenas o passo manual de combinar horário depois do formulário.
@@ -151,3 +151,13 @@ Testes em `tests/agendar.spec.js` (contrato, respostas simuladas com `page.route
 *   **CORS e preflight**: dependem da API pública separada do CRM; se o mapeamento `public` no domínio da API não for possível, a base muda para um subdomínio (só a constante de `agendar.js` muda).
 *   **Deriva de contrato**: a fixture copiada do OpenAPI pode envelhecer; conferir `VERSION` contra o CRM antes de cada publicação.
 *   **Conversão no Pixel/GA4**: adiada; sem ela não há medição de agendamentos por campanha.
+
+## 14. Notas da implementação
+
+*   **Chave do erro público**: a API devolve `{"error":{"code","message","fields"}}` (chave `code`, não `codigo`). A página decide pelo `code` e cai no status HTTP quando o corpo não vem. A mensagem exibida é sempre a da tabela §6.6, nunca o `message` da API.
+*   **`409 conflito`** (outra operação em andamento no mesmo link) não estava na tabela §6.6: a página mostra "Outra operação está em andamento. Tente de novo em instantes." com "Tentar novamente". `500 erro_interno` e resposta 200 fora do formato tratam-se como `503`.
+*   **`422` em `slots`** é tratado como link inválido (o corpo é só o token); `422` em reservar/remarcar volta à escolha.
+*   **Após reservar ou remarcar** a página assume `pode_alterar = true` (a resposta não traz o campo); o CRM segue valendo: `409 fora_do_prazo` cai no contato alternativo.
+*   **Contato alternativo**: e-mail da `privacidade.html` (`talita@boutiqueempresarial.com.br`), pendência de canal definitivo registrada em §13.
+*   **Fragmento**: aceita `#t=<token>` e ignora parâmetros extras após `&`. O formato `[A-Za-z0-9_.-]{20,200}` é o da §4; se o CRM passar a emitir o MAC com `=`, `+` ou `/`, a expressão da §4 precisa mudar nos dois lugares (`agendar.html` e `agendar.js`).
+*   **Fixtures**: `tests/fixtures/agendar/` copia os exemplos do OpenAPI 1.0.0; as variantes que o OpenAPI não traz (`derivadas` em `slots.json`) estão marcadas como tal.
