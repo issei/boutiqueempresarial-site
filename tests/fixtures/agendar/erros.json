@@ -1,0 +1,13 @@
+{
+  "nao_encontrado": { "error": { "code": "nao_encontrado", "message": "Link não encontrado.", "fields": [] } },
+  "link_expirado": { "error": { "code": "link_expirado", "message": "Este link expirou. Peça um novo link.", "fields": [] } },
+  "lead_nao_agendavel": { "error": { "code": "lead_nao_agendavel", "message": "No momento não é possível agendar por este link.", "fields": [] } },
+  "fora_do_prazo": { "error": { "code": "fora_do_prazo", "message": "O prazo para alterar este agendamento já passou.", "fields": [] } },
+  "horario_indisponivel": { "error": { "code": "horario_indisponivel", "message": "Este horário não está mais disponível. Escolha outro.", "fields": [] } },
+  "conflito": { "error": { "code": "conflito", "message": "Outra operação está em andamento. Tente novamente.", "fields": [] } },
+  "muitas_tentativas": { "error": { "code": "muitas_tentativas", "message": "Muitas tentativas. Peça um novo link.", "fields": [] } },
+  "indisponivel": { "error": { "code": "indisponivel", "message": "Agendamento indisponível no momento. Tente novamente em instantes.", "fields": [] } },
+  "corpo_invalido": { "error": { "code": "corpo_invalido", "message": "Corpo da requisição inválido.", "fields": ["inicio"] } },
+  "idempotency_key_ausente": { "error": { "code": "idempotency_key_ausente", "message": "O cabeçalho Idempotency-Key é obrigatório.", "fields": [] } },
+  "erro_interno": { "error": { "code": "erro_interno", "message": "Erro interno.", "fields": [] } }
+}
