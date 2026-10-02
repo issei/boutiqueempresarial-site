@@ -105,10 +105,11 @@
         gtag('event', 'generate_lead', { event_id: window.leadEid || '' });
     </script>
 
-    <title>Solicitação Recebida | Boutique Empresarial</title>
-    <meta name="description" content="Recebemos sua solicitação de Diagnóstico Estratégico. Retornaremos em até 48h úteis caso sua aplicação seja aprovada.">
+    <title>Aplicação Recebida | Boutique Empresarial</title>
+    <meta name="description" content="Recebemos a sua aplicação ao Diagnóstico Gratuito da Boutique Empresarial. Escolha o dia e o horário da conversa por Google Meet.">
     <link rel="stylesheet" href="/style.css">
     <script type="module" src="/js/form-copy.js"></script>
+    <script type="module" src="/js/obrigada-agendar.js"></script>
 
     <style>
         :root {
@@ -145,7 +146,8 @@
         .l-img {
             width: 200px;
             height: auto;
-            margin-bottom: 2rem;
+            display: block;
+            margin: 0 auto 2rem;
             opacity: .9
         }
 
@@ -178,6 +180,77 @@
             line-height: 1.75;
             color: var(--text-secondary)
         }
+
+        /* Cartão de agendamento — docs/specs/design/obrigada-agendamento.md.
+         * O body desta página é Playfair; o cartão volta ao Inter do STYLE_GUIDE.
+         * Ouro #C5A059 só no filete (2.20:1); texto em ouro usa --gold-text. */
+        [hidden] { display: none !important }
+
+        .ag {
+            text-align: left;
+            background: #fff;
+            border: 1px solid var(--border-color, #E5E5E5);
+            border-top: 2px solid var(--gold-subtle);
+            border-radius: 2px;
+            padding: 24px 24px 28px;
+            margin: 0 0 2rem;
+            font-family: var(--font-inter), sans-serif
+        }
+
+        .ag p { font-size: 1rem; line-height: 1.6; color: var(--text-secondary) }
+
+        .ag .ag-kicker {
+            font-size: .75rem;
+            font-weight: 600;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--gold-text);
+            margin-bottom: 10px
+        }
+
+        .ag h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text-primary);
+            margin-bottom: 10px
+        }
+
+        .ag .ag-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 12px 28px;
+            margin-top: 18px;
+            background: var(--text-primary);
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 2px
+        }
+
+        .ag .ag-btn:hover { background: #000 }
+
+        .ag .ag-btn:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px }
+
+        .ag .ag-apoio { font-size: .875rem; margin-top: 14px }
+
+        .ag-skel { margin: 14px 0 4px }
+
+        .ag-skel span { display: block; height: 14px; background: #e9e4d8; border-radius: 2px; margin-bottom: 10px }
+
+        .ag-skel span:last-child { width: 55% }
+
+        @media (max-width: 480px) { .ag .ag-btn { display: flex; width: 100% } }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .ag [data-estado="pronto"] { animation: ag-in .2s ease-out }
+            @keyframes ag-in { from { opacity: 0 } to { opacity: 1 } }
+        }
+
+        .nota { font-size: .95rem; color: var(--text-secondary) }
     </style>
 </head>
 
@@ -186,12 +259,34 @@
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=1469019395044653&ev=PageView&noscript=1"
     /></noscript>
-    <div class="c"><img src="/boutiquelogo.webp" alt="Logo" class="l-img" width="200" height="200">
+    <img src="/boutiquelogo.webp" alt="Logo" class="l-img" width="200" height="200">
         <h1 id="titulo">Solicitação Recebida</h1>
         <div class="s"></div>
         <p class="cf-fechamento" id="fechamento" hidden></p>
-        <p>Suas informações são confidenciais. Retornaremos em até 48h úteis via WhatsApp/E-mail caso sua aplicação seja
-            aprovada.</p>
+
+        <!-- Próximo passo: o módulo obrigada-agendar.js troca o event_id por um link
+             pessoal e alterna os três estados. Sem eid, a seção continua oculta. -->
+        <section class="ag" id="agendamento" aria-label="Agendamento do Diagnóstico Gratuito" hidden>
+            <p class="ag-kicker">Próximo passo</p>
+            <div id="ag-corpo" aria-live="polite" aria-busy="true">
+                <div data-estado="preparando">
+                    <div class="ag-skel" aria-hidden="true"><span></span><span></span></div>
+                    <p>Preparando o seu link de agendamento...</p>
+                </div>
+                <div data-estado="pronto" hidden>
+                    <h2>Escolha o dia e o horário do seu Diagnóstico Gratuito</h2>
+                    <p>A conversa acontece por Google Meet. Ao confirmar, o convite chega ao seu e-mail.</p>
+                    <a class="ag-btn" id="ag-link" href="/agendar.html">Escolher horário</a>
+                    <p class="ag-apoio">Também enviamos o link por e-mail.</p>
+                </div>
+                <div data-estado="fallback" hidden>
+                    <h2>O link foi enviado ao seu e-mail</h2>
+                    <p>Abra a mensagem para escolher o dia e o horário. Se não a encontrar na caixa de entrada, confira também o spam.</p>
+                </div>
+            </div>
+        </section>
+
+        <p class="nota">Suas informações são confidenciais. O e-mail de agendamento vai para o endereço informado na aplicação.</p>
     </main>
 
     <script type="module">

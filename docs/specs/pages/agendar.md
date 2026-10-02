@@ -14,7 +14,7 @@ Depois de completar o formulário, o lead recebe um e-mail do CRM com um link pe
 ## 2. Fora de escopo
 
 *   Qualquer cálculo de disponibilidade, regra de etapa ou validade de link (é do CRM).
-*   Mostrar o link na `obrigada.html` (evolução; exige o CRM devolver o token na resposta da integração).
+*   Mostrar o link na `obrigada.html`: **saiu desta spec**, tratado em `docs/specs/design/obrigada-agendamento.md` (troca do `event_id` por token numa rota nova do CRM).
 *   Evento de conversão no Pixel/GA4 ao agendar (evolução; exige spec em `docs/specs/design/`, ver §9).
 *   Escolha de formato da reunião: é sempre Google Meet.
 *   Login, cadastro ou qualquer dado além do token.
@@ -140,7 +140,7 @@ Testes em `tests/agendar.spec.js` (contrato, respostas simuladas com `page.route
 ## 12. Allowlist de implementação
 
 *   **Paths**: `src/agendar.html`, `src/js/agendar.js`, `src/privacidade.html`, `tests/agendar.spec.js`, `e2e/agendar.spec.js`, `tests/fixtures/agendar/`, `docs/specs/ARCHITECTURE.md`, `docs/specs/pages/agendar.md`
-*   **Efeitos proibidos**: alterar `apps_script_atualizado.gs`, `src/formulario.html`, `src/obrigada.html`, `infra/`; adicionar dependência npm; `git push` sem instrução explícita; qualquer alteração no repositório do CRM a partir deste projeto.
+*   **Efeitos proibidos**: alterar `apps_script_atualizado.gs`, `src/formulario.html`, `infra/` (e `src/obrigada.html` fora do que a spec `design/obrigada-agendamento.md` autoriza); adicionar dependência npm; `git push` sem instrução explícita; qualquer alteração no repositório do CRM a partir deste projeto.
 *   **Tools MCP permitidas**: nenhuma.
 
 ## 13. Riscos e decisões pendentes
@@ -151,6 +151,7 @@ Testes em `tests/agendar.spec.js` (contrato, respostas simuladas com `page.route
 *   **CORS e preflight**: dependem da API pública separada do CRM; se o mapeamento `public` no domínio da API não for possível, a base muda para um subdomínio (só a constante de `agendar.js` muda).
 *   **Deriva de contrato**: a fixture copiada do OpenAPI pode envelhecer; conferir `VERSION` contra o CRM antes de cada publicação.
 *   **Conversão no Pixel/GA4**: adiada; sem ela não há medição de agendamentos por campanha.
+*   **Link na obrigada.html**: depende de uma rota nova no CRM (`POST /public/agendamento/link`, proposta em `design/obrigada-agendamento.md` §5); a Spec 017 do CRM ainda a lista como fora de escopo.
 
 ## 14. Notas da implementação
 

@@ -164,6 +164,11 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
   expect(texto).toContain('Maria');
   expect(texto).toContain('5 a 15 pessoas');
   expect(texto).toContain('R$ 100 mil a R$ 300 mil/mês');
+
+  // Cartão de agendamento (docs/specs/design/obrigada-agendamento.md): a API do CRM
+  // responde 503 pela rota padrão do beforeEach, então cai no aviso do e-mail.
+  await expect(page.locator('[data-estado="fallback"]')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Escolher horário' })).toBeHidden();
 });
 
 test('funil: eventos GA4/Meta por etapa, sem dado pessoal', async ({ page }) => {
