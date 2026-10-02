@@ -1,6 +1,6 @@
 # ADR — Testes E2E do formulário não podem enviar leads para produção
 
-**Status**: Aceita em 2026-09-30. **Correção ainda não implementada** — este documento só especifica o que corrigir.
+**Status**: Aceita em 2026-09-30. **Implementada em 2026-10-02** (rotas padrão no `beforeEach`, regra 7 no `TESTING_GUIDE.md`; a rota padrão também cobre `api.boutiqueempresarial.com.br`, pela chamada da `obrigada.html` à API de agendamento). O critério 3 (oráculo no CRM) e as Pendências abaixo seguem em aberto.
 **Escopo**: `e2e/form-aplicacao.spec.js` (e a regra para qualquer spec novo que preencha o formulário).
 **Relacionados**: `TESTING_GUIDE.md` (gate), `pages/formulario.md`, `design/formulario-envio-parcial.md`, `notificacao-email-lead.md`; no repositório do CRM, Spec 006 (rota `POST /integrations/site/leads`).
 

@@ -5,6 +5,12 @@ test.setTimeout(90000);
 
 // Bloqueia recursos de terceiros: o teste valida o payload, não a rede externa.
 test.beforeEach(async ({ page }) => {
+  // Isolamento padrão (docs/specs/adr-e2e-nao-enviar-formulario-para-producao.md):
+  // nenhum teste deste arquivo alcança o Apps Script nem a API do CRM de verdade.
+  // Rota registrada depois tem prioridade, então os testes que inspecionam o
+  // payload mantêm a própria rota.
+  await page.route('**/script.google.com/**', r => r.fulfill({ status: 200, contentType: 'application/json', body: '{"result":"success"}' }));
+  await page.route('**/api.boutiqueempresarial.com.br/**', r => r.fulfill({ status: 503, contentType: 'application/json', body: '{}' }));
   await page.route('**://fonts.googleapis.com/**', r => r.abort());
   await page.route('**://fonts.gstatic.com/**', r => r.abort());
   await page.route('**://connect.facebook.net/**', r => r.abort());
