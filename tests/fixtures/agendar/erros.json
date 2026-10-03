@@ -1,4 +1,5 @@
 {
+  "agendamento_desligado": { "error": { "code": "agendamento_desligado", "message": "O agendamento online não está disponível no momento.", "fields": [] } },
   "nao_encontrado": { "error": { "code": "nao_encontrado", "message": "Link não encontrado.", "fields": [] } },
   "link_expirado": { "error": { "code": "link_expirado", "message": "Este link expirou. Peça um novo link.", "fields": [] } },
   "lead_nao_agendavel": { "error": { "code": "lead_nao_agendavel", "message": "No momento não é possível agendar por este link.", "fields": [] } },

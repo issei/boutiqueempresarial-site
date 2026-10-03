@@ -28,6 +28,7 @@ formulario.html ──POST──► Apps Script (doPost)
                             ├─ parcial: true → aba "Parciais" (pré-captura do contato)
                             └─ envio final  → Meta CAPI → aba "Respostas" → e-mail de aviso
 obrigada.html   ──────────► Pixel `Lead` + GA4 `generate_lead` (mesmo event_id do CAPI)
+                └─POST event_id─► API pública do CRM `/public/agendamento/link` → botão para `/agendar` (cartão "Próximo passo"; agendamento desligado no CRM ou sem resposta: obrigada de sempre, sem cartão)
 ```
 
 Contratos: `docs/specs/pages/formulario.md` (dados), `docs/specs/notificacao-email-lead.md` (e-mail), `docs/specs/design/formulario-envio-parcial.md` (pré-captura), `docs/specs/design/formulario-tracking-funil.md` (eventos GA4/Meta).
@@ -65,7 +66,7 @@ Contratos: `docs/specs/pages/formulario.md` (dados), `docs/specs/notificacao-ema
 | :-- | :-- | :-: | :-- |
 | `index.html` | `/` | ✅ | Home — LP do Diagnóstico Gratuito |
 | `formulario.html` | `/formulario` | ❌ | Formulário de 7 etapas, conversacional |
-| `obrigada.html` | `/obrigada` | ❌ | Confirmação e disparo do `Lead` |
+| `obrigada.html` | `/obrigada` | ❌ | Confirmação, disparo do `Lead` e cartão de agendamento (spec em `design/obrigada-agendamento.md`) |
 | `agendar.html` | `/agendar` | ❌ | Escolha, remarcação e cancelamento do horário do Diagnóstico Gratuito (consome a API pública do CRM; spec em `pages/agendar.md`) |
 | `privacidade.html`, `termos.html` | `/privacidade`, `/termos` | ❌ | Páginas legais |
 | `index-legado.html` | `/index-legado` | ❌ | Home anterior, mantida como backup |

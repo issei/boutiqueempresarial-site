@@ -1,0 +1,12 @@
+{
+  "_aviso": "Copiado dos exemplos do OpenAPI do CRM 1.1.0 (POST /public/agendamento/link, Spec 021).",
+  "pronto": {
+    "token": "0b6f6f1e-2f0a-4a51-9c19-3d2b1f4a7c10.dGVzdGUtbWFj",
+    "envio_email": true
+  },
+  "prontoSemEmail": {
+    "token": "0b6f6f1e-2f0a-4a51-9c19-3d2b1f4a7c10.dGVzdGUtbWFj",
+    "envio_email": false
+  },
+  "repetir": {}
+}

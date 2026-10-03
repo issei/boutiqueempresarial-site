@@ -27,6 +27,13 @@ const TEXTO = {
   conflito: 'Outra operação está em andamento. Tente de novo em instantes.',
   cancelado: 'Agendamento cancelado. Se quiser, escolha outro horário.',
   escolhaVazia: 'Escolha um dia e um horário',
+  semHorarioTitulo: 'Combinado, vamos encontrar outro horário',
+  semHorarioBotao: 'Nenhum horário funciona para mim',
+  // Com e-mail enviado (email_enviado = true) e sem ele (envio desligado ou falha do SES):
+  // a página só promete o e-mail quando o CRM diz que ele saiu.
+  semHorarioEmail: 'Enviamos para o seu e-mail um link para você agendar mais tarde, quando abrirem novos horários.',
+  semHorarioContatoComEmail: 'A Talita também vai entrar em contato com você para combinar um horário que caiba na sua agenda.',
+  semHorarioContatoSemEmail: 'A Talita vai entrar em contato com você para combinar um horário que caiba na sua agenda.',
 };
 
 // Erros terminais: mensagem + ação (contato alternativo ou nova tentativa).
@@ -64,12 +71,12 @@ function lerToken() {
 // ── Datas: sempre no fuso devolvido pela API, não no do aparelho ───────────
 const fmt = (fuso, opts) => new Intl.DateTimeFormat('pt-BR', { timeZone: fuso, ...opts });
 
-function diaExtenso(iso, fuso) {
+function diaExtenso(iso, fuso) { // 06/10, terça-feira
   const p = Object.fromEntries(
-    fmt(fuso, { weekday: 'long', day: 'numeric', month: 'long' })
+    fmt(fuso, { weekday: 'long', day: '2-digit', month: '2-digit' })
       .formatToParts(new Date(iso)).map((x) => [x.type, x.value]),
   );
-  return `${p.weekday.replace('-feira', '')}, ${p.day} de ${p.month}`;
+  return `${p.day}/${p.month}, ${p.weekday}`;
 }
 
 function horaCurta(iso, fuso) { // 14h ou 14h30
@@ -125,7 +132,7 @@ function classificar({ status, data }) {
 }
 
 // ── Telas ──────────────────────────────────────────────────────────────────
-const TELAS = ['carregando', 'escolha', 'confirmado', 'erro'];
+const TELAS = ['carregando', 'escolha', 'confirmado', 'sem-horario', 'erro'];
 
 function mostrar(tela, titulo) {
   for (const t of TELAS) $(`est-${t}`).hidden = t !== tela;
@@ -162,6 +169,15 @@ function opcao(nome, valor, rotulo, marcado, aoMarcar) {
   return label;
 }
 
+/** Confirmar só vale com dia e horário; "Nenhum horário funciona" só aparece enquanto não vale. */
+function sincronizarBotoes() {
+  const completo = Boolean(estado.dia && estado.hora);
+  const confirmar = $('confirmar');
+  confirmar.disabled = !completo;
+  confirmar.setAttribute('aria-disabled', String(!completo || estado.ocupado));
+  $('sem-horario').hidden = completo || estado.modo === 'remarcar';
+}
+
 function desenharHorarios() {
   const dia = estado.dados.dias.find((d) => d.data === estado.dia);
   $('bloco-horarios').hidden = !dia;
@@ -173,6 +189,7 @@ function desenharHorarios() {
     host.append(opcao('horario', iso, horaRelogio(iso, fuso), iso === estado.hora, (v) => {
       estado.hora = v;
       texto('apoio', '');
+      sincronizarBotoes();
     }));
   }
 }
@@ -204,14 +221,23 @@ function desenharEscolha({ aviso = '', alerta = '' } = {}) {
       estado.hora = null;
       texto('apoio', '');
       desenharHorarios();
+      sincronizarBotoes();
     }));
   }
   desenharHorarios();
+  sincronizarBotoes();
   mostrar('escolha', remarcando ? 'Escolha o novo horário' : 'Escolha o melhor horário para o seu Diagnóstico Gratuito');
 }
 
 function meetSeguro(url) {
   try { return new URL(url).protocol === 'https:' ? url : null; } catch (e) { return null; }
+}
+
+function desenharSemHorario(emailEnviado) {
+  $('sh-email').hidden = !emailEnviado;
+  texto('sh-email', emailEnviado ? TEXTO.semHorarioEmail : '');
+  texto('sh-contato', emailEnviado ? TEXTO.semHorarioContatoComEmail : TEXTO.semHorarioContatoSemEmail);
+  mostrar('sem-horario', TEXTO.semHorarioTitulo);
 }
 
 function desenharConfirmado() {
@@ -258,8 +284,10 @@ async function carregar({ remarcar = false, aviso = '', alerta = '' } = {}) {
 
 function botaoOcupado(btn, ocupado, textoOcupado, textoNormal) {
   estado.ocupado = ocupado;
-  btn.setAttribute('aria-disabled', String(ocupado));
   btn.textContent = ocupado ? textoOcupado : textoNormal;
+  // Confirmar também depende da seleção (disabled); os demais só do envio em curso.
+  if (btn.id === 'confirmar') sincronizarBotoes();
+  else btn.setAttribute('aria-disabled', String(ocupado));
 }
 
 /** Reservar, remarcar ou cancelar. A mesma ação repetida reaproveita a Idempotency-Key. */
@@ -276,6 +304,7 @@ async function executar(acao, inicio) {
   if (sucesso || (res.status > 0 && res.status < 500 && res.status !== 429)) tentativa = null;
 
   if (sucesso) {
+    if (acao === 'sem-horario') return desenharSemHorario(res.data?.email_enviado === true);
     if (acao === 'cancelar') {
       estado.dia = null; estado.hora = null;
       return carregar({ aviso: TEXTO.cancelado });
@@ -283,6 +312,8 @@ async function executar(acao, inicio) {
     estado.atual = { ...res.data, pode_alterar: true };
     return desenharConfirmado();
   }
+
+  if (acao === 'sem-horario') return mostrarErro(classificar(res), () => executar('sem-horario'));
 
   const code = res.data?.error?.code;
   if (code === 'horario_indisponivel') {
@@ -307,6 +338,17 @@ async function confirmar() {
   }
 }
 
+async function semHorario() {
+  if (estado.ocupado) return;
+  const btn = $('sem-horario');
+  botaoOcupado(btn, true, 'Enviando...', TEXTO.semHorarioBotao);
+  try {
+    await executar('sem-horario');
+  } finally {
+    botaoOcupado(btn, false, '', TEXTO.semHorarioBotao);
+  }
+}
+
 async function cancelar() {
   if (estado.ocupado) return;
   const btn = $('cancelar-sim');
@@ -320,6 +362,12 @@ async function cancelar() {
 
 function iniciar() {
   $('confirmar').addEventListener('click', confirmar);
+  $('sem-horario').addEventListener('click', semHorario);
+  $('sem-horario-voltar').addEventListener('click', () => {
+    estado.dia = null;
+    estado.hora = null;
+    carregar();
+  });
   $('manter').addEventListener('click', desenharConfirmado);
   $('remarcar').addEventListener('click', () => carregar({ remarcar: true }));
   $('cancelar').addEventListener('click', () => {
