@@ -106,7 +106,7 @@
     </script>
 
     <title>Aplicação Recebida | Boutique Empresarial</title>
-    <meta name="description" content="Recebemos a sua aplicação ao Diagnóstico Gratuito da Boutique Empresarial. Escolha o dia e o horário da conversa por Google Meet.">
+    <meta name="description" content="Recebemos a sua aplicação ao Diagnóstico Gratuito da Boutique Empresarial. Suas informações são confidenciais.">
     <link rel="stylesheet" href="/style.css">
     <script type="module" src="/js/form-copy.js"></script>
     <script type="module" src="/js/obrigada-agendar.js"></script>
@@ -277,16 +277,15 @@
                     <h2>Escolha o dia e o horário do seu Diagnóstico Gratuito</h2>
                     <p>A conversa acontece por Google Meet. Ao confirmar, o convite chega ao seu e-mail.</p>
                     <a class="ag-btn" id="ag-link" href="/agendar.html">Escolher horário</a>
-                    <p class="ag-apoio">Também enviamos o link por e-mail.</p>
-                </div>
-                <div data-estado="fallback" hidden>
-                    <h2>O link foi enviado ao seu e-mail</h2>
-                    <p>Abra a mensagem para escolher o dia e o horário. Se não a encontrar na caixa de entrada, confira também o spam.</p>
+                    <p class="ag-apoio" id="ag-email" hidden>Também enviamos o link por e-mail.</p>
                 </div>
             </div>
         </section>
 
-        <p class="nota">Suas informações são confidenciais. O e-mail de agendamento vai para o endereço informado na aplicação.</p>
+        <!-- Jornada de agendamento desligada no CRM (ou sem eid, sem JS, API fora): o texto de sempre.
+             O módulo esconde esta nota enquanto prepara o cartão e a reexibe se o cartão não vier. -->
+        <p class="nota" id="nota-legado">Suas informações são confidenciais. Retornaremos em até 48h úteis via WhatsApp/E-mail caso sua aplicação seja aprovada.</p>
+        <p class="nota" id="nota-cartao" hidden>Suas informações são confidenciais.<span id="nota-email" hidden> O e-mail de agendamento vai para o endereço informado na aplicação.</span></p>
     </main>
 
     <script type="module">

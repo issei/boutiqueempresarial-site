@@ -166,8 +166,8 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
   expect(texto).toContain('R$ 100 mil a R$ 300 mil/mês');
 
   // Cartão de agendamento (docs/specs/design/obrigada-agendamento.md): a API do CRM
-  // responde 503 pela rota padrão do beforeEach, então cai no aviso do e-mail.
-  await expect(page.locator('[data-estado="fallback"]')).toBeVisible();
+  // responde 503 pela rota padrão do beforeEach, então volta à obrigada de sempre (sem cartão).
+  await expect(page.locator('#nota-legado')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Escolher horário' })).toBeHidden();
 });
 

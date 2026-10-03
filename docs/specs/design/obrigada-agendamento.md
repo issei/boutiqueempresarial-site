@@ -1,6 +1,6 @@
 # Agendamento na tela de obrigado — Spec de design
 
-*   **Status**: Implementada localmente em 2026-10-02 (cartão, módulo e testes com a API simulada). **Depende da rota `POST /public/agendamento/link` do CRM, que ainda não existe**: enquanto ela não estiver no ar, o cartão mostra o estado Fallback (§4). Sem `/design-sync` nesta rodada (ver §9).
+*   **Status**: v1.1 (2026-10-03): o toggle do CRM comanda a jornada (§4); a rota `link` é a da Spec 021 do CRM (OpenAPI 1.1.0). Implementada localmente em 2026-10-02 (cartão, módulo e testes com a API simulada). **Depende da rota `POST /public/agendamento/link` do CRM, que ainda não existe**: enquanto ela não estiver no ar, o cartão mostra o estado Fallback (§4). Sem `/design-sync` nesta rodada (ver §9).
 *   **Arquivos**: `src/obrigada.html`, `src/js/obrigada-agendar.js`, `tests/obrigada.spec.js`, `tests/fixtures/agendar/link.json`, `scripts/preview-obrigada.mjs`, `e2e/form-aplicacao.spec.js` (asserts do cartão), docs.
 *   **Relacionados**: `pages/agendar.md` (página de destino), `pages/aplicacao-conversacional.md` §6 (fechamento personalizado), `STYLE_GUIDE.md`, `HARNESS_AEO.md` §B5/§B6, `adr-e2e-nao-enviar-formulario-para-producao.md`; no CRM, Spec 017.
 
@@ -36,7 +36,9 @@ Copy escrita pelo agente `copy-writer` (vocabulário `HARNESS_AEO.md` §B6). **P
 | :-- | :-- | :-- |
 | Preparando | a troca está em andamento | esqueleto + "Preparando o seu link de agendamento..." |
 | Pronto | `200 {token}` | kicker "Próximo passo"; H2 "Escolha o dia e o horário do seu Diagnóstico Gratuito"; "A conversa acontece por Google Meet. Ao confirmar, o convite chega ao seu e-mail."; botão **Escolher horário** → `/agendar.html#t=<token>`; "Também enviamos o link por e-mail." |
-| Fallback | qualquer outra resposta, rede, timeout ou tentativas esgotadas | H2 "O link foi enviado ao seu e-mail"; "Abra a mensagem para escolher o dia e o horário. Se não a encontrar na caixa de entrada, confira também o spam." Sem botão, sem tom de erro |
+| Obrigada de sempre (v1.1, substitui o Fallback) | `409 agendamento_desligado` (toggle `ativo` desligado no CRM) e qualquer outra resposta, rede, timeout ou tentativas esgotadas | sem cartão: a obrigada de antes do agendamento, com a nota "Suas informações são confidenciais. Retornaremos em até 48h úteis via WhatsApp/E-mail caso sua aplicação seja aprovada." (`#nota-legado`, visível por padrão: sem JS, sem `eid` ou com a API fora). O Fallback antigo ("O link foi enviado ao seu e-mail") saiu porque seria falso com o envio de e-mail desligado |
+
+**Toggle (v1.1)**: `ativo` desligado = obrigada de sempre; `ativo` ligado = cartão. Dentro do cartão, `envio_email` (campo da resposta de `link`) liga a linha "Também enviamos o link por e-mail." e o trecho "O e-mail de agendamento vai para o endereço informado na aplicação." da nota; desligado, nenhuma tela promete e-mail.
 
 Outros textos da página: `<title>` "Aplicação Recebida | Boutique Empresarial"; description "Recebemos a sua aplicação ao Diagnóstico Gratuito da Boutique Empresarial. Escolha o dia e o horário da conversa por Google Meet."; nota final "Suas informações são confidenciais. O e-mail de agendamento vai para o endereço informado na aplicação."
 
@@ -48,9 +50,10 @@ Outros textos da página: `<title>` "Aplicação Recebida | Boutique Empresarial
 
 | Resposta | Significado | Cartão |
 | :-- | :-- | :-- |
-| `200 {"token":"..."}` | lead existe, completo e agendável | Pronto |
+| `200 {"token":"...","envio_email":bool}` | lead existe, completo e agendável | Pronto (com ou sem a frase do e-mail) |
 | `202 {}` | o CRM ainda não gravou o lead (o Apps Script repassa depois do envio) | repete |
-| `404`, `409 lead_nao_agendavel`, `410`, `429`, `503`, rede, timeout | outros casos ou agendamento desligado | Fallback |
+| `409 agendamento_desligado` | toggle desligado no CRM | obrigada de sempre |
+| `404`, `409 lead_nao_agendavel`, `410`, `429`, `503`, rede, timeout | outros casos | obrigada de sempre |
 
 *   O site repete até **6 vezes, a cada 2 s** em `202` (teto de ~12 s, mais o timeout de 10 s por tentativa), e então cai no Fallback.
 *   Como o token é HMAC recomputável sem armazenamento (Spec 017 §5.6), a troca é **idempotente**; recarregar a obrigada devolve o mesmo token.

@@ -1,12 +1,12 @@
 // Pré-visualização local da tela de obrigado, com a API de agendamento simulada.
-// Uso: node scripts/preview-obrigada.mjs <pronto|preparando|fallback|sem-eid> [--mobile] [--captura]
+// Uso: node scripts/preview-obrigada.mjs <pronto|pronto-sem-email|preparando|legado|sem-eid> [--mobile] [--captura]
 // Requer `npm run dev` rodando. Vai direto à obrigada: nunca submete o formulário
 // nem alcança script.google.com ou a API real (docs/specs/adr-e2e-nao-enviar-formulario-para-producao.md).
 import { chromium } from '@playwright/test';
 import fs from 'node:fs';
 import { bloquearTerceiros, simularApi, ok, erro } from '../tests/fixtures/agendar/mock.js';
 
-const CENARIOS = ['pronto', 'preparando', 'fallback', 'sem-eid'];
+const CENARIOS = ['pronto', 'pronto-sem-email', 'preparando', 'legado', 'sem-eid'];
 const cenario = process.argv[2];
 const mobile = process.argv.includes('--mobile');
 const captura = process.argv.includes('--captura');
@@ -30,8 +30,9 @@ await page.route('**/script.google.com/**', (r) => r.fulfill({ status: 200, cont
 await simularApi(page, {
   link: {
     pronto: ok(link.pronto),
+    'pronto-sem-email': ok(link.prontoSemEmail),
     preparando: () => new Promise(() => {}), // nunca responde: fica em "Preparando"
-    fallback: erro('indisponivel'),
+    legado: erro('agendamento_desligado'), // CRM com o agendamento desligado
     'sem-eid': erro('indisponivel'),
   }[cenario],
 });
@@ -45,7 +46,7 @@ await page.addInitScript(() => {
 await page.goto(`${BASE}/obrigada.html${cenario === 'sem-eid' ? '' : '?eid=preview-event-id'}`);
 
 if (captura) {
-  const pronto = { pronto: '#ag-link', fallback: '[data-estado=fallback]:not([hidden])' }[cenario];
+  const pronto = { pronto: '#ag-link', 'pronto-sem-email': '#ag-link', legado: '#nota-legado:not([hidden])' }[cenario];
   if (pronto) await page.locator(pronto).waitFor();
   await page.waitForTimeout(500); // fade de entrada (200 ms) termina antes da captura
   fs.mkdirSync('test-results/preview-obrigada', { recursive: true });

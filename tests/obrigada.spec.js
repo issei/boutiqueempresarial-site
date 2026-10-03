@@ -1,4 +1,5 @@
 // Cartão de agendamento da obrigada.html — docs/specs/design/obrigada-agendamento.md §6.
+// O toggle do CRM comanda a jornada: desligado (ou qualquer falha) = obrigada de sempre.
 // A API do CRM é simulada (nenhuma chamada real; ver ADR e2e-nao-enviar-formulario-para-producao).
 import fs from 'node:fs';
 import { test, expect } from '@playwright/test';
@@ -16,7 +17,8 @@ test.beforeEach(async ({ page }) => {
 
 const cartao = (page) => page.locator('#agendamento');
 const botao = (page) => page.getByRole('link', { name: 'Escolher horário' });
-const fallback = (page) => page.locator('[data-estado="fallback"]');
+// Obrigada de sempre (sem cartão): agendamento desligado no CRM, ou qualquer falha da troca.
+const legado = (page) => page.locator('#nota-legado');
 
 // Avança o relógio simulado até a chamada `n` à API ter saído (a espera entre tentativas é de 2 s).
 async function ate(page, chamadas, n) {
@@ -34,13 +36,25 @@ test('pronto: o botão leva ao /agendar com o token no fragmento', async ({ page
   await expect(botao(page)).toBeVisible();
   await expect(botao(page)).toHaveAttribute('href', `/agendar.html#t=${TOKEN}`);
   await expect(page.getByRole('heading', { level: 2 })).toHaveText('Escolha o dia e o horário do seu Diagnóstico Gratuito');
-  await expect(fallback(page)).toBeHidden();
+  await expect(legado(page)).toBeHidden();
+  await expect(page.locator('#ag-email')).toBeVisible(); // envio_email: true
+  await expect(page.locator('#nota-email')).toBeVisible();
   await expect(page.locator('#ag-corpo')).toHaveAttribute('aria-busy', 'false');
 
   expect(chamadas).toHaveLength(1);
   expect(chamadas[0].rota).toBe('link');
   expect(chamadas[0].corpo).toEqual({ event_id: 'evento-de-teste' });
   expect(chamadas[0].headers['content-type']).toContain('application/json');
+});
+
+test('pronto com o envio de e-mail desligado: não diz que enviou e-mail', async ({ page }) => {
+  await simularApi(page, { link: ok(LINK.prontoSemEmail) });
+  await page.goto(URL_OBRIGADA);
+
+  await expect(botao(page)).toHaveAttribute('href', `/agendar.html#t=${TOKEN}`);
+  await expect(page.locator('#ag-email')).toBeHidden();
+  await expect(page.locator('#nota-email')).toBeHidden();
+  await expect(legado(page)).toBeHidden();
 });
 
 test('o botão abre a página agendar, que reconhece o token e remove o fragmento', async ({ page }) => {
@@ -66,18 +80,19 @@ test('202 repete a chamada e chega a pronto', async ({ page }) => {
   expect(chamadas).toHaveLength(3);
 });
 
-test('202 até esgotar as 6 tentativas cai no fallback', async ({ page }) => {
+test('202 até esgotar as 6 tentativas volta à obrigada de sempre', async ({ page }) => {
   await page.clock.install();
   const chamadas = await simularApi(page, { link: ok(LINK.repetir, 202) });
   await page.goto(URL_OBRIGADA);
 
   await ate(page, chamadas, 6);
-  await expect(fallback(page)).toBeVisible();
+  await expect(legado(page)).toBeVisible();
   await expect(botao(page)).toBeHidden();
   expect(chamadas).toHaveLength(6);
 });
 
 const FALHAS = [
+  ['409 agendamento_desligado (toggle do CRM)', erro('agendamento_desligado')],
   ['404', erro('nao_encontrado')],
   ['410', erro('link_expirado')],
   ['409 lead_nao_agendavel', erro('lead_nao_agendavel')],
@@ -89,25 +104,27 @@ const FALHAS = [
   ['falha de rede', 'abortar'],
 ];
 for (const [nome, resposta] of FALHAS) {
-  test(`fallback sem botão e sem repetir: ${nome}`, async ({ page }) => {
+  test(`obrigada de sempre, sem cartão e sem repetir: ${nome}`, async ({ page }) => {
     const chamadas = await simularApi(page, { link: resposta });
     await page.goto(URL_OBRIGADA);
 
-    await expect(fallback(page)).toBeVisible();
-    await expect(fallback(page)).toContainText('O link foi enviado ao seu e-mail');
+    await expect(legado(page)).toBeVisible();
+    await expect(legado(page)).toContainText('Retornaremos em até 48h úteis');
+    await expect(cartao(page)).toBeHidden();
+    await expect(page.locator('#nota-cartao')).toBeHidden();
     await expect(botao(page)).toBeHidden();
     expect(chamadas).toHaveLength(1);
   });
 }
 
-test('timeout de 10 s sem resposta cai no fallback', async ({ page }) => {
+test('timeout de 10 s sem resposta volta à obrigada de sempre', async ({ page }) => {
   await page.clock.install();
   const chamadas = await simularApi(page, { link: () => new Promise(() => {}) });
   await page.goto(URL_OBRIGADA);
 
   await expect.poll(() => chamadas.length).toBe(1);
   await page.clock.runFor(10000);
-  await expect(fallback(page)).toBeVisible();
+  await expect(legado(page)).toBeVisible();
 });
 
 for (const [nome, url] of [['sem eid', '/obrigada.html'], ['eid malformado', '/obrigada.html?eid=%3Cscript%3E']]) {
@@ -116,6 +133,7 @@ for (const [nome, url] of [['sem eid', '/obrigada.html'], ['eid malformado', '/o
     await page.goto(url);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(cartao(page)).toBeHidden();
+    await expect(legado(page)).toBeVisible();
     expect(chamadas).toHaveLength(0);
   });
 }
@@ -125,7 +143,7 @@ test('o token não vaza para URL, storage, dataLayer nem terceiros; a conversão
   page.on('request', (r) => { if (!r.url().startsWith(API)) terceiros.push(`${r.url()} ${r.postData() ?? ''}`); });
   await simularApi(page, { link: erro('indisponivel') }); // API fora do ar: o Lead ainda dispara
   await page.goto(URL_OBRIGADA);
-  await expect(fallback(page)).toBeVisible();
+  await expect(legado(page)).toBeVisible();
   const dataLayer = await page.evaluate(() => JSON.stringify(window.dataLayer));
   expect(dataLayer).toContain('generate_lead');
 
@@ -157,9 +175,10 @@ test('copy do cartão sem termos proibidos (HARNESS_AEO §B6)', async ({ page })
 const ESTADOS = {
   preparando: () => ({ link: () => new Promise(() => {}) }),
   pronto: () => ({ link: ok(LINK.pronto) }),
-  fallback: () => ({ link: erro('indisponivel') }),
+  prontoSemEmail: () => ({ link: ok(LINK.prontoSemEmail) }),
+  legado: () => ({ link: erro('agendamento_desligado') }),
 };
-const ESPERA = { preparando: '[data-estado="preparando"]', pronto: '[data-estado="pronto"]', fallback: '[data-estado="fallback"]' };
+const ESPERA = { preparando: '[data-estado="preparando"]', pronto: '[data-estado="pronto"]', prontoSemEmail: '[data-estado="pronto"]', legado: '#nota-legado' };
 
 for (const [estado, respostas] of Object.entries(ESTADOS)) {
   test(`acessibilidade e 375px: ${estado}`, async ({ page }) => {

@@ -214,6 +214,8 @@
 
         .ag-btn--principal { background: var(--text-primary); color: #fff; }
         .ag-btn[aria-disabled="true"] { opacity: .75; cursor: progress; }
+        /* Sem dia e horário escolhidos (mesmo padrão de .rl.dis em formulario.html). */
+        .ag-btn:disabled { opacity: .45; cursor: not-allowed; transition: opacity .2s; }
         .ag-btn:focus-visible,
         .ag-main a:focus-visible {
             outline: 2px solid var(--gold-text);
@@ -284,8 +286,9 @@
 
             <p class="ag-apoio" id="apoio" aria-live="polite"></p>
             <div class="ag-acoes">
-                <button type="button" class="ag-btn ag-btn--principal" id="confirmar" aria-describedby="apoio">Confirmar horário</button>
+                <button type="button" class="ag-btn ag-btn--principal" id="confirmar" aria-describedby="apoio" disabled aria-disabled="true">Confirmar horário</button>
                 <button type="button" class="ag-btn" id="manter" hidden>Manter o horário atual</button>
+                <button type="button" class="ag-btn" id="sem-horario">Nenhum horário funciona para mim</button>
             </div>
         </section>
 
@@ -310,6 +313,15 @@
                     <button type="button" class="ag-btn ag-btn--principal" id="cancelar-sim">Sim, cancelar</button>
                     <button type="button" class="ag-btn" id="cancelar-nao">Manter</button>
                 </div>
+            </div>
+        </section>
+
+        <!-- 6.7 Sem horário que sirva -->
+        <section id="est-sem-horario" hidden>
+            <p id="sh-email" hidden></p>
+            <p class="ag-aviso" id="sh-contato"></p>
+            <div class="ag-acoes">
+                <button type="button" class="ag-btn" id="sem-horario-voltar">Ver os horários de novo</button>
             </div>
         </section>
 

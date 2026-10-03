@@ -28,7 +28,7 @@ formulario.html ──POST──► Apps Script (doPost)
                             ├─ parcial: true → aba "Parciais" (pré-captura do contato)
                             └─ envio final  → Meta CAPI → aba "Respostas" → e-mail de aviso
 obrigada.html   ──────────► Pixel `Lead` + GA4 `generate_lead` (mesmo event_id do CAPI)
-                └─POST event_id─► API pública do CRM `/public/agendamento/link` → botão para `/agendar` (cartão "Próximo passo"; sem resposta, aviso de e-mail)
+                └─POST event_id─► API pública do CRM `/public/agendamento/link` → botão para `/agendar` (cartão "Próximo passo"; agendamento desligado no CRM ou sem resposta: obrigada de sempre, sem cartão)
 ```
 
 Contratos: `docs/specs/pages/formulario.md` (dados), `docs/specs/notificacao-email-lead.md` (e-mail), `docs/specs/design/formulario-envio-parcial.md` (pré-captura), `docs/specs/design/formulario-tracking-funil.md` (eventos GA4/Meta).
