@@ -1,6 +1,6 @@
 # SDD — Página de Agendamento do Diagnóstico (`agendar`)
 
-*   **Status**: Implementada localmente (v1.1, alinhada à Spec 017 v1.1 do CRM; contrato OpenAPI 1.0.0). Aguarda revisão da copy, publicação e liberação coordenada (F7). Divergências e decisões da implementação em §14.
+*   **Status**: Implementada (em produção desde o PR #37); v1.2 (2026-10-03): data `06/10, terça-feira`, Confirmar desabilitado e botão "Nenhum horário funciona para mim" (§6.7), spec em `docs/specs/design/agendar-sem-horario.md`. Implementada localmente (v1.1, alinhada à Spec 017 v1.1 do CRM; contrato OpenAPI 1.0.0). Aguarda revisão da copy, publicação e liberação coordenada (F7). Divergências e decisões da implementação em §14.
 *   **Arquivos afetados (na implementação)**: `src/agendar.html`, `src/js/agendar.js`, `tests/agendar.spec.js`, `e2e/agendar.spec.js`, `docs/specs/ARCHITECTURE.md` (tabela de páginas), `src/privacidade.html` (uso do e-mail e do Google Agenda para agendamento)
 *   **Contrato da API que a página consome**: `boutiqueempresarial-crm/docs/openapi/agendamento.json`, congelado ao fim da fatia F2 da Spec 017 (campo `info.version`). É a única fonte do contrato: as respostas simuladas dos testes (§11) são copiadas dos exemplos desse arquivo, com a versão anotada em `tests/fixtures/agendar/VERSION`. Em divergência sobre a API, **o CRM vence**; a página se adapta.
 *   **Substitui**: nada. Substitui apenas o passo manual de combinar horário depois do formulário.
@@ -14,7 +14,7 @@ Depois de completar o formulário, o lead recebe um e-mail do CRM com um link pe
 ## 2. Fora de escopo
 
 *   Qualquer cálculo de disponibilidade, regra de etapa ou validade de link (é do CRM).
-*   Mostrar o link na `obrigada.html` (evolução; exige o CRM devolver o token na resposta da integração).
+*   Mostrar o link na `obrigada.html`: **saiu desta spec**, tratado em `docs/specs/design/obrigada-agendamento.md` (troca do `event_id` por token numa rota nova do CRM).
 *   Evento de conversão no Pixel/GA4 ao agendar (evolução; exige spec em `docs/specs/design/`, ver §9).
 *   Escolha de formato da reunião: é sempre Google Meet.
 *   Login, cadastro ou qualquer dado além do token.
@@ -49,6 +49,7 @@ Base: `https://api.boutiqueempresarial.com.br/public/agendamento` (API pública 
 | Reservar | `/public/agendamento/reservar` | `{token, inicio}` | `Idempotency-Key` |
 | Remarcar | `/public/agendamento/remarcar` | `{token, inicio}` | `Idempotency-Key` |
 | Cancelar | `/public/agendamento/cancelar` | `{token}` | `Idempotency-Key` |
+| Sem horário (v1.2) | `/public/agendamento/sem-horario` | `{token}` | `Idempotency-Key` |
 
 *   `Idempotency-Key`: um `crypto.randomUUID()` por **tentativa de ação**. Se a rede falhar e o lead tentar de novo a mesma ação, reaproveita a mesma chave; ao escolher outro horário, gera uma nova.
 *   Resposta de `slots`: `{primeiro_nome, duracao_min, fuso, dias:[{data, horarios:[ISO8601]}], agendamento_atual: null | {inicio, fim, meet_url, pode_alterar}}`. Com `agendamento_atual` preenchido, a página abre direto no estado Confirmado (§6.3) e só mostra Remarcar/Cancelar se `pode_alterar` for verdadeiro. A página formata **tudo** no fuso devolvido (`America/Sao_Paulo`) com `Intl.DateTimeFormat`, independente do fuso do aparelho, e escreve o fuso na tela ("horário de Brasília").
@@ -61,15 +62,18 @@ Uma única página, um único `<main id="conteudo">`, com regiões que se altern
 **6.1 Carregando.** Esqueleto e `aria-busy="true"` enquanto `slots` responde. Nenhum horário aparece antes da resposta.
 
 **6.2 Escolha (lead ainda sem horário).** Título (H1): "Escolha o melhor horário para o seu Diagnóstico Gratuito". Subtítulo com o primeiro nome e a duração vindos da API, e a informação de que a conversa é por Google Meet e o convite chega por e-mail. Depois:
-*   **Dias**: grupo de rádios estilizados (`role="radiogroup"` com `<input type="radio">` real), com data por extenso ("terça, 6 de outubro"). Quebra em várias linhas; sem rolagem horizontal em 375 px.
+*   **Dias**: grupo de rádios estilizados (`role="radiogroup"` com `<input type="radio">` real), com data no formato `06/10, terça-feira` (`DD/MM, dia da semana por extenso`, no fuso da API). Quebra em várias linhas; sem rolagem horizontal em 375 px.
 *   **Horários** do dia escolhido: mesmo padrão de rádios, com `HH:MM`, alvos de toque com pelo menos 44 px.
-*   **Confirmar horário**: o botão **nunca fica desabilitado sem explicação**. Sem seleção completa, o clique mostra "Escolha um dia e um horário" no texto de apoio (`aria-describedby`). Durante o envio o botão mostra "Confirmando..." e bloqueia clique duplo.
+*   **Confirmar horário** (v1.2, substitui "nunca desabilitado"): fica **desabilitado** (`disabled` + `aria-disabled="true"`, opacidade .45) até haver dia **e** horário; trocar o dia zera a hora e o desabilita de novo. "Escolha um dia e um horário" (`TEXTO.escolhaVazia`) só aparece se algo submeter sem seleção (teclado, agente). Durante o envio o botão mostra "Confirmando..." e bloqueia clique duplo.
+*   **Nenhum horário funciona para mim** (v1.2): botão secundário à direita de Confirmar, visível enquanto não houver dia e horário, oculto quando houver, e **ausente no modo remarcar** (já existe "Manter o horário atual"). Leva ao estado §6.7.
 
-**6.3 Confirmado.** "Diagnóstico agendado para terça, 6 de outubro, às 14h (horário de Brasília)". Se `meet_url` vier, botão "Abrir o Google Meet" (`rel="noopener"`); se vier nulo, texto "O convite do Google Agenda chega ao seu e-mail com o link do Meet." Ações secundárias: "Remarcar" e "Cancelar agendamento".
+**6.3 Confirmado.** "Diagnóstico agendado para 06/10, terça-feira, às 14h (horário de Brasília)". Se `meet_url` vier, botão "Abrir o Google Meet" (`rel="noopener"`); se vier nulo, texto "O convite do Google Agenda chega ao seu e-mail com o link do Meet." Ações secundárias: "Remarcar" e "Cancelar agendamento".
 
 **6.4 Remarcar.** Volta à escolha (§6.2) mostrando o horário atual no topo; ao confirmar chama `remarcar`. O resultado leva de novo a §6.3.
 
 **6.5 Cancelar.** Confirmação **inline** (sem `window.confirm`): "Cancelar este horário?" com "Sim, cancelar" e "Manter". Depois do sucesso: "Agendamento cancelado. Se quiser, escolha outro horário." e volta à escolha.
+
+**6.7 Sem horário que sirva (v1.2).** Clique em "Nenhum horário funciona para mim" chama `sem-horario` (com `Idempotency-Key`; repetir após falha reaproveita a chave). Sucesso mostra o estado `sem-horario`, h1 "Combinado, vamos encontrar outro horário", com a copy escolhida pelo campo `email_enviado` da resposta: `true` = "Enviamos para o seu e-mail um link para você agendar mais tarde, quando abrirem novos horários." + "A Talita também vai entrar em contato com você para combinar um horário que caiba na sua agenda."; `false` (envio de e-mail desligado no CRM, ou o e-mail falhou) = só "A Talita vai entrar em contato com você para combinar um horário que caiba na sua agenda.", sem promessa de e-mail. "Ver os horários de novo" volta à escolha com dia e hora zerados. Erros seguem a §6.6.
 
 **6.6 Erros (mapeados pelo status devolvido pelo CRM).** Todos com mensagem em pt-BR, sem texto técnico e sem jargão.
 
@@ -128,7 +132,7 @@ Testes em `tests/agendar.spec.js` (contrato, respostas simuladas com `page.route
 7.  Horário reservado por outra pessoa (`409 horario_indisponivel`): mensagem, horários recarregados e dia mantido.
 8.  Cada linha da tabela da §6.6 tem um teste com a resposta simulada correspondente e a mensagem esperada.
 9.  Repetir a mesma ação após falha de rede reaproveita a mesma `Idempotency-Key`; escolher outro horário gera nova chave.
-10. Botão Confirmar nunca fica com `disabled` e sem texto de apoio; clique duplo envia uma só requisição.
+10. (v1.2) Confirmar fica `disabled` sem dia e horário e habilita com os dois; clique duplo envia uma só requisição. "Nenhum horário funciona para mim" aparece só sem seleção completa e nunca no modo remarcar; o estado `sem-horario` tem foco no título, anúncio, axe limpo e copy por `email_enviado`.
 11. Remarcar e cancelar seguem os estados §6.4 e §6.5, sem `window.confirm`.
 16. Com `agendamento_atual` preenchido, a página abre em Confirmado; com `pode_alterar = false`, Remarcar e Cancelar não aparecem e o contato alternativo sim.
 17. As respostas simuladas vêm de `tests/fixtures/agendar/` e o arquivo `VERSION` existe.
@@ -140,7 +144,7 @@ Testes em `tests/agendar.spec.js` (contrato, respostas simuladas com `page.route
 ## 12. Allowlist de implementação
 
 *   **Paths**: `src/agendar.html`, `src/js/agendar.js`, `src/privacidade.html`, `tests/agendar.spec.js`, `e2e/agendar.spec.js`, `tests/fixtures/agendar/`, `docs/specs/ARCHITECTURE.md`, `docs/specs/pages/agendar.md`
-*   **Efeitos proibidos**: alterar `apps_script_atualizado.gs`, `src/formulario.html`, `src/obrigada.html`, `infra/`; adicionar dependência npm; `git push` sem instrução explícita; qualquer alteração no repositório do CRM a partir deste projeto.
+*   **Efeitos proibidos**: alterar `apps_script_atualizado.gs`, `src/formulario.html`, `infra/` (e `src/obrigada.html` fora do que a spec `design/obrigada-agendamento.md` autoriza); adicionar dependência npm; `git push` sem instrução explícita; qualquer alteração no repositório do CRM a partir deste projeto.
 *   **Tools MCP permitidas**: nenhuma.
 
 ## 13. Riscos e decisões pendentes
@@ -151,6 +155,7 @@ Testes em `tests/agendar.spec.js` (contrato, respostas simuladas com `page.route
 *   **CORS e preflight**: dependem da API pública separada do CRM; se o mapeamento `public` no domínio da API não for possível, a base muda para um subdomínio (só a constante de `agendar.js` muda).
 *   **Deriva de contrato**: a fixture copiada do OpenAPI pode envelhecer; conferir `VERSION` contra o CRM antes de cada publicação.
 *   **Conversão no Pixel/GA4**: adiada; sem ela não há medição de agendamentos por campanha.
+*   **Link na obrigada.html**: depende de uma rota nova no CRM (`POST /public/agendamento/link`, proposta em `design/obrigada-agendamento.md` §5); a Spec 017 do CRM ainda a lista como fora de escopo.
 
 ## 14. Notas da implementação
 
@@ -161,3 +166,4 @@ Testes em `tests/agendar.spec.js` (contrato, respostas simuladas com `page.route
 *   **Contato alternativo**: e-mail da `privacidade.html` (`talita@boutiqueempresarial.com.br`), pendência de canal definitivo registrada em §13.
 *   **Fragmento**: aceita `#t=<token>` e ignora parâmetros extras após `&`. O formato `[A-Za-z0-9_.-]{20,200}` é o da §4; se o CRM passar a emitir o MAC com `=`, `+` ou `/`, a expressão da §4 precisa mudar nos dois lugares (`agendar.html` e `agendar.js`).
 *   **Fixtures**: `tests/fixtures/agendar/` copia os exemplos do OpenAPI 1.0.0; as variantes que o OpenAPI não traz (`derivadas` em `slots.json`) estão marcadas como tal.
+*   **v1.2 (2026-10-03)**: o botão Confirmar passou a ser desabilitado por decisão do design (handoff `Agendar.dc.html`), revertendo a regra "nunca desabilitado" da v1.1 e o antigo critério 10. A rota `sem-horario` é do CRM (Spec 021, OpenAPI 1.1.0); sem a rota no ar a página mostra o erro padrão (§6.6) ao clicar. Sem evento de analytics novo (§9 segue valendo).

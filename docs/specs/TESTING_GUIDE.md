@@ -55,6 +55,7 @@ Iteram sobre `src/*.html`; página nova entra sozinha, e o teste lê o `meta rob
 4. **No Broken Links**: `smoketest.spec.js` faz o crawl; todo link citado em manifesto agêntico é cobrado por `agent-readiness.spec.js`.
 5. **Afirme o texto que liga as coisas.** Um teste que só confere "existe um botão" deixa passar o botão apontando para a página errada (`home.spec.js` afirma o rótulo do CTA por isso).
 6. **Teste o `dist`, não só o dev server**, quando o defeito só existe no build — foi assim que o `robots.txt` sobrescrito pelo plugin de sitemap passou despercebido.
+7. **Nenhum teste envia para produção.** Todo spec que preencha o formulário até além do e-mail, ou que abra `obrigada.html` com `eid`, roda com o destino interceptado (`script.google.com` e `api.boutiqueempresarial.com.br`); envio real é proibido, mesmo em "teste de fumaça". Padrão: o `beforeEach` de `e2e/form-aplicacao.spec.js`. Motivo e evidência: `adr-e2e-nao-enviar-formulario-para-producao.md`.
 
 ## Comandos
 

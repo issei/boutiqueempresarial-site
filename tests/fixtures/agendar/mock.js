@@ -6,6 +6,8 @@ const ler = (nome) => JSON.parse(fs.readFileSync(new URL(nome, import.meta.url),
 
 export const SLOTS = ler('slots.json');
 export const RESERVA = ler('reserva.json');
+export const SEM_HORARIO = ler('sem-horario.json');
+export const LINK = ler('link.json');
 export const ERROS = ler('erros.json');
 export const VERSAO = fs.readFileSync(new URL('VERSION', import.meta.url), 'utf8').trim();
 
@@ -14,7 +16,7 @@ export const URL_AGENDAR = `/agendar.html#t=${TOKEN}`;
 export const API = 'https://api.boutiqueempresarial.com.br/public/agendamento';
 export const STATUS_ERRO = {
   nao_encontrado: 404, link_expirado: 410, lead_nao_agendavel: 409, fora_do_prazo: 409,
-  horario_indisponivel: 409, conflito: 409, muitas_tentativas: 429, indisponivel: 503,
+  horario_indisponivel: 409, conflito: 409, agendamento_desligado: 409, muitas_tentativas: 429, indisponivel: 503,
   corpo_invalido: 422, idempotency_key_ausente: 422, erro_interno: 500,
 };
 
@@ -38,7 +40,7 @@ export async function bloquearTerceiros(page) {
 }
 
 /**
- * Simula as 4 rotas. `respostas[rota]` é uma resposta `{status, body}` ou uma função
+ * Simula as rotas da API pública. `respostas[rota]` é uma resposta `{status, body}` ou uma função
  * `(chamada, n) => resposta | 'abortar' (pode devolver Promise)` (n = nº da chamada àquela rota, de 1).
  * Devolve `chamadas`: cada requisição com rota, corpo, cabeçalhos e Idempotency-Key.
  */

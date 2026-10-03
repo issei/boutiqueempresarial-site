@@ -5,7 +5,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { existsSync, readFileSync } from 'node:fs';
 import {
-  SLOTS, RESERVA, VERSAO, TOKEN, URL_AGENDAR, API,
+  SLOTS, RESERVA, SEM_HORARIO, VERSAO, TOKEN, URL_AGENDAR, API,
   bloquearTerceiros, simularApi, ok, erro,
 } from './fixtures/agendar/mock.js';
 
@@ -166,10 +166,22 @@ test.describe('agendar: acessibilidade em todos os estados', () => {
   test('escolha, com dia e horário marcados', async ({ page }) => {
     await simularApi(page, { slots: ok(SLOTS.semAgendamento) });
     await page.goto(URL_AGENDAR);
-    await page.getByRole('radio', { name: 'terça, 6 de outubro' }).check();
+    await page.getByRole('radio', { name: '06/10, terça-feira' }).check();
     await page.getByRole('radio', { name: '10:00' }).check();
     expect(await violacoesGraves(page), 'axe em escolha').toBe('');
   });
+
+  for (const [nome, resposta] of [['com e-mail enviado', SEM_HORARIO.comEmail], ['sem e-mail', SEM_HORARIO.semEmail]]) {
+    test(`sem horário ${nome}`, async ({ page }) => {
+      await simularApi(page, { slots: ok(SLOTS.semAgendamento), 'sem-horario': ok(resposta) });
+      await page.goto(URL_AGENDAR);
+      await page.getByRole('button', { name: 'Nenhum horário funciona para mim' }).click();
+      await expect(page.locator('#est-sem-horario')).toBeVisible();
+      await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+      await expect(page.locator('#anuncio')).toHaveText('Combinado, vamos encontrar outro horário');
+      expect(await violacoesGraves(page), 'axe em sem horário').toBe('');
+    });
+  }
 
   test('confirmado, com e sem link do Meet, e sem poder alterar', async ({ page }) => {
     for (const resposta of [SLOTS.comAgendamento, SLOTS.derivadas.naoPodeAlterar]) {
@@ -226,14 +238,14 @@ test.describe('agendar: acessibilidade em todos os estados', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
     await page.keyboard.press('Tab'); // título tem foco programático: o próximo Tab vai ao 1º focável
     const alvo = async () => page.evaluate(() => document.activeElement?.id || document.activeElement?.name || document.activeElement?.tagName);
-    // dia (radio) → seta escolhe outro → Tab pula para o botão, pois o horário só existe após escolher o dia
+    // dia (radio) → seta escolhe outro → Tab vai ao horário; Confirmar está desabilitado (sem horário), então o próximo foco é "Nenhum horário…"
     expect(await alvo()).toBe('dia');
     await page.keyboard.press('ArrowRight');
-    await expect(page.getByRole('radio', { name: 'quarta, 7 de outubro' })).toBeChecked();
+    await expect(page.getByRole('radio', { name: '07/10, quarta-feira' })).toBeChecked();
     await page.keyboard.press('Tab');
     expect(await alvo()).toBe('horario');
     await page.keyboard.press('Tab');
-    expect(await alvo()).toBe('confirmar');
+    expect(await alvo()).toBe('sem-horario');
   });
 });
 
@@ -255,7 +267,7 @@ test.describe('agendar: layout', () => {
     await page.setViewportSize({ width: 320, height: 640 });
     await simularApi(page, { slots: ok(SLOTS.semAgendamento) });
     await page.goto(URL_AGENDAR);
-    await page.getByRole('radio', { name: 'terça, 6 de outubro' }).check();
+    await page.getByRole('radio', { name: '06/10, terça-feira' }).check();
     await expect(page.getByRole('button', { name: 'Confirmar horário' })).toBeVisible();
     const excedente = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(excedente).toBeLessThanOrEqual(1);
@@ -264,8 +276,8 @@ test.describe('agendar: layout', () => {
   test('alvos de toque com pelo menos 44px', async ({ page }) => {
     await simularApi(page, { slots: ok(SLOTS.semAgendamento) });
     await page.goto(URL_AGENDAR);
-    await page.getByRole('radio', { name: 'terça, 6 de outubro' }).check();
-    for (const alvo of await page.locator('.ag-opcao span, #confirmar').all()) {
+    await page.getByRole('radio', { name: '06/10, terça-feira' }).check();
+    for (const alvo of await page.locator('.ag-opcao span, #confirmar, #sem-horario').all()) {
       expect((await alvo.boundingBox()).height).toBeGreaterThanOrEqual(44);
     }
   });
