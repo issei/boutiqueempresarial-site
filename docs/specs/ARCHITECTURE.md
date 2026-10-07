@@ -113,7 +113,7 @@ Uma função por evento — o CloudFront não aceita mais que isso. Código em `
 
 | Evento | Arquivo | Faz |
 | :-- | :-- | :-- |
-| `viewer-request` | `viewer-request.js` | `Accept: text/markdown` → companion `.md`; roteia `/` → `/index.html`, `/formulario` → `/formulario.html` |
+| `viewer-request` | `viewer-request.js` | `Accept: text/markdown` → companion `.md`; roteia `/` → `/index.html`, `/formulario` e `/formulario/` → `/formulario.html` |
 | `viewer-response` | `viewer-response.js` | Injeta o header `Link` (RFC 8288) e `Vary: Accept` |
 
 Ao criar um companion `.md` novo em `public/`, acrescente a rota em `MARKDOWN_MAP` (`viewer-request.js`).

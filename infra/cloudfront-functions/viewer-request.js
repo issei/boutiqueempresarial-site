@@ -7,7 +7,8 @@
  *
  *   1. Negociação de conteúdo (RFC 7231 §5.3.2): um agente que manda
  *      `Accept: text/markdown` recebe o companion `.md` em vez do HTML.
- *   2. Roteamento de páginas: `/` → `/index.html`, `/formulario` → `/formulario.html`.
+ *   2. Roteamento de páginas: `/` → `/index.html`, `/formulario` e `/formulario/`
+ *      → `/formulario.html`.
  *
  * A ordem importa: markdown é avaliado ANTES do sufixo `.html`, senão `/`
  * viraria `/index.html` e nunca chegaria ao mapa.
@@ -56,6 +57,12 @@ function handler(event) {
   if (uri === '/' || uri === '') {
     request.uri = '/index.html';
     return request;
+  }
+  // `/formulario/` (barra final, comum em URL de anúncio) virava
+  // `/formulario/.html` → 403. A query string fica em request.querystring.
+  if (uri.charAt(uri.length - 1) === '/') {
+    uri = uri.slice(0, -1);
+    request.uri = uri;
   }
   if (!uri.includes('.')) {
     request.uri = uri + '.html';
