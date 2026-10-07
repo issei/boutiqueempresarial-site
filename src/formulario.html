@@ -35,6 +35,7 @@
         })();
     </script>
     <script type="module" src="/js/cookie-consent.js"></script>
+    <script type="module" src="/js/attribution.js"></script>
     <!-- Meta Pixel Code 2026 Implementation -->
     <script>
     !function(f,b,e,v,n,t,s)
@@ -971,13 +972,15 @@
                 try { return sessionStorage.getItem(key) || ""; } catch (e) { return ""; }
             }
 
-            // First-touch: a URL atual tem precedência; sem parâmetro, recupera o
-            // valor guardado no início da sessão (lead que passou pela home antes).
+            // Último toque não direto: URL atual → cookie be_attr (js/attribution.js,
+            // grava também a home) → sessionStorage (fallback de cookie bloqueado).
+            // docs/specs/design/atribuicao-utm.md
             var TRACK_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid"];
+            var ATTR = window.BE_ATTR || { first: {}, last: {} };
             var tracking = {};
             TRACK_KEYS.forEach(function (k) {
-                var v = qp(k);
-                if (v) store("be_" + k, v); else v = recall("be_" + k);
+                var v = qp(k) || ATTR.last[k] || recall("be_" + k);
+                store("be_" + k, v);
                 tracking[k] = v;
             });
 
@@ -1243,7 +1246,13 @@
                 d.consentimento = true;
 
                 // Rastreamento — preservado do fluxo original e ampliado.
-                TRACK_KEYS.forEach(function (k) { d[k] = tracking[k] || ""; });
+                TRACK_KEYS.forEach(function (k) {
+                    d[k] = tracking[k] || "";
+                    d["first_" + k] = ATTR.first[k] || "";
+                });
+                d.first_touch_at = ATTR.first.at || "";
+                d.last_touch_at = ATTR.last.at || "";
+                d.landing_page = ATTR.last.landing || "";
                 d.user_agent = navigator.userAgent;
                 d.page_url = window.location.href;
                 d.referrer = document.referrer || "";

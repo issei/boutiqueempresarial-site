@@ -35,6 +35,7 @@
         })();
     </script>
     <script type="module" src="/js/cookie-consent.js"></script>
+    <script type="module" src="/js/attribution.js"></script>
     <!-- Meta Pixel Code 2026 Implementation -->
     <script>
     !function(f,b,e,v,n,t,s)
@@ -59,7 +60,7 @@
     </script>
     <!-- End Meta Pixel Code -->
 
-    <!-- Conversao: Lead (deduplicada com a Conversions API via eventID) -->
+    <!-- Conversao: Lead (deduplicada com a Conversions API via eventID; uma vez por eid) -->
     <script>
       (function () {
         // O mesmo event_id gerado em formulario.html e enviado ao CAPI precisa
@@ -75,10 +76,15 @@
           } catch (e) { /* modo privado ou payload invalido */ }
         }
         window.leadEid = eid; // lido pelo generate_lead do GA4, mais abaixo
+        // Um Lead por envio: sem eid não há envio (visita direta) e reabrir a página
+        // depois da janela de deduplicação da Meta (48 h) contaria o mesmo lead de novo.
         if (eid) {
-          fbq('track', 'Lead', {}, { eventID: eid });
-        } else {
-          fbq('track', 'Lead');
+          var sent = false;
+          try { sent = !!localStorage.getItem('lead_sent_' + eid); } catch (e) { /* modo privado */ }
+          if (!sent) {
+            fbq('track', 'Lead', {}, { eventID: eid });
+            try { localStorage.setItem('lead_sent_' + eid, '1'); } catch (e) { /* modo privado */ }
+          }
         }
       })();
     </script>
