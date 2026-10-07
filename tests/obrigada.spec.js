@@ -195,3 +195,22 @@ for (const [estado, respostas] of Object.entries(ESTADOS)) {
     expect(sobra).toBeLessThanOrEqual(0);
   });
 }
+
+// Um Lead do Pixel por envio (docs/specs/design/atribuicao-utm.md): reabrir a obrigada
+// ou visitá-la sem eid não pode contar outro Lead na Meta.
+const leads = (page) => page.evaluate(() =>
+  (window.fbq.queue || []).map((a) => Array.from(a)).filter((a) => a[0] === 'track' && a[1] === 'Lead'));
+
+test('Pixel: um Lead por eid, nenhum sem eid', async ({ page }) => {
+  await simularApi(page, { link: erro('indisponivel') });
+
+  await page.goto(URL_OBRIGADA);
+  expect(await leads(page)).toEqual([['track', 'Lead', {}, { eventID: 'evento-de-teste' }]]);
+
+  await page.reload();
+  expect(await leads(page)).toEqual([]);
+
+  await page.evaluate(() => localStorage.removeItem('ld'));
+  await page.goto('/obrigada.html');
+  expect(await leads(page)).toEqual([]);
+});

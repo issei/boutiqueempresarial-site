@@ -73,7 +73,10 @@ Antes de escrever qualquer linha, o fluxo legado foi auditado. Os defeitos abaix
 | `fbp` | cookie `_fbp` | `user_data.fbp` |
 | `fbclid` | query string | Auditoria / fallback de `fbc` |
 | `gclid` | query string | Atribuição Google Ads |
-| `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term` | query string + `sessionStorage` (first-touch) | Atribuição de mídia |
+| `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term` | último toque não direto: query string → cookie `be_attr` → `sessionStorage` ([`atribuicao-utm.md`](../design/atribuicao-utm.md)) | Atribuição de mídia |
+| `first_utm_source` … `first_utm_term`, `first_fbclid`, `first_gclid` | primeiro toque do cookie `be_attr` (nunca sobrescrito) | Atribuição de mídia (CRM Spec 022) |
+| `first_touch_at`, `last_touch_at` | ISO 8601 de cada toque | Atribuição de mídia |
+| `landing_page` | `pathname` onde o último toque entrou | Atribuição de mídia |
 | `submitted_at` | ISO 8601 do cliente | Conferência de fuso |
 
 ## 4. Frontend — `src/formulario.html`
