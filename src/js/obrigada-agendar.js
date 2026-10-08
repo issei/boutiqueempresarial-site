@@ -38,7 +38,16 @@ const mostrarLegado = () => {
   $('nota-legado').hidden = false;
 };
 
-// → { token, envioEmail } | { repetir: true } | {} (qualquer outra coisa: obrigada antiga)
+// Perfil indefinido (Spec 023 do CRM): sem seletor, a equipe analisa e entra em contato.
+const mostrarAnalise = (envioEmail) => {
+  secao.hidden = true;
+  $('nota-cartao').hidden = true;
+  $('nota-legado').hidden = true;
+  $('nota-analise-email').hidden = !envioEmail;
+  $('nota-analise').hidden = false;
+};
+
+// → { token, envioEmail } | { emAnalise, envioEmail } | { repetir: true } | {} (qualquer outra coisa: obrigada antiga)
 const trocar = async () => {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
@@ -52,8 +61,9 @@ const trocar = async () => {
     });
     if (r.status === 202) return { repetir: true };
     if (r.status !== 200) return {};
-    const { token, envio_email: envioEmail } = await r.json();
-    return TOKEN_RE.test(token) ? { token, envioEmail: envioEmail === true } : {};
+    const { token, em_analise: emAnalise, envio_email: envioEmail } = await r.json();
+    if (TOKEN_RE.test(token)) return { token, envioEmail: envioEmail === true };
+    return emAnalise === true ? { emAnalise: true, envioEmail: envioEmail === true } : {};
   } catch {
     return {};
   } finally {
@@ -65,7 +75,8 @@ const iniciar = async () => {
   secao.hidden = false;
   $('nota-legado').hidden = true;
   for (let i = 0; i < TENTATIVAS; i++) {
-    const { token, envioEmail, repetir } = await trocar();
+    const { token, envioEmail, emAnalise, repetir } = await trocar();
+    if (emAnalise) return mostrarAnalise(envioEmail);
     if (token) {
       try { return await mostrarPronto(token, envioEmail); } catch { break; } // módulo não carregou: obrigada de sempre
     }

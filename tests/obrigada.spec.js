@@ -24,6 +24,8 @@ const titulo = (page) => page.locator('[data-ag-titulo]');
 const pronta = (extra = {}) => ({ link: ok(LINK.pronto), slots: ok(SLOTS.semAgendamento), ...extra });
 // Obrigada de sempre (sem cartão): agendamento desligado no CRM, ou qualquer falha da troca.
 const legado = (page) => page.locator('#nota-legado');
+// Perfil indefinido (Spec 023 do CRM): sem seletor; a equipe analisa e entra em contato.
+const analise = (page) => page.locator('#nota-analise');
 
 // Avança o relógio simulado até a chamada `n` à API ter saído (a espera entre tentativas é de 2 s).
 async function ate(page, chamadas, n) {
@@ -87,6 +89,31 @@ test('sem horários na agenda: o erro aparece no cartão, com o contato alternat
   await expect(page.locator('#erro-msg')).toContainText('No momento não há horários disponíveis');
   await expect(page.getByRole('link', { name: 'Falar com a gente' })).toBeVisible();
   await expect(legado(page)).toBeHidden();
+});
+
+test('em análise: sem seletor, com a nota de análise e a confirmação por e-mail', async ({ page }) => {
+  const chamadas = await simularApi(page, { link: ok(LINK.emAnalise) });
+  await page.goto(URL_OBRIGADA);
+
+  await expect(analise(page)).toBeVisible();
+  await expect(analise(page)).toContainText('Vamos analisar a sua aplicação');
+  await expect(analise(page)).toContainText('Diagnóstico Operacional');
+  await expect(page.locator('#nota-analise-email')).toBeVisible();
+  await expect(analise(page)).toContainText('Enviamos a confirmação do cadastro');
+  await expect(cartao(page)).toBeHidden();
+  await expect(seletor(page)).toBeHidden();
+  await expect(legado(page)).toBeHidden();
+  await expect(page.locator('#nota-cartao')).toBeHidden();
+  expect(chamadas.map((c) => c.rota)).toEqual(['link']); // nenhum slots: não há token
+});
+
+test('em análise com o envio de e-mail desligado: não promete e-mail', async ({ page }) => {
+  await simularApi(page, { link: ok(LINK.emAnaliseSemEmail) });
+  await page.goto(URL_OBRIGADA);
+
+  await expect(analise(page)).toBeVisible();
+  await expect(page.locator('#nota-analise-email')).toBeHidden();
+  expect(await analise(page).innerText()).not.toMatch(/e-mail/i); // innerText ignora o trecho oculto
 });
 
 test('202 repete a chamada e chega a pronto', async ({ page }) => {
@@ -201,11 +228,12 @@ const ESTADOS = {
   pronto: () => pronta(),
   prontoSemEmail: () => pronta({ link: ok(LINK.prontoSemEmail) }),
   semHorarios: () => pronta({ slots: ok({ ...SLOTS.semAgendamento, dias: [] }) }),
+  emAnalise: () => ({ link: ok(LINK.emAnalise) }),
   legado: () => ({ link: erro('agendamento_desligado') }),
 };
 const ESPERA = {
   preparando: '[data-estado="preparando"]', pronto: '#agendador .ag-opcao', prontoSemEmail: '#agendador .ag-opcao',
-  semHorarios: '#erro-msg', legado: '#nota-legado',
+  semHorarios: '#erro-msg', emAnalise: '#nota-analise', legado: '#nota-legado',
 };
 
 for (const [estado, respostas] of Object.entries(ESTADOS)) {
