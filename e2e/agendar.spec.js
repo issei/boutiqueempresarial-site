@@ -32,7 +32,7 @@ test.describe('fluxo feliz', () => {
     const chamadas = await simularApi(page, { slots: ok(SLOTS.semAgendamento), reservar: reservaDe(RESERVA.reservar.comMeet) });
     await page.goto(URL_AGENDAR);
 
-    await expect(h1(page)).toHaveText('Escolha o melhor horário para o seu Diagnóstico Gratuito');
+    await expect(h1(page)).toHaveText('Escolha o melhor horário para o seu Diagnóstico Operacional');
     await expect(page.locator('#subtitulo')).toContainText('Ana, a conversa dura 60 minutos e acontece por Google Meet');
     await expect(page.getByRole('radio', { name: '09:00' })).toHaveCount(0); // só depois de escolher o dia
 
@@ -124,7 +124,7 @@ test.describe('agendamento existente', () => {
     await page.getByRole('button', { name: 'Cancelar agendamento' }).click();
     await page.getByRole('button', { name: 'Sim, cancelar' }).click();
     await expect(page.locator('#aviso')).toHaveText('Agendamento cancelado. Se quiser, escolha outro horário.');
-    await expect(h1(page)).toHaveText('Escolha o melhor horário para o seu Diagnóstico Gratuito');
+    await expect(h1(page)).toHaveText('Escolha o melhor horário para o seu Diagnóstico Operacional');
     const cancelar = chamadas.find((c) => c.rota === 'cancelar');
     expect(cancelar.corpo).toEqual({ token: TOKEN });
     expect(cancelar.chave).toBeTruthy();
@@ -375,7 +375,7 @@ test.describe('Nenhum horário funciona para mim', () => {
     await semHorario(page).click();
     await page.getByRole('button', { name: 'Ver os horários de novo' }).click();
 
-    await expect(h1(page)).toHaveText('Escolha o melhor horário para o seu Diagnóstico Gratuito');
+    await expect(h1(page)).toHaveText('Escolha o melhor horário para o seu Diagnóstico Operacional');
     await expect(page.getByRole('radio', { name: '06/10, terça-feira' })).not.toBeChecked();
     await expect(confirmar(page)).toBeDisabled();
     await expect(semHorario(page)).toBeVisible();

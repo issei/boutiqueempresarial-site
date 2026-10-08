@@ -168,7 +168,7 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
   // Cartão de agendamento (docs/specs/design/obrigada-agendamento.md): a API do CRM
   // responde 503 pela rota padrão do beforeEach, então volta à obrigada de sempre (sem cartão).
   await expect(page.locator('#nota-legado')).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Escolher horário' })).toBeHidden();
+  await expect(page.locator('#agendamento')).toBeHidden();
 });
 
 test('funil: eventos GA4/Meta por etapa, sem dado pessoal', async ({ page }) => {

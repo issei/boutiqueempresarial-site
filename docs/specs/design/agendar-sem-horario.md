@@ -1,6 +1,6 @@
 # Agendar: data, botão desabilitado e "Nenhum horário funciona para mim" — Spec de design
 
-*   **Status**: Implementada localmente em 2026-10-03 (testes com a API simulada). **Depende do CRM** (Spec 021, OpenAPI 1.1.0): rotas `sem-horario` e `link`. Sem `/design-sync` nesta rodada (ver §8).
+*   **Status**: (2026-10-07: o seletor, incluindo "Nenhum horário funciona para mim", também roda embutido na obrigada, via `src/js/agendador.js`.) Implementada localmente em 2026-10-03 (testes com a API simulada). **Depende do CRM** (Spec 021, OpenAPI 1.1.0): rotas `sem-horario` e `link`. Sem `/design-sync` nesta rodada (ver §8).
 *   **Origem**: handoff `Recriação de telas do site.zip` (`Agendar.dc.html` + README), do Claude Design.
 *   **Arquivos**: `src/agendar.html`, `src/js/agendar.js`, `src/obrigada.html`, `src/js/obrigada-agendar.js`, `tests/agendar.spec.js`, `tests/obrigada.spec.js`, `e2e/agendar.spec.js`, `e2e/form-aplicacao.spec.js`, `tests/fixtures/agendar/`, `scripts/preview-obrigada.mjs`.
 *   **Relacionados**: `pages/agendar.md` (§6.2, §6.7), `design/obrigada-agendamento.md`, `STYLE_GUIDE.md`; no CRM, Spec 021.
