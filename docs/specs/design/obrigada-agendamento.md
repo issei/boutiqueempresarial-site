@@ -1,6 +1,6 @@
 # Agendamento na tela de obrigado — Spec de design
 
-*   **Status**: v1.2 (2026-10-07): o seletor de dias e horários aparece **dentro do cartão**, sem o botão "Escolher horário" (§1, §3, §4), e o termo da jornada passa a ser "Diagnóstico Operacional". v1.1 (2026-10-03): o toggle do CRM comanda a jornada (§4); a rota `link` é a da Spec 021 do CRM (OpenAPI 1.1.0). Implementada localmente em 2026-10-02 (cartão, módulo e testes com a API simulada). **Depende da rota `POST /public/agendamento/link` do CRM, que ainda não existe**: enquanto ela não estiver no ar, o cartão mostra o estado Fallback (§4). Sem `/design-sync` nesta rodada (ver §9).
+*   **Status**: v1.3 (2026-10-08): estado "em análise" para lead de perfil indefinido (§4, §5), contrato `link` do CRM 1.2.0 (Spec 023). v1.2 (2026-10-07): o seletor de dias e horários aparece **dentro do cartão**, sem o botão "Escolher horário" (§1, §3, §4), e o termo da jornada passa a ser "Diagnóstico Operacional". v1.1 (2026-10-03): o toggle do CRM comanda a jornada (§4); a rota `link` é a da Spec 021 do CRM (OpenAPI 1.1.0). Implementada localmente em 2026-10-02 (cartão, módulo e testes com a API simulada). **Depende da rota `POST /public/agendamento/link` do CRM, que ainda não existe**: enquanto ela não estiver no ar, o cartão mostra o estado Fallback (§4). Sem `/design-sync` nesta rodada (ver §9).
 *   **Arquivos**: `src/obrigada.html`, `src/js/obrigada-agendar.js`, `tests/obrigada.spec.js`, `tests/fixtures/agendar/link.json`, `scripts/preview-obrigada.mjs`, `e2e/form-aplicacao.spec.js` (asserts do cartão), docs.
 *   **Relacionados**: `pages/agendar.md` (página de destino), `pages/aplicacao-conversacional.md` §6 (fechamento personalizado), `STYLE_GUIDE.md`, `HARNESS_AEO.md` §B5/§B6, `adr-e2e-nao-enviar-formulario-para-producao.md`; no CRM, Spec 017.
 
@@ -36,6 +36,7 @@ Copy escrita pelo agente `copy-writer` (vocabulário `HARNESS_AEO.md` §B6). **P
 | :-- | :-- | :-- |
 | Preparando | a troca está em andamento | esqueleto + "Preparando o seu link de agendamento..." |
 | Pronto (v1.2) | `200 {token}` | kicker "Próximo passo"; o seletor de `/agendar` embutido (H2 "Escolha o melhor horário para o seu Diagnóstico Operacional", dias, horários, **Confirmar horário**, "Nenhum horário funciona para mim", confirmado, erro); "Também enviamos o link por e-mail." só com `envio_email`. Sem horários ou falha de `slots`: o estado de erro do seletor, com o contato alternativo, dentro do cartão |
+| Em análise (v1.3) | `200 {em_analise: true, envio_email}` sem `token` (lead com "Outro" em modelo de negócio e em maior problema; Spec 023 do CRM) | sem cartão e sem seletor; nota "Suas informações são confidenciais. Vamos analisar a sua aplicação. Depois da análise, entramos em contato para combinar o agendamento do seu Diagnóstico Operacional." (`#nota-analise`); só com `envio_email`, acrescenta "Enviamos a confirmação do cadastro para o e-mail informado." (`#nota-analise-email`). Nenhuma chamada a `slots` |
 | Obrigada de sempre (v1.1, substitui o Fallback) | `409 agendamento_desligado` (toggle `ativo` desligado no CRM) e qualquer outra resposta, rede, timeout ou tentativas esgotadas | sem cartão: a obrigada de antes do agendamento, com a nota "Suas informações são confidenciais. Retornaremos em até 48h úteis via WhatsApp/E-mail caso sua aplicação seja aprovada." (`#nota-legado`, visível por padrão: sem JS, sem `eid` ou com a API fora). O Fallback antigo ("O link foi enviado ao seu e-mail") saiu porque seria falso com o envio de e-mail desligado |
 
 **Toggle (v1.1)**: `ativo` desligado = obrigada de sempre; `ativo` ligado = cartão. Dentro do cartão, `envio_email` (campo da resposta de `link`) liga a linha "Também enviamos o link por e-mail." e o trecho "O e-mail de agendamento vai para o endereço informado na aplicação." da nota; desligado, nenhuma tela promete e-mail.
@@ -51,6 +52,7 @@ Outros textos da página: `<title>` "Aplicação Recebida | Boutique Empresarial
 | Resposta | Significado | Cartão |
 | :-- | :-- | :-- |
 | `200 {"token":"...","envio_email":bool}` | lead existe, completo e agendável | Pronto (com ou sem a frase do e-mail) |
+| `200 {"em_analise":true,"envio_email":bool}` | perfil indefinido, sem link liberado (sem token) | Em análise (nota; com ou sem a frase do e-mail) |
 | `202 {}` | o CRM ainda não gravou o lead (o Apps Script repassa depois do envio) | repete |
 | `409 agendamento_desligado` | toggle desligado no CRM | obrigada de sempre |
 | `404`, `409 lead_nao_agendavel`, `410`, `429`, `503`, rede, timeout | outros casos | obrigada de sempre |
@@ -84,7 +86,7 @@ Cenários: `pronto`, `preparando` (a API nunca responde), `fallback` (API fora d
 
 ## 8. Fora de escopo
 
-Conversão de agendamento no Pixel/GA4; estado "em análise" para lead de perfil indefinido (Spec 023 do CRM; o site só o implementa quando o CRM devolver `em_analise`); renome do termo fora desta jornada (home, formulário, privacidade); alterar o texto do formulário; qualquer alteração no CRM a partir deste repositório.
+Conversão de agendamento no Pixel/GA4; renome do termo fora desta jornada (home, formulário, privacidade); alterar o texto do formulário; qualquer alteração no CRM a partir deste repositório.
 
 ## 9. Divergências e notas da implementação
 
@@ -96,3 +98,4 @@ Conversão de agendamento no Pixel/GA4; estado "em análise" para lead de perfil
 *   **Efeito colateral em /agendar**: o `padding` de 100px das `section` (de `style.css`) foi zerado também lá; as telas ficam mais juntas do título.
 *   O token continua só em memória na obrigada (parâmetro de `iniciarAgendador`); `/agendar` segue lendo-o da `sessionStorage`.
 *   Termo: "Diagnóstico Gratuito" virou "Diagnóstico Operacional" só nesta jornada (obrigada, agendar, testes e specs); o restante do site mantém o termo antigo até decisão da autora.
+*   **v1.3, em análise**: a decisão é só do CRM (o site não calcula perfil); `be_perfil` segue sendo apenas renderização do fechamento. A copy é proposta nossa, pendente de revisão da autora. Lead liberado pela vendedora dentro da janela de 2 h volta a receber `token` e vê o seletor ao recarregar.
