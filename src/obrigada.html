@@ -112,8 +112,9 @@
     </script>
 
     <title>Aplicação Recebida | Boutique Empresarial</title>
-    <meta name="description" content="Recebemos a sua aplicação ao Diagnóstico Gratuito da Boutique Empresarial. Suas informações são confidenciais.">
+    <meta name="description" content="Recebemos a sua aplicação ao Diagnóstico Operacional da Boutique Empresarial. Suas informações são confidenciais.">
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/agendador.css">
     <script type="module" src="/js/form-copy.js"></script>
     <script type="module" src="/js/obrigada-agendar.js"></script>
 
@@ -214,7 +215,7 @@
             margin-bottom: 10px
         }
 
-        .ag h2 {
+        .ag h2[data-ag-titulo] {
             font-family: 'Playfair Display', serif;
             font-size: 1.4rem;
             font-weight: 600;
@@ -223,25 +224,9 @@
             margin-bottom: 10px
         }
 
-        .ag .ag-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 48px;
-            padding: 12px 28px;
-            margin-top: 18px;
-            background: var(--text-primary);
-            color: #fff;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 2px
-        }
+        .ag h2[data-ag-titulo]:focus { outline: none }
 
-        .ag .ag-btn:hover { background: #000 }
-
-        .ag .ag-btn:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px }
-
-        .ag .ag-apoio { font-size: .875rem; margin-top: 14px }
+        .ag .ag-email { font-size: .875rem; margin-top: 14px }
 
         .ag-skel { margin: 14px 0 4px }
 
@@ -249,10 +234,8 @@
 
         .ag-skel span:last-child { width: 55% }
 
-        @media (max-width: 480px) { .ag .ag-btn { display: flex; width: 100% } }
-
         @media (prefers-reduced-motion: no-preference) {
-            .ag [data-estado="pronto"] { animation: ag-in .2s ease-out }
+            .ag .agendador { animation: ag-in .2s ease-out }
             @keyframes ag-in { from { opacity: 0 } to { opacity: 1 } }
         }
 
@@ -270,22 +253,19 @@
         <div class="s"></div>
         <p class="cf-fechamento" id="fechamento" hidden></p>
 
-        <!-- Próximo passo: o módulo obrigada-agendar.js troca o event_id por um link
-             pessoal e alterna os três estados. Sem eid, a seção continua oculta. -->
-        <section class="ag" id="agendamento" aria-label="Agendamento do Diagnóstico Gratuito" hidden>
+        <!-- Próximo passo: o módulo obrigada-agendar.js troca o event_id por um link pessoal
+             e monta aqui o seletor de horários (js/agendador.js, o mesmo de /agendar), sem passo
+             intermediário. Sem eid, a seção continua oculta. -->
+        <section class="ag" id="agendamento" aria-label="Agendamento do Diagnóstico Operacional" hidden>
             <p class="ag-kicker">Próximo passo</p>
-            <div id="ag-corpo" aria-live="polite" aria-busy="true">
-                <div data-estado="preparando">
-                    <div class="ag-skel" aria-hidden="true"><span></span><span></span></div>
-                    <p>Preparando o seu link de agendamento...</p>
-                </div>
-                <div data-estado="pronto" hidden>
-                    <h2>Escolha o dia e o horário do seu Diagnóstico Gratuito</h2>
-                    <p>A conversa acontece por Google Meet. Ao confirmar, o convite chega ao seu e-mail.</p>
-                    <a class="ag-btn" id="ag-link" href="/agendar.html">Escolher horário</a>
-                    <p class="ag-apoio" id="ag-email" hidden>Também enviamos o link por e-mail.</p>
-                </div>
+            <h2 data-ag-titulo tabindex="-1">Escolha o dia e o horário do seu Diagnóstico Operacional</h2>
+            <p class="ag-sr" data-ag-anuncio role="status" aria-live="polite"></p>
+            <div data-estado="preparando">
+                <div class="ag-skel" aria-hidden="true"><span></span><span></span></div>
+                <p>Preparando o seu link de agendamento...</p>
             </div>
+            <div class="agendador" id="agendador" aria-busy="true" hidden></div>
+            <p class="ag-email" id="ag-email" hidden>Também enviamos o link por e-mail.</p>
         </section>
 
         <!-- Jornada de agendamento desligada no CRM (ou sem eid, sem JS, API fora): o texto de sempre.

@@ -1,6 +1,6 @@
 # SDD — Página de Agendamento do Diagnóstico (`agendar`)
 
-*   **Status**: Implementada (em produção desde o PR #37); v1.2 (2026-10-03): data `06/10, terça-feira`, Confirmar desabilitado e botão "Nenhum horário funciona para mim" (§6.7), spec em `docs/specs/design/agendar-sem-horario.md`. Implementada localmente (v1.1, alinhada à Spec 017 v1.1 do CRM; contrato OpenAPI 1.0.0). Aguarda revisão da copy, publicação e liberação coordenada (F7). Divergências e decisões da implementação em §14.
+*   **Status**: v1.3 (2026-10-07): a UI virou o módulo `src/js/agendador.js` (markup em `src/partials/agendador.html`), reaproveitado pelo cartão da obrigada (`design/obrigada-agendamento.md` v1.2); "Diagnóstico Operacional" passa a "Diagnóstico Operacional". Implementada (em produção desde o PR #37); v1.2 (2026-10-03): data `06/10, terça-feira`, Confirmar desabilitado e botão "Nenhum horário funciona para mim" (§6.7), spec em `docs/specs/design/agendar-sem-horario.md`. Implementada localmente (v1.1, alinhada à Spec 017 v1.1 do CRM; contrato OpenAPI 1.0.0). Aguarda revisão da copy, publicação e liberação coordenada (F7). Divergências e decisões da implementação em §14.
 *   **Arquivos afetados (na implementação)**: `src/agendar.html`, `src/js/agendar.js`, `tests/agendar.spec.js`, `e2e/agendar.spec.js`, `docs/specs/ARCHITECTURE.md` (tabela de páginas), `src/privacidade.html` (uso do e-mail e do Google Agenda para agendamento)
 *   **Contrato da API que a página consome**: `boutiqueempresarial-crm/docs/openapi/agendamento.json`, congelado ao fim da fatia F2 da Spec 017 (campo `info.version`). É a única fonte do contrato: as respostas simuladas dos testes (§11) são copiadas dos exemplos desse arquivo, com a versão anotada em `tests/fixtures/agendar/VERSION`. Em divergência sobre a API, **o CRM vence**; a página se adapta.
 *   **Substitui**: nada. Substitui apenas o passo manual de combinar horário depois do formulário.
@@ -23,8 +23,8 @@ Depois de completar o formulário, o lead recebe um e-mail do CRM com um link pe
 
 *   **Nome do arquivo**: `agendar.html`
 *   **URL final**: `boutiqueempresarial.com.br/agendar` (a `viewer-request.js` já reescreve `/agendar` para `/agendar.html`)
-*   **Título (SEO)**: `Agendar Diagnóstico Gratuito | Boutique Empresarial`
-*   **Descrição**: `Escolha o horário do seu Diagnóstico Gratuito com a Boutique Empresarial. A conversa acontece por Google Meet.`
+*   **Título (SEO)**: `Agendar Diagnóstico Operacional | Boutique Empresarial`
+*   **Descrição**: `Escolha o horário do seu Diagnóstico Operacional com a Boutique Empresarial. A conversa acontece por Google Meet.`
 *   **Header**: minimalista (só o logo). **Footer**: simples.
 *   **Paleta e vibe**: clara, autoridade sem gritar (`STYLE_GUIDE.md`): fundo `#f5f2eb`, texto `#1f1f1f`, ouro `#C5A059` só em detalhe, Playfair Display nos títulos, Inter no corpo. Sem desvio de paleta.
 
@@ -61,7 +61,7 @@ Uma única página, um único `<main id="conteudo">`, com regiões que se altern
 
 **6.1 Carregando.** Esqueleto e `aria-busy="true"` enquanto `slots` responde. Nenhum horário aparece antes da resposta.
 
-**6.2 Escolha (lead ainda sem horário).** Título (H1): "Escolha o melhor horário para o seu Diagnóstico Gratuito". Subtítulo com o primeiro nome e a duração vindos da API, e a informação de que a conversa é por Google Meet e o convite chega por e-mail. Depois:
+**6.2 Escolha (lead ainda sem horário).** Título (H1): "Escolha o melhor horário para o seu Diagnóstico Operacional". Subtítulo com o primeiro nome e a duração vindos da API, e a informação de que a conversa é por Google Meet e o convite chega por e-mail. Depois:
 *   **Dias**: grupo de rádios estilizados (`role="radiogroup"` com `<input type="radio">` real), com data no formato `06/10, terça-feira` (`DD/MM, dia da semana por extenso`, no fuso da API). Quebra em várias linhas; sem rolagem horizontal em 375 px.
 *   **Horários** do dia escolhido: mesmo padrão de rádios, com `HH:MM`, alvos de toque com pelo menos 44 px.
 *   **Confirmar horário** (v1.2, substitui "nunca desabilitado"): fica **desabilitado** (`disabled` + `aria-disabled="true"`, opacidade .45) até haver dia **e** horário; trocar o dia zera a hora e o desabilita de novo. "Escolha um dia e um horário" (`TEXTO.escolhaVazia`) só aparece se algo submeter sem seleção (teclado, agente). Durante o envio o botão mostra "Confirmando..." e bloqueia clique duplo.
@@ -94,7 +94,7 @@ Uma única página, um único `<main id="conteudo">`, com regiões que se altern
 
 ## 7. Conteúdo, copy e vocabulário
 
-*   Copy da §6 é **proposta** para revisão da autora (o agente `copy-writer` conhece o vocabulário). Vocabulário controlado do `HARNESS_AEO.md` §B6: "Diagnóstico Gratuito" (a sessão individual sem custo), nunca "Diagnóstico de Estabilidade".
+*   Copy da §6 é **proposta** para revisão da autora (o agente `copy-writer` conhece o vocabulário). Vocabulário controlado do `HARNESS_AEO.md` §B6: "Diagnóstico Operacional" (a sessão individual sem custo), nunca "Diagnóstico de Estabilidade".
 *   Proibidos: "revolucionário", "disruptivo", "game-changer", "solução completa", "de última geração", e verbos que prometam resultado ("garante", "elimina", "assegura").
 *   A duração vem da API (`duracao_min`); a copy nunca fixa "45 minutos".
 
@@ -139,7 +139,7 @@ Testes em `tests/agendar.spec.js` (contrato, respostas simuladas com `page.route
 12. axe sem violações `serious`/`critical` nos estados: carregando, escolha, confirmado, cada erro e sem horários; teclado alcança todos os controles; foco vai ao título do novo estado.
 13. Em 375 px não há scroll horizontal; com zoom de 200% nenhum conteúdo se perde.
 14. Nenhuma resposta simulada da API é necessária para renderizar o esqueleto e as mensagens de erro (a página falha de forma legível com a API fora do ar).
-15. Copy sem os termos proibidos do §B6 e com "Diagnóstico Gratuito" grafado como no vocabulário.
+15. Copy sem os termos proibidos do §B6 e com "Diagnóstico Operacional" grafado como no vocabulário.
 
 ## 12. Allowlist de implementação
 

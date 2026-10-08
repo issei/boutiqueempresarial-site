@@ -1,11 +1,12 @@
-// Cartão "Próximo passo" da obrigada.html: troca o event_id do lead pelo link
-// pessoal de agendamento. docs/specs/design/obrigada-agendamento.md.
+// Cartão "Próximo passo" da obrigada.html: troca o event_id do lead pelo link pessoal
+// de agendamento e já monta o seletor de horários no cartão (js/agendador.js, o mesmo de
+// /agendar), sem botão intermediário. docs/specs/design/obrigada-agendamento.md.
 // A conversão (Pixel Lead, GA4 generate_lead) não passa por aqui: se a API cair, o
 // lead vê a obrigada de sempre. O toggle do CRM comanda a jornada: agendamento desligado
 // (409 agendamento_desligado), ou qualquer falha, = obrigada antiga, sem cartão (docs/specs/
 // design/obrigada-agendamento.md §4). A frase "enviamos por e-mail" só vem com envio_email.
-// O token só existe no href do botão; nunca em console, dataLayer, storage ou URL desta
-// página. A troca é idempotente no CRM, então recarregar a página repete a chamada.
+// O token só existe em memória (passado ao agendador); nunca em console, dataLayer, storage
+// ou URL desta página. A troca é idempotente no CRM, então recarregar a página repete a chamada.
 
 const API_BASE = 'https://api.boutiqueempresarial.com.br/public/agendamento';
 const TOKEN_RE = /^[A-Za-z0-9_.-]{20,200}$/; // mesmo formato de agendar.js (opaco)
@@ -19,13 +20,15 @@ const eid = window.leadEid; // definido pelo script inline do Pixel, que roda an
 
 const $ = (id) => document.getElementById(id);
 
-const mostrarPronto = (token, envioEmail) => {
-  secao.querySelectorAll('[data-estado]').forEach((el) => { el.hidden = el.dataset.estado !== 'pronto'; });
-  $('ag-link').href = `/agendar.html#t=${token}`;
+// O módulo do seletor só baixa quando há token: quem cai na obrigada de sempre não paga por ele.
+const mostrarPronto = async (token, envioEmail) => {
+  const { iniciarAgendador } = await import('./agendador.js');
+  secao.querySelector('[data-estado="preparando"]').hidden = true;
+  $('agendador').hidden = false;
   $('ag-email').hidden = !envioEmail;
   $('nota-email').hidden = !envioEmail;
   $('nota-cartao').hidden = false;
-  $('ag-corpo').setAttribute('aria-busy', 'false');
+  iniciarAgendador({ alvo: $('agendador'), token, embutido: true });
 };
 
 // Obrigada de sempre: sem cartão e com a nota antiga.
@@ -63,7 +66,9 @@ const iniciar = async () => {
   $('nota-legado').hidden = true;
   for (let i = 0; i < TENTATIVAS; i++) {
     const { token, envioEmail, repetir } = await trocar();
-    if (token) return mostrarPronto(token, envioEmail);
+    if (token) {
+      try { return await mostrarPronto(token, envioEmail); } catch { break; } // módulo não carregou: obrigada de sempre
+    }
     if (!repetir) break;
     await new Promise((ok) => setTimeout(ok, ESPERA_MS));
   }

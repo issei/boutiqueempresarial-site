@@ -1,0 +1,110 @@
+/* Seletor de horário do Diagnóstico Operacional: markup em partials/agendador.html,
+ * lógica em js/agendador.js. Compartilhado por agendar.html e obrigada.html, então
+ * tudo vive sob .agendador: as páginas têm as próprias regras de body, h1 e p. */
+
+.ag-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.agendador h2 {
+    font-family: var(--font-inter);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--text-primary);
+    margin: 28px 0 10px;
+}
+
+.agendador .ag-skel { display: grid; gap: 12px; margin-top: 24px; }
+.agendador .ag-skel span {
+    display: block;
+    height: 44px;
+    margin: 0;
+    background: #e9e4d8;
+    border-radius: 2px;
+}
+
+.agendador .ag-opcoes { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.agendador .ag-opcao { position: relative; }
+
+.agendador .ag-opcao input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.agendador .ag-opcao span {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 16px;
+    background: #fff;
+    border: 1px solid var(--text-primary);
+    border-radius: 2px;
+    color: var(--text-primary);
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+.agendador .ag-opcao input:checked + span {
+    background: var(--text-primary);
+    color: #fff;
+    font-weight: 600;
+}
+
+.agendador .ag-opcao input:focus-visible + span {
+    outline: 2px solid var(--gold-text);
+    outline-offset: 2px;
+}
+
+.agendador .ag-btn {
+    font: inherit;
+    font-weight: 600;
+    min-height: 44px;
+    padding: 10px 24px;
+    border-radius: 2px;
+    border: 1px solid var(--text-primary);
+    background: #fff;
+    color: var(--text-primary);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.agendador .ag-btn--principal { background: var(--text-primary); color: #fff; }
+.agendador .ag-btn[aria-disabled="true"] { opacity: .75; cursor: progress; }
+/* Sem dia e horário escolhidos (mesmo padrão de .rl.dis em formulario.html). */
+.agendador .ag-btn:disabled { opacity: .45; cursor: not-allowed; transition: opacity .2s; }
+.agendador .ag-btn:focus-visible,
+.agendador a:focus-visible {
+    outline: 2px solid var(--gold-text);
+    outline-offset: 2px;
+}
+
+.agendador .ag-acoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+
+.agendador .ag-apoio { margin-top: 12px; min-height: 1.8em; }
+
+.agendador .ag-aviso {
+    border-left: 2px solid var(--gold-subtle);
+    padding: 2px 0 2px 16px;
+    margin: 16px 0;
+    color: var(--text-primary);
+}
+
+.agendador a { color: var(--text-primary); text-decoration: underline; }
+.agendador a.ag-btn--principal { color: #fff; text-decoration: none; }
+
+/* style.css dá 100px de respiro vertical a todo <section>; aqui as telas se alternam no mesmo bloco. */
+.agendador section { padding: 0; }

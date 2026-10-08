@@ -4,7 +4,7 @@
 // nem alcança script.google.com ou a API real (docs/specs/adr-e2e-nao-enviar-formulario-para-producao.md).
 import { chromium } from '@playwright/test';
 import fs from 'node:fs';
-import { bloquearTerceiros, simularApi, ok, erro } from '../tests/fixtures/agendar/mock.js';
+import { bloquearTerceiros, simularApi, ok, erro, SLOTS, RESERVA } from '../tests/fixtures/agendar/mock.js';
 
 const CENARIOS = ['pronto', 'pronto-sem-email', 'preparando', 'legado', 'sem-eid'];
 const cenario = process.argv[2];
@@ -35,6 +35,8 @@ await simularApi(page, {
     legado: erro('agendamento_desligado'), // CRM com o agendamento desligado
     'sem-eid': erro('indisponivel'),
   }[cenario],
+  slots: ok(SLOTS.semAgendamento), // o seletor de horários já abre na obrigada
+  reservar: ok(RESERVA.reservar.comMeet, 201),
 });
 await page.addInitScript(() => {
   localStorage.setItem('be_perfil', JSON.stringify({
@@ -46,8 +48,8 @@ await page.addInitScript(() => {
 await page.goto(`${BASE}/obrigada.html${cenario === 'sem-eid' ? '' : '?eid=preview-event-id'}`);
 
 if (captura) {
-  const pronto = { pronto: '#ag-link', 'pronto-sem-email': '#ag-link', legado: '#nota-legado:not([hidden])' }[cenario];
-  if (pronto) await page.locator(pronto).waitFor();
+  const pronto = { pronto: '#agendador .ag-opcao', 'pronto-sem-email': '#agendador .ag-opcao', legado: '#nota-legado:not([hidden])' }[cenario];
+  if (pronto) await page.locator(pronto).first().waitFor();
   await page.waitForTimeout(500); // fade de entrada (200 ms) termina antes da captura
   fs.mkdirSync('test-results/preview-obrigada', { recursive: true });
   const arq = `test-results/preview-obrigada/${cenario}-${mobile ? 'mobile' : 'desktop'}.png`;

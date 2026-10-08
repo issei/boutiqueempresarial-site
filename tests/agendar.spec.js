@@ -33,7 +33,7 @@ test.describe('agendar: head e indexação', () => {
     expect(await meta('link[rel="canonical"]', 'href')).toBeNull();
     expect(await meta('meta[property="og:title"]')).toBeNull();
     expect(await page.locator('script[type="application/ld+json"]').count()).toBe(0);
-    expect(await page.title()).toBe('Agendar Diagnóstico Gratuito | Boutique Empresarial');
+    expect(await page.title()).toBe('Agendar Diagnóstico Operacional | Boutique Empresarial');
   });
 
   test('a rota não aparece no sitemap gerado', async () => {
@@ -156,11 +156,11 @@ test.describe('agendar: acessibilidade em todos os estados', () => {
     await simularApi(page, { slots: () => pendente });
     await page.goto(URL_AGENDAR);
     await expect(page.locator('#est-carregando')).toBeVisible();
-    await expect(page.locator('#conteudo')).toHaveAttribute('aria-busy', 'true');
+    await expect(page.locator('#agendador')).toHaveAttribute('aria-busy', 'true');
     await expect(page.locator('.ag-opcao')).toHaveCount(0); // nenhum horário antes da resposta
     expect(await violacoesGraves(page), 'axe em carregando').toBe('');
     liberar(ok(SLOTS.semAgendamento));
-    await expect(page.locator('#conteudo')).toHaveAttribute('aria-busy', 'false');
+    await expect(page.locator('#agendador')).toHaveAttribute('aria-busy', 'false');
   });
 
   test('escolha, com dia e horário marcados', async ({ page }) => {
@@ -285,11 +285,11 @@ test.describe('agendar: layout', () => {
 
 test.describe('agendar: copy e fixtures', () => {
   test('copy sem os termos proibidos do §B6 e com o vocabulário controlado', () => {
-    const fonte = ['../src/agendar.html', '../src/js/agendar.js']
+    const fonte = ['../src/agendar.html', '../src/js/agendador.js', '../src/partials/agendador.html']
       .map((f) => readFileSync(new URL(f, import.meta.url), 'utf8')).join('\n');
     expect(fonte).not.toMatch(/revolucion|disruptiv|game-changer|solu[çc][ãa]o completa|de [úu]ltima gera[çc][ãa]o|\bgarante|\belimina|\bassegura/i);
     expect(fonte).not.toContain('Diagnóstico de Estabilidade');
-    expect(fonte).toContain('Diagnóstico Gratuito');
+    expect(fonte).toContain('Diagnóstico Operacional');
     expect(fonte, 'a duração vem da API, nunca fixa').not.toMatch(/45 minutos/);
     expect(fonte, 'sem diálogo nativo').not.toMatch(/[ .](confirm|alert|prompt)[(]/);
   });

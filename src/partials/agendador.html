@@ -1,0 +1,69 @@
+<!-- 6.1 Carregando -->
+<section id="est-carregando" hidden>
+    <div class="ag-skel" aria-hidden="true"><span></span><span></span><span></span></div>
+</section>
+
+<!-- 6.2 Escolha (e 6.4 Remarcar) -->
+<section id="est-escolha" hidden>
+    <p id="aviso" class="ag-aviso" role="status" hidden></p>
+    <p id="alerta" class="ag-aviso" role="alert" hidden></p>
+    <p id="atual" hidden></p>
+    <p id="subtitulo"></p>
+
+    <h2 id="rot-dias">Dia</h2>
+    <div class="ag-opcoes" id="dias" role="radiogroup" aria-labelledby="rot-dias"></div>
+
+    <div id="bloco-horarios" hidden>
+        <h2 id="rot-horarios">Horário (horário de Brasília)</h2>
+        <div class="ag-opcoes" id="horarios" role="radiogroup" aria-labelledby="rot-horarios"></div>
+    </div>
+
+    <p class="ag-apoio" id="apoio" aria-live="polite"></p>
+    <div class="ag-acoes">
+        <button type="button" class="ag-btn ag-btn--principal" id="confirmar" aria-describedby="apoio" disabled aria-disabled="true">Confirmar horário</button>
+        <button type="button" class="ag-btn" id="manter" hidden>Manter o horário atual</button>
+        <button type="button" class="ag-btn" id="sem-horario">Nenhum horário funciona para mim</button>
+    </div>
+</section>
+
+<!-- 6.3 Confirmado -->
+<section id="est-confirmado" hidden>
+    <p id="conf-texto"></p>
+    <div class="ag-acoes" id="conf-meet-bloco">
+        <a class="ag-btn ag-btn--principal" id="conf-meet" rel="noopener" target="_blank" hidden>Abrir o Google Meet</a>
+    </div>
+    <p id="conf-sem-meet" hidden>O convite do Google Agenda chega ao seu e-mail com o link do Meet.</p>
+    <div class="ag-acoes" id="conf-acoes">
+        <button type="button" class="ag-btn" id="remarcar">Remarcar</button>
+        <button type="button" class="ag-btn" id="cancelar">Cancelar agendamento</button>
+    </div>
+    <p id="conf-contato" hidden>Para alterar este horário, fale com a gente:
+        <a href="mailto:talita@boutiqueempresarial.com.br">talita@boutiqueempresarial.com.br</a>.</p>
+
+    <!-- 6.5 Cancelar: confirmação inline, sem window.confirm -->
+    <div id="cancelar-conf" class="ag-aviso" hidden>
+        <p id="cancelar-pergunta" tabindex="-1">Cancelar este horário?</p>
+        <div class="ag-acoes">
+            <button type="button" class="ag-btn ag-btn--principal" id="cancelar-sim">Sim, cancelar</button>
+            <button type="button" class="ag-btn" id="cancelar-nao">Manter</button>
+        </div>
+    </div>
+</section>
+
+<!-- 6.7 Sem horário que sirva -->
+<section id="est-sem-horario" hidden>
+    <p id="sh-email" hidden></p>
+    <p class="ag-aviso" id="sh-contato"></p>
+    <div class="ag-acoes">
+        <button type="button" class="ag-btn" id="sem-horario-voltar">Ver os horários de novo</button>
+    </div>
+</section>
+
+<!-- 6.6 Erros -->
+<section id="est-erro" hidden>
+    <p id="erro-msg"></p>
+    <div class="ag-acoes">
+        <button type="button" class="ag-btn ag-btn--principal" id="erro-retry" hidden>Tentar novamente</button>
+        <a class="ag-btn" id="erro-contato" href="mailto:talita@boutiqueempresarial.com.br" hidden>Falar com a gente</a>
+    </div>
+</section>
