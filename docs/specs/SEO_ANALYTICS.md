@@ -85,7 +85,7 @@ Para garantir que o link do site apareça com imagem e título corretos no Linke
 O plugin `vite-plugin-sitemap` no `vite.config.js` é o responsável por listar todas as rotas `.html` encontradas em `src/`.
 
 * **Frequência de Atualização:** Automática a cada build.
-* **Só o que é indexável:** o `vite.config.js` lê o `meta robots` de cada `src/*.html` e exclui do sitemap as páginas `noindex`. Hoje só a home (`/`) entra; formulário, obrigada, legais, legado, guia de identidade e 404 ficam de fora.
+* **Só o que é indexável:** o `vite.config.js` lê o `meta robots` de cada `src/*.html` e exclui do sitemap as páginas `noindex`. Hoje entram a home (`/`) e `/formulario`; obrigada, legais, legado, guia de identidade e 404 ficam de fora.
 * **Submissão:** O arquivo é enviado ao S3 e o Google Search Console o lê diretamente na raiz.
 
 ### Robots.txt

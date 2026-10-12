@@ -52,7 +52,8 @@
       "type": "application/mcp-server-card+json",
       "url": "https://boutiqueempresarial.com.br/.well-known/mcp/server-card.json",
       "representativeQueries": [
-        "quais ferramentas MCP este site expõe"
+        "quais ferramentas MCP este site expõe",
+        "como um agente de IA pode preencher o formulário de aplicação do Diagnóstico Gratuito"
       ]
     }
   ]

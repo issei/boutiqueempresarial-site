@@ -143,7 +143,7 @@ o gatilho de reavaliação está em §A5.
 | `<title>` | 10–60 caracteres, sufixo `\| Boutique Empresarial` | `tests/seo.spec.js` |
 | `meta description` | 50–160 caracteres, com a palavra-chave da página | `tests/seo.spec.js` |
 | `link canonical` | URL absoluta, sem `.html`, sem barra final (exceto a raiz) | `tests/seo.spec.js` |
-| `meta robots` | `index, follow, max-image-preview:large, max-snippet:-1` — ou `noindex` deliberado. **Hoje só `index` é indexável** — `privacidade` e `termos` também estão `noindex`, decisão anterior a este spec que a implementação preservou (ver §7) | `tests/seo.spec.js` |
+| `meta robots` | `index, follow, max-image-preview:large, max-snippet:-1` — ou `noindex` deliberado. **Hoje `index` e `formulario` são indexáveis** (ADR `adr-formulario-indexavel.md`) — `privacidade` e `termos` estão `noindex`, decisão anterior a este spec que a implementação preservou (ver §7) | `tests/seo.spec.js` |
 | OG | `og:type`, `og:site_name`, `og:locale=pt_BR`, `og:title`, `og:description`, `og:url`, `og:image` (1200×630) | `tests/seo.spec.js` |
 | Twitter | `twitter:card=summary_large_image` + title/description/image | `tests/seo.spec.js` |
 | `meta charset` | `UTF-8`, dentro dos **primeiros 1024 bytes** do documento (HTML Standard) — na prática, primeira linha do `<head>` | `tests/seo.spec.js` |

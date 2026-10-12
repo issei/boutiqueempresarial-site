@@ -44,7 +44,8 @@
     if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
     n.queue=[];t=b.createElement(e);t.async=!0;
     t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    var go=function(){s.parentNode.insertBefore(t,s)};
+    f.addEventListener('load',function(){'requestIdleCallback' in f?f.requestIdleCallback(go):setTimeout(go,1)})}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
 
     // Previne disparos fantasmas de rotas virtuais (Padrão 2026)
@@ -79,11 +80,29 @@
         gtag('config', 'G-8HNXV7KTY9');
     </script>
 
-    <meta name="robots" content="noindex, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
     <meta name="description"
-        content="Aplicação para a Sessão Estratégica de Análise Operacional da Boutique Empresarial. Vagas limitadas e sujeitas a aprovação de perfil.">
-    <link rel="canonical" href="https://boutiqueempresarial.com.br/formulario.html">
-    <title>Aplicação | Sessão Estratégica — Boutique Empresarial</title>
+        content="Aplique ao Diagnóstico Gratuito da Boutique Empresarial: sessão individual de 45 minutos para empresas de serviço. Três vagas por semana, sujeitas a aprovação.">
+    <link rel="canonical" href="https://boutiqueempresarial.com.br/formulario">
+    <meta property="og:url" content="https://boutiqueempresarial.com.br/formulario" />
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Boutique Empresarial">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="Aplicação ao Diagnóstico Gratuito | Boutique Empresarial">
+    <meta property="og:description"
+        content="Aplique ao Diagnóstico Gratuito da Boutique Empresarial: sessão individual de 45 minutos para empresas de serviço. Três vagas por semana, sujeitas a aprovação.">
+    <meta property="og:image" content="https://boutiqueempresarial.com.br/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Aplicação ao Diagnóstico Gratuito | Boutique Empresarial">
+    <meta name="twitter:description"
+        content="Aplique ao Diagnóstico Gratuito da Boutique Empresarial: sessão individual de 45 minutos para empresas de serviço. Três vagas por semana, sujeitas a aprovação.">
+    <meta name="twitter:image" content="https://boutiqueempresarial.com.br/og-image.jpg">
+    <title>Aplicação ao Diagnóstico Gratuito | Boutique Empresarial</title>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://boutiqueempresarial.com.br/#organization","name":"Boutique Empresarial","url":"https://boutiqueempresarial.com.br/","logo":"https://boutiqueempresarial.com.br/boutiquelogo.webp","sameAs":["https://www.linkedin.com/company/boutiqueempresarial"]},{"@type":"ProfessionalService","@id":"https://boutiqueempresarial.com.br/#service","name":"Boutique Empresarial","url":"https://boutiqueempresarial.com.br/","logo":"https://boutiqueempresarial.com.br/boutiquelogo.webp","image":"https://boutiqueempresarial.com.br/og-image.jpg","description":"Arquitetura de Negócios que estrutura operações de empresas de serviço para que funcionem com estabilidade e autonomia, sem depender da fundadora no centro das decisões.","address":{"@type":"PostalAddress","streetAddress":"Rua do Estilo Barroco, 329","addressLocality":"São Paulo","addressRegion":"SP","postalCode":"04709-010","addressCountry":"BR"},"geo":{"@type":"GeoCoordinates","latitude":-23.632852,"longitude":-46.693603},"knowsAbout":["Arquitetura de Negócios","Diagnóstico de Estabilidade","Arquitetura Operacional","Ritmo de Execução","Estabilidade Operacional"],"parentOrganization":{"@id":"https://boutiqueempresarial.com.br/#organization"}},{"@type":"WebSite","@id":"https://boutiqueempresarial.com.br/#website","url":"https://boutiqueempresarial.com.br/","name":"Boutique Empresarial","publisher":{"@id":"https://boutiqueempresarial.com.br/#organization"},"inLanguage":"pt-BR"},{"@type":["WebPage","ContactPage"],"@id":"https://boutiqueempresarial.com.br/formulario#webpage","url":"https://boutiqueempresarial.com.br/formulario","name":"Aplicação ao Diagnóstico Gratuito | Boutique Empresarial","isPartOf":{"@id":"https://boutiqueempresarial.com.br/#website"},"inLanguage":"pt-BR","dateModified":"2026-10-12T00:00:00-03:00","primaryImageOfPage":{"@type":"ImageObject","url":"https://boutiqueempresarial.com.br/og-image.jpg","width":1200,"height":630},"breadcrumb":{"@id":"https://boutiqueempresarial.com.br/formulario#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://boutiqueempresarial.com.br/formulario#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Início","item":"https://boutiqueempresarial.com.br/"},{"@type":"ListItem","position":2,"name":"Aplicação","item":"https://boutiqueempresarial.com.br/formulario"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Como funciona a aplicação ao Diagnóstico Gratuito?","acceptedAnswer":{"@type":"Answer","text":"Você responde a perguntas curtas sobre você e sua empresa, uma etapa por vez. Talita analisa as respostas e, com o perfil aprovado, a equipe entra em contato para agendar o horário."}},{"@type":"Question","name":"Preencher a aplicação garante a sessão?","acceptedAnswer":{"@type":"Answer","text":"Não. A aplicação não garante o agendamento. São três vagas por semana e a sessão depende da aprovação do perfil."}},{"@type":"Question","name":"A sessão tem custo?","acceptedAnswer":{"@type":"Answer","text":"Não. A sessão é gratuita e dura 45 minutos."}},{"@type":"Question","name":"Para quem é a sessão?","acceptedAnswer":{"@type":"Answer","text":"A sessão é para empresas de serviço com equipe a partir de 5 colaboradores, com operação ativa e carteira de clientes em expansão, conduzidas por fundadoras decididas a sair do operacional."}},{"@type":"Question","name":"O que acontece com os meus dados?","acceptedAnswer":{"@type":"Answer","text":"Os dados são usados apenas para avaliação da sua aplicação, conforme a Política de Privacidade da Boutique Empresarial."}}]}]}
+    </script>
     <link rel="stylesheet" href="/style.css">
     <script type="module" src="/js/form-copy.js"></script>
 
@@ -667,6 +686,20 @@
             color: var(--text-secondary);
             text-decoration: underline
         }
+        .aeo-tldr h2,
+        .aeo-faq summary,
+        .aeo-faq details p {
+            font-size: .9rem;
+            line-height: 1.5
+        }
+
+        .aeo {
+            width: 100%;
+            max-width: 760px;
+            padding: 2rem 1.5rem 3rem;
+            margin-top: 2rem
+        }
+
 
         .vh {
             clip: rect(0 0 0 0);
@@ -863,6 +896,36 @@
                     onclick="window.cookieConsent && window.cookieConsent.open()">Preferências de cookies</button></div>
         </form>
     </main>
+
+    <!-- AEO-BODY:START -->
+    <section class="aeo" aria-label="Resumo e perguntas frequentes">
+        <div class="aeo-tldr">
+            <h2>Perguntas e Respostas</h2>
+        </div>
+        <div class="aeo-faq">
+            <details>
+                <summary>Como funciona a aplicação ao Diagnóstico Gratuito?</summary>
+                <p>Você responde a perguntas curtas sobre você e sua empresa, uma etapa por vez. Talita analisa as respostas e, com o perfil aprovado, a equipe entra em contato para agendar o horário.</p>
+            </details>
+            <details>
+                <summary>Preencher a aplicação garante a sessão?</summary>
+                <p>Não. A aplicação não garante o agendamento. São três vagas por semana e a sessão depende da aprovação do perfil.</p>
+            </details>
+            <details>
+                <summary>A sessão tem custo?</summary>
+                <p>Não. A sessão é gratuita e dura 45 minutos.</p>
+            </details>
+            <details>
+                <summary>Para quem é a sessão?</summary>
+                <p>A sessão é para empresas de serviço com equipe a partir de 5 colaboradores, com operação ativa e carteira de clientes em expansão, conduzidas por fundadoras decididas a sair do operacional.</p>
+            </details>
+            <details>
+                <summary>O que acontece com os meus dados?</summary>
+                <p>Os dados são usados apenas para avaliação da sua aplicação, conforme a Política de Privacidade da Boutique Empresarial.</p>
+            </details>
+        </div>
+    </section>
+    <!-- AEO-BODY:END -->
 
     <script type="module">
         (function () {

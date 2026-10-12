@@ -115,7 +115,7 @@ manifesto — é publicar um que mente.
 | Endpoint A2A | **não existe** | mesma razão; o agent card carrega o mesmo campo `status` |
 | Registro DNS `_mcp`/`_a2a` | **não publicar** | anunciar por DNS um endpoint que não responde é pior que não anunciar nada |
 | Authorization server OAuth | **não existe** | os três documentos OAuth são declarativos, para conformidade de descoberta e para carregar o `agent_auth`. `jwks.json` é `{"keys": []}` — a verdade: nada é assinado porque nada é emitido |
-| Companion `.md` de `formulario`/`privacidade`/`termos` | **não** | as três são `noindex` (HARNESS_AEO.md §6.1). Companion de página não indexável é peso sem leitor |
+| Companion `.md` de `formulario`/`privacidade`/`termos` | **não** | `privacidade` e `termos` são `noindex`; `formulario` é indexável desde 2026-10-12 ([ADR](specs/adr-formulario-indexavel.md)), mas é página de conversão — o companion `.md` dela fica adiado até haver demanda de agente |
 | DNSSEC | **habilitado** | zona `SIGNING` desde 2026-09-06; ver §4 para o custo, os alarmes e a ordem de rollback |
 | Gerador de `llms-full.txt` | **não** | 1 página indexável. O gatilho está em HARNESS_AEO.md §A5 |
 
