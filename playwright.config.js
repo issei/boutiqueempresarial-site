@@ -39,8 +39,11 @@ export default defineConfig({
 
     /* Audita e testa com animacao desligada: sem isso o axe mede elementos
        no meio do fade e acusa contraste que o estado final nao tem.
-       Tambem e o estado que HARNESS_AEO.md B5 exige que continue legivel. */
-    reducedMotion: 'reduce',
+       Tambem e o estado que HARNESS_AEO.md B5 exige que continue legivel.
+       Vai por contextOptions: `use.reducedMotion` e ignorado no Playwright 1.58.2
+       (matchMedia seguia em no-preference e o fade de /obrigada derrubava o axe
+       de forma intermitente na CI). */
+    contextOptions: { reducedMotion: 'reduce' },
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
