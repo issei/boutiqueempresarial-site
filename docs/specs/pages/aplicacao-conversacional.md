@@ -15,7 +15,7 @@ Converter o formulário de 8 etapas de um questionário sequenciado em uma **ses
 
 A hipótese é de conclusão, não de captação: o funil já qualifica, mas 8 etapas sem devolutiva parecem burocracia. Devolver análise a cada passo transforma o preenchimento em amostra do serviço.
 
-**Preservado integralmente**: as 8 etapas e a ordem da Fase 4, as chaves JSON congeladas, o rastreamento (D1/D2/D9 corrigidos), o consentimento LGPD real (D3), a deduplicação Pixel↔CAPI (D4), o transporte `text/plain` + `keepalive`, e o `noindex` da página (`HARNESS_AEO.md` §6.1).
+**Preservado integralmente**: as 8 etapas e a ordem da Fase 4, as chaves JSON congeladas, o rastreamento (D1/D2/D9 corrigidos), o consentimento LGPD real (D3), a deduplicação Pixel↔CAPI (D4), o transporte `text/plain` + `keepalive`, e — até 2026-10-12 — o `noindex` da página; a partir daí ela é indexável (`adr-formulario-indexavel.md`).
 
 ## 2. Metacognição — auditoria do protótipo contra o contrato vigente
 
@@ -158,7 +158,7 @@ Substituição por **replace literal** dos três tokens, não template string: a
 
 *   Qualquer mudança em `apps_script_atualizado.gs`, no `HEADERS` ou na planilha.
 *   Reavaliação de D8 (`no-cors`) e D10 (LDU global) — seguem como em `formulario.md` §6.
-*   Companion `.md` da página: continua **não** (a página é `noindex` — `AGENT_READINESS.md` §3).
+*   Companion `.md` da página: continua **não** (página de conversão — `AGENT_READINESS.md` §3).
 *   Agendamento dentro do formulário, upload de arquivo, painel de leitura das respostas.
 *   Teste A/B entre o fluxo da Fase 4 e o da Fase 5. Se for desejado, muda a estratégia de deploy e precisa de spec própria.
 
