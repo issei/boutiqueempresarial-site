@@ -179,7 +179,12 @@ Regras:
 
 ### B3. Bloco AEO visível — "Em síntese" + FAQ
 
-Toda página indexável recebe, imediatamente antes do `<footer>`, um bloco delimitado:
+Toda página indexável recebe, imediatamente antes do `<footer>`, um bloco delimitado,
+**exceto `formulario.html`**. A página de conversão mantém o foco no preenchimento e não
+exibe a seção “Perguntas e Respostas”; por isso, também não declara `FAQPage` no JSON-LD.
+Essa exceção não dispensa os demais nós JSON-LD exigidos em §B2.
+
+Nas demais páginas, o bloco é:
 
 ```html
 <!-- AEO-BODY:START -->
@@ -192,7 +197,7 @@ Toda página indexável recebe, imediatamente antes do `<footer>`, um bloco deli
 <!-- AEO-BODY:END -->
 ```
 
-- O texto do bloco é **a mesma resposta** que está no `FAQPage` do JSON-LD — literalmente, não
+- Quando há `FAQPage`, o texto do bloco é **a mesma resposta** do JSON-LD — literalmente, não
   parafraseada. `tests/aeo.spec.js` compara os dois.
 - `.aeo-tldr` é o alvo do `SpeakableSpecification`.
 - Visual conforme `STYLE_GUIDE.md`: Playfair nos títulos, Inter no corpo, respiro `py-24`, ouro
@@ -254,6 +259,7 @@ A implementação está completa quando **todos** os itens abaixo são verdadeir
 - [x] Zero violações axe `serious`/`critical` em todas as páginas.
 - [x] Todas as páginas indexáveis têm `<head>` conforme §B1 e JSON-LD conforme §B2.
 - [x] Todas as perguntas do `FAQPage` têm contraparte visível idêntica no DOM.
+- [x] `formulario.html` não exibe o bloco AEO nem declara `FAQPage` (§B3).
 - [x] `public/llms.txt` sem links quebrados; companions `.md` existem e são referenciados.
 - [x] `SEO_ANALYTICS.md` e `TESTING_GUIDE.md` atualizados para apontar para este contrato —
       spec não pode contradizer spec.

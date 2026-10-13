@@ -61,6 +61,11 @@ for (const { slug, url } of pages) {
       const bruto = await lerGrafo(page);
       const grafo = JSON.parse(bruto);
       const faq = (grafo['@graph'] ?? []).find((n) => n['@type'] === 'FAQPage');
+      if (slug === 'formulario') {
+        expect(faq, 'formulario: não deve declarar FAQPage sem seção visível').toBeUndefined();
+        await expect(page.locator('.aeo')).toHaveCount(0);
+        return;
+      }
       if (!faq) return; // FAQPage é obrigatório só na home (§B2); ausente, nada a comparar
 
       // textContent, não innerText: um <details> fechado não renderiza a resposta,
@@ -83,6 +88,11 @@ for (const { slug, url } of pages) {
     test('bloco AEO visível, delimitado e sem depender de JavaScript', async ({ page }) => {
       await page.goto(url);
       if (!(await indexavel(page))) return;
+
+      if (slug === 'formulario') {
+        await expect(page.locator('.aeo')).toHaveCount(0);
+        return;
+      }
 
       const html = await page.content();
       expect(html, `${slug}: marcador AEO-BODY:START ausente`).toContain('<!-- AEO-BODY:START -->');
