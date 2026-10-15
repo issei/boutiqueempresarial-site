@@ -24,6 +24,11 @@
 - **Ambiente de produção:** <https://boutiqueempresarial.com.br/>
 - **Onde ficam as specs de design:** `docs/specs/design/` — dentro da árvore de
   specs que já existe (`docs/specs/`), não uma pasta paralela.
+- **Onde se implementa:** código é escrito no **Claude Code local** da máquina
+  do Issei, para usar rtk, caveman, ponytail, MCPs e as credenciais locais.
+  Sessões **Claude Cloud** fazem só leitura, planejamento e specs (docs); para
+  implementar, iniciam uma sessão Remote Control na pasta local do repositório
+  (decisão do Issei, 2026-10-15).
 
 ## Diferença importante deste projeto
 
