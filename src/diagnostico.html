@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Facebook Domain Verification -->
+    <meta name="facebook-domain-verification" content="mwj9leq8r1nzwxtlmfc5ntempn8wst" />
+
+    <!-- Consent Mode v2 (padrão negado) — precede Pixel e GA4 de propósito: um
+         módulo é adiado e chegaria tarde. Interface em /js/cookie-consent.js;
+         contrato em docs/specs/design/cookie-consent.md -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        (function () {
+            var cat = null;
+            try {
+                var raw = JSON.parse(localStorage.getItem("be_consent") || "null");
+                if (raw && raw.v === 1) cat = raw.cat;
+            } catch (e) { /* modo privado: trata como quem ainda não decidiu */ }
+            window.__ccMarketing = !!(cat && cat.marketing);
+            gtag("consent", "default", {
+                ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied",
+                analytics_storage: "denied", functionality_storage: "granted",
+                security_storage: "granted", wait_for_update: 500
+            });
+            if (cat) {
+                var s = function (on) { return on ? "granted" : "denied"; };
+                gtag("consent", "update", {
+                    ad_storage: s(cat.marketing), ad_user_data: s(cat.marketing),
+                    ad_personalization: s(cat.marketing), analytics_storage: s(cat.analytics)
+                });
+            }
+        })();
+    </script>
+    <script type="module" src="/js/cookie-consent.js"></script>
+    <script type="module" src="/js/attribution.js"></script>
+    <!-- Meta Pixel Code 2026 Implementation -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    var go=function(){s.parentNode.insertBefore(t,s)};
+    f.addEventListener('load',function(){'requestIdleCallback' in f?f.requestIdleCallback(go):setTimeout(go,1)})}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+
+    // Previne disparos fantasmas de rotas virtuais (Padrão 2026)
+    fbq.disablePushState = true;
+
+    // Ativa o Processamento Limitado de Dados (LDU) para LGPD/CCPA
+    // Pixel enfileira os eventos enquanto revogado e os libera no grant.
+    fbq('consent', window.__ccMarketing ? 'grant' : 'revoke');
+    fbq('dataProcessingOptions', ['LDU'], 1, 1000);
+
+    fbq('init', '1469019395044653');
+    fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8HNXV7KTY9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-8HNXV7KTY9');
+    </script>
+
+    <!-- Descoberta por agentes de IA (RFC 8288/9727/9728) - docs/AGENT_READINESS.md -->
+    <link rel="api-catalog" href="https://boutiqueempresarial.com.br/.well-known/api-catalog">
+    <link rel="service-desc" type="application/json" href="https://boutiqueempresarial.com.br/.well-known/ai-catalog.json">
+    <link rel="service-doc" type="text/plain" href="https://boutiqueempresarial.com.br/llms.txt">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="BoutiqueEmp" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <title>Diagnóstico Gratuito | Boutique Empresarial</title>
+
+    <meta name="description"
+        content="Uma sessão individual de 45 minutos onde eu analiso a rotina da sua empresa de serviços, encontro onde a sua operação depende da sua supervisão.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://boutiqueempresarial.com.br/diagnostico">
+    <link rel="alternate" type="text/markdown" href="https://boutiqueempresarial.com.br/diagnostico.md">
+
+    <meta property="og:url" content="https://boutiqueempresarial.com.br/diagnostico" />
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Boutique Empresarial">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="Diagnóstico Gratuito | Boutique Empresarial">
+    <meta property="og:description"
+        content="Uma sessão individual de 45 minutos onde eu analiso a rotina da sua empresa de serviços, encontro onde a sua operação depende da sua supervisão.">
+    <meta property="og:image" content="https://boutiqueempresarial.com.br/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Diagnóstico Gratuito | Boutique Empresarial">
+    <meta name="twitter:description"
+        content="Uma sessão individual de 45 minutos onde eu analiso a rotina da sua empresa de serviços, encontro onde a sua operação depende da sua supervisão.">
+    <meta name="twitter:image" content="https://boutiqueempresarial.com.br/og-image.jpg">
+
+    <link rel="stylesheet" href="/style.css">
+
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://boutiqueempresarial.com.br/#organization","name":"Boutique Empresarial","url":"https://boutiqueempresarial.com.br/","logo":"https://boutiqueempresarial.com.br/boutiquelogo.webp","sameAs":["https://www.linkedin.com/company/boutiqueempresarial"]},{"@type":"ProfessionalService","@id":"https://boutiqueempresarial.com.br/#service","name":"Boutique Empresarial","url":"https://boutiqueempresarial.com.br/","logo":"https://boutiqueempresarial.com.br/boutiquelogo.webp","image":"https://boutiqueempresarial.com.br/og-image.jpg","description":"Arquitetura de Negócios que estrutura operações de empresas de serviço para que funcionem com estabilidade e autonomia, sem depender da fundadora no centro das decisões.","address":{"@type":"PostalAddress","streetAddress":"Rua do Estilo Barroco, 329","addressLocality":"São Paulo","addressRegion":"SP","postalCode":"04709-010","addressCountry":"BR"},"geo":{"@type":"GeoCoordinates","latitude":-23.632852,"longitude":-46.693603},"parentOrganization":{"@id":"https://boutiqueempresarial.com.br/#organization"}},{"@type":"WebSite","@id":"https://boutiqueempresarial.com.br/#website","url":"https://boutiqueempresarial.com.br/","name":"Boutique Empresarial","publisher":{"@id":"https://boutiqueempresarial.com.br/#organization"},"inLanguage":"pt-BR"},{"@type":"Person","@id":"https://boutiqueempresarial.com.br/#talita","name":"Talita Issei","worksFor":{"@id":"https://boutiqueempresarial.com.br/#organization"},"image":"https://boutiqueempresarial.com.br/fotos/talita-issei.webp","description":"Antes de analisar o funcionamento de pequenas e médias empresas de serviços, passei mais de 15 anos trabalhando em multinacionais como KPMG, Itaú, Vivo e Accenture. Há 5 anos, ajudo empresários a identificarem onde a operação falha para que o time consiga executar sem precisar da validação constante."},{"@type":"Service","@id":"https://boutiqueempresarial.com.br/diagnostico#diagnostico","name":"Diagnóstico Gratuito","serviceType":"Diagnóstico operacional","provider":{"@id":"https://boutiqueempresarial.com.br/#service"},"description":"Uma sessão individual de 45 minutos onde eu analiso a rotina da sua empresa de serviços, encontro onde a sua operação depende da sua supervisão e te aponto o que precisa ser ajustado primeiro.","audience":{"@type":"BusinessAudience","audienceType":"Empresas de serviços com equipe de 5 a 30 funcionários."},"offers":{"@type":"Offer","price":"0","priceCurrency":"BRL","availability":"https://schema.org/InStock","url":"https://boutiqueempresarial.com.br/diagnostico"}},{"@type":"WebPage","@id":"https://boutiqueempresarial.com.br/diagnostico#webpage","url":"https://boutiqueempresarial.com.br/diagnostico","name":"Diagnóstico Gratuito | Boutique Empresarial","isPartOf":{"@id":"https://boutiqueempresarial.com.br/#website"},"about":{"@id":"https://boutiqueempresarial.com.br/diagnostico#diagnostico"},"author":{"@id":"https://boutiqueempresarial.com.br/#talita"},"inLanguage":"pt-BR","dateModified":"2026-10-17T00:00:00-03:00","primaryImageOfPage":{"@type":"ImageObject","url":"https://boutiqueempresarial.com.br/og-image.jpg","width":1200,"height":630},"speakable":{"@type":"SpeakableSpecification","cssSelector":["h1",".lead"]}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Início","item":"https://boutiqueempresarial.com.br/"},{"@type":"ListItem","position":2,"name":"Diagnóstico Gratuito","item":"https://boutiqueempresarial.com.br/diagnostico"}]}]}
+    </script>
+
+    <style>
+        /* LP do Diagnóstico com checkout — docs/specs/pages/diagnostico.md §3.
+           Mesma linguagem da home, acabamento de laudo: filetes, numerais em
+           Playfair, uma única seção invertida. Sem movimento não solicitado.
+           Os seletores `main …` e a dupla classe existem pelo mesmo motivo da
+           home: o Vite emite este bloco antes do style.css no bundle. */
+        .container.container--wide {
+            max-width: 1200px;
+        }
+
+        main section {
+            padding: clamp(72px, 11vh, 136px) 0;
+        }
+
+        main h1 {
+            font-size: clamp(2.375rem, 4.6vw, 3.75rem);
+            line-height: 1.08;
+            letter-spacing: -0.025em;
+            text-wrap: balance;
+            margin-bottom: 32px;
+        }
+
+        main h2 {
+            font-size: clamp(1.75rem, 3vw, 2.5rem);
+            line-height: 1.2;
+            text-wrap: balance;
+            margin-bottom: 24px;
+        }
+
+        main h3 {
+            font-size: 1.375rem;
+            line-height: 1.3;
+            text-wrap: balance;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            font-size: 1.0625rem;
+            color: var(--text-secondary);
+            max-width: 66ch;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        .lead {
+            font-size: 1.25rem;
+            line-height: 1.7;
+            max-width: 52ch;
+        }
+
+        /* Filete ouro — o único ornamento recorrente da página. */
+        .filete {
+            display: block;
+            width: 56px;
+            height: 1px;
+            background: var(--gold-subtle);
+            margin-bottom: 32px;
+        }
+
+        /* ── Header ─────────────────────────────────────────────────────────────── */
+        header {
+            padding: 32px 0;
+        }
+
+        .logo {
+            font-family: var(--font-playfair);
+            font-size: clamp(1.05rem, 4vw, 1.35rem);
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            text-decoration: none;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        /* ── Botão ─────────────────────────────────────────────────────────────── */
+        .btn {
+            display: inline-block;
+            padding: 18px 40px;
+            background-color: var(--text-primary);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            letter-spacing: 0.02em;
+            border-radius: 2px;
+            border: 1px solid var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            background-color: transparent;
+            color: var(--text-primary);
+        }
+
+        /* ── Hero ───────────────────────────────────────────────────────────────── */
+        .hero {
+            padding-top: clamp(40px, 7vh, 88px);
+        }
+
+        .hero-grid {
+            display: grid;
+        }
+
+        .hero-cta {
+            margin-top: 40px;
+        }
+
+        /* ── Análise: três achados como linhas de laudo ─────────────────────────── */
+        .analise {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .falhas {
+            list-style: none;
+            margin-top: 56px;
+            border-top: 1px solid var(--text-primary);
+        }
+
+        .falha {
+            display: grid;
+            gap: 12px 48px;
+            padding: 40px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .falha-numero {
+            font-family: var(--font-playfair);
+            font-size: 1.125rem;
+            color: var(--gold-text);
+            letter-spacing: 0.08em;
+        }
+
+        .falha h3 {
+            margin-bottom: 0;
+        }
+
+        .fecho {
+            margin-top: 64px;
+            padding-left: 28px;
+            border-left: 1px solid var(--gold-subtle);
+        }
+
+        .fecho p {
+            font-size: 1.1875rem;
+            line-height: 1.75;
+            color: var(--text-primary);
+            max-width: 62ch;
+        }
+
+        /* ── Autoridade: a única seção invertida ───────────────────────────────── */
+        .autoridade {
+            background-color: var(--text-primary);
+            color: var(--bg-color);
+        }
+
+        .autoridade h2,
+        .autoridade .autoridade-nome {
+            color: var(--bg-color);
+        }
+
+        .autoridade p {
+            color: #cfcabf;
+        }
+
+        .autoridade-grid {
+            display: grid;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .autoridade figure {
+            margin: 0;
+        }
+
+        .autoridade img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .autoridade-nome {
+            font-family: var(--font-playfair);
+            font-size: 2rem;
+            line-height: 1.2;
+            margin-bottom: 24px;
+        }
+
+        .autoridade-nome::after {
+            content: "";
+            display: block;
+            width: 56px;
+            height: 1px;
+            background: var(--gold-subtle);
+            margin-top: 20px;
+        }
+
+        /* ── Perfil: três colunas com filete ouro no topo ──────────────────────── */
+        .perfil-lista {
+            list-style: none;
+            display: grid;
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        .perfil-lista li {
+            padding-top: 24px;
+            border-top: 1px solid var(--gold-subtle);
+            font-size: 1.0625rem;
+            color: var(--text-secondary);
+        }
+
+        /* ── Seleção: o "3" é a informação, em escala de capa ──────────────────── */
+        .selecao {
+            background-color: #fff;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .selecao-grid {
+            display: grid;
+            gap: 24px 64px;
+            align-items: end;
+        }
+
+        .selecao-numero {
+            font-family: var(--font-playfair);
+            font-size: clamp(6rem, 14vw, 10rem);
+            line-height: 0.85;
+            color: var(--gold-subtle);
+        }
+
+        .passos {
+            list-style: none;
+            counter-reset: passo;
+            display: grid;
+            gap: 32px;
+            margin-top: 64px;
+        }
+
+        .passos li {
+            counter-increment: passo;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 1.0625rem;
+            color: var(--text-secondary);
+        }
+
+        .passos li::before {
+            content: counter(passo, decimal-leading-zero);
+            display: block;
+            font-family: var(--font-playfair);
+            font-size: 1.25rem;
+            color: var(--gold-text);
+            margin-bottom: 8px;
+        }
+
+        .selecao-cta {
+            margin-top: 56px;
+        }
+
+        /* ── Footer ─────────────────────────────────────────────────────────────── */
+        footer {
+            padding: 56px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        footer p {
+            color: inherit;
+            font-size: inherit;
+            max-width: none;
+            margin-bottom: 8px;
+        }
+
+        .footer-legal {
+            margin-top: 20px;
+            font-size: 0.8125rem;
+        }
+
+        .footer-legal a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 10px;
+            display: inline-block;
+        }
+
+        .footer-legal a:hover,
+        .footer-legal a:focus-visible {
+            color: var(--text-primary);
+        }
+
+        /* ── CTA fixa no mobile — mesma regra da home ──────────────────────────── */
+        .cta-fixa {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            .cta-fixa {
+                display: block;
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 20;
+                padding: 12px 16px;
+                background: var(--bg-color);
+                border-top: 1px solid var(--border-color);
+            }
+
+            .cta-fixa .btn {
+                display: block;
+                text-align: center;
+                padding: 16px 20px;
+            }
+
+            body {
+                padding-bottom: 88px;
+            }
+        }
+
+        /* ── Desktop ────────────────────────────────────────────────────────────── */
+        @media (min-width: 900px) {
+            .hero-grid {
+                grid-template-columns: repeat(12, 1fr);
+                column-gap: 32px;
+            }
+
+            .hero-main {
+                grid-column: 1 / 10;
+            }
+
+            .falha {
+                grid-template-columns: 64px 5fr 7fr;
+                align-items: baseline;
+            }
+
+            .autoridade-grid {
+                grid-template-columns: 5fr 7fr;
+                column-gap: 64px;
+                align-items: center;
+            }
+
+            .perfil-lista,
+            .passos {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .selecao-grid {
+                grid-template-columns: auto 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1469019395044653&ev=PageView&noscript=1"
+    /></noscript>
+    <a href="#conteudo" class="skip-link">Pular para o conteúdo principal</a>
+
+    <header>
+        <div class="container container--wide">
+            <a href="/" class="logo">Boutique Empresarial<span style="color:var(--gold-subtle)">.</span></a>
+        </div>
+    </header>
+
+    <main id="conteudo">
+        <section class="hero">
+            <div class="container container--wide hero-grid">
+                <div class="hero-main">
+                    <span class="filete" aria-hidden="true"></span>
+                    <h1>O motivo exato pelo qual seu time trava ou o serviço perde a qualidade quando você não está do lado.</h1>
+                    <p class="lead">Uma sessão individual de 45 minutos onde eu analiso a rotina da sua empresa de
+                        serviços, encontro onde a sua operação depende da sua supervisão e te aponto o que precisa ser
+                        ajustado primeiro.</p>
+                    <p class="hero-cta"><a href="/formulario.html" class="btn" data-checkout="hero">Solicitar Diagnóstico Gratuito</a></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="analise">
+            <div class="container container--wide">
+                <h2>O que eu analiso na sua sessão de diagnóstico</h2>
+                <p>Durante a nossa reunião, eu investigo o funcionamento interno da sua empresa para encontrar a causa
+                    de três falhas que afetam a sua entrega:</p>
+
+                <ul class="falhas">
+                    <li class="falha">
+                        <span class="falha-numero" aria-hidden="true">I</span>
+                        <h3>O ponto exato onde a qualidade do serviço cai</h3>
+                        <p>Eu olho para o momento em que o funcionário executa a tarefa sem você do lado, para te
+                            mostrar por que você precisa refazer o trabalho ou corrigir o relatório antes de mandar para
+                            o cliente.</p>
+                    </li>
+                    <li class="falha">
+                        <span class="falha-numero" aria-hidden="true">II</span>
+                        <h3>O motivo de o time não tomar decisões sozinho</h3>
+                        <p>Eu mapeio quais perguntas simples chegam para você ao longo do dia, para identificar por que
+                            o seu funcionário prefere parar a produção e esperar a sua resposta em vez de resolver
+                            direto.</p>
+                    </li>
+                    <li class="falha">
+                        <span class="falha-numero" aria-hidden="true">III</span>
+                        <h3>A falha no acompanhamento das tarefas</h3>
+                        <p>Eu avalio como os prazos e os pedidos do cliente são anotados no dia a dia, para te apontar
+                            por que os detalhes da entrega são esquecidos se você não mandar uma mensagem cobrando.</p>
+                    </li>
+                </ul>
+
+                <div class="fecho">
+                    <p>Ao final do encontro, você recebe o mapeamento do que precisa ser corrigido na sua operação para
+                        o time manter a qualidade sem a sua presença constante. Se fizer sentido para a sua empresa, eu
+                        te apresento como funciona o Programa de Acompanhamento da Boutique Empresarial para fazer essas
+                        correções.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="autoridade">
+            <div class="container container--wide autoridade-grid">
+                <figure>
+                    <img src="/fotos/talita-issei.webp" width="800" height="1000" loading="lazy"
+                        alt="Talita Issei, de blusa branca de um ombro só, sorrindo, sentada em uma poltrona clara.">
+                </figure>
+                <div>
+                    <h2>Quem conduz a sua análise</h2>
+                    <p class="autoridade-nome">Talita Issei</p>
+                    <p>Antes de analisar o funcionamento de pequenas e médias empresas de serviços, passei mais de 15
+                        anos trabalhando em multinacionais como KPMG, Itaú, Vivo e Accenture. Há 5 anos, ajudo
+                        empresários a identificarem onde a operação falha para que o time consiga executar sem precisar
+                        da validação constante.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="perfil">
+            <div class="container container--wide">
+                <h2>Para quem é a sessão</h2>
+                <ul class="perfil-lista">
+                    <li>Empresas de serviços com equipe de 5 a 30 funcionários.</li>
+                    <li>Operações ativas onde o empresário precisa olhar o trabalho do time para garantir que o cliente
+                        receba o serviço sem erros.</li>
+                    <li>Empresários que querem descobrir o motivo de a equipe não rodar sozinha para conseguirem focar no
+                        crescimento do negócio.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="selecao">
+            <div class="container container--wide">
+                <div class="selecao-grid">
+                    <span class="selecao-numero" aria-hidden="true">3</span>
+                    <div>
+                        <h2>Como funciona a seleção</h2>
+                        <p>Por ser uma análise individual conduzida diretamente por mim, eu libero apenas 3 vagas por
+                            semana.</p>
+                    </div>
+                </div>
+
+                <ol class="passos">
+                    <li>Você preenche as perguntas da aplicação abaixo.</li>
+                    <li>Eu analiso se o momento da sua empresa se encaixa no perfil desta análise.</li>
+                    <li>Se a sua aplicação for aprovada, eu entro em contato em até 24 horas úteis para agendar o
+                        horário comigo.</li>
+                </ol>
+
+                <p class="selecao-cta"><a href="/formulario.html" class="btn" data-checkout="selecao">Solicitar Diagnóstico Gratuito</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Boutique Empresarial™ &copy; 2026</p>
+            <p>Quando tudo depende de você, o crescimento vira peso.<br>Nós transformamos isso em estrutura.</p>
+            <div class="footer-legal">
+                <a href="/privacidade.html">Política de Privacidade</a>
+                <a href="/termos.html">Termos de Uso</a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="cta-fixa">
+        <a href="/formulario.html" class="btn" data-checkout="fixa">Solicitar Diagnóstico Gratuito</a>
+    </div>
+
+    <!-- CTA → checkout Hotmart com rastreio — docs/specs/pages/diagnostico.md §4.
+         DOMContentLoaded, não execução imediata: attribution.js é módulo e só
+         define BE_ATTR depois do parse; módulos rodam antes desse evento. -->
+    <script>
+        // Link do checkout Hotmart. Vazio = o href estático (/formulario.html) continua valendo.
+        const CHECKOUT = '';
+        const UTM = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const url = new URLSearchParams(location.search);
+            const last = window.BE_ATTR?.last ?? {};
+            const valor = (k) => url.get(k) || last[k] || '';
+            const rastreio = {};
+            for (const k of [...UTM, 'fbclid', 'gclid']) if (valor(k)) rastreio[k] = valor(k);
+            const sck = UTM.map(valor).join('|');
+
+            for (const a of document.querySelectorAll('a[data-checkout]')) {
+                const destino = new URL(CHECKOUT || a.getAttribute('href'), location.origin);
+                for (const [k, v] of Object.entries(rastreio)) destino.searchParams.set(k, v);
+                destino.searchParams.set('src', a.dataset.checkout);
+                if (sck.replace(/\|/g, '')) destino.searchParams.set('sck', sck);
+                a.href = destino.origin === location.origin ? destino.pathname + destino.search : destino.href;
+            }
+        });
+    </script>
+
+</body>
+
+</html>

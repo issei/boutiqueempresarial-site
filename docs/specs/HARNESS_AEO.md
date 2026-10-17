@@ -183,6 +183,8 @@ Toda página indexável recebe, imediatamente antes do `<footer>`, um bloco deli
 **exceto `formulario.html`**. A página de conversão mantém o foco no preenchimento e não
 exibe a seção “Perguntas e Respostas”; por isso, também não declara `FAQPage` no JSON-LD.
 Essa exceção não dispensa os demais nós JSON-LD exigidos em §B2.
+`diagnostico.html` (LP com checkout) tem a mesma exceção: a copy é literal e o bloco exigiria
+texto que não está nela — `pages/diagnostico.md` §5.
 
 Nas demais páginas, o bloco é:
 
