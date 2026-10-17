@@ -15,6 +15,10 @@ A Boutique Empresarial não é uma consultoria tradicional. Somos arquitetos de 
   - **Conceitos Chave**: Diagnóstico Gratuito, sessão sem custo de 45 minutos, três vagas por semana, decisões que ainda dependem da fundadora, falhas de entrega e retrabalho, informação perdida entre WhatsApp e rotina indefinida.
   - **Público-Alvo**: Fundadoras de empresas de serviço com equipe a partir de 5 colaboradores, operação ativa e carteira de clientes em expansão.
 
+- [Diagnóstico Gratuito](https://boutiqueempresarial.com.br/diagnostico)
+  - **Propósito**: Página de solicitação do Diagnóstico Gratuito — sessão individual de 45 minutos conduzida por Talita Issei, com três vagas por semana. Companion: [diagnostico.md](https://boutiqueempresarial.com.br/diagnostico.md).
+  - **Público-Alvo**: Empresas de serviços com equipe de 5 a 30 funcionários.
+
 - [Política de Privacidade](https://boutiqueempresarial.com.br/privacidade.html)
   - **Propósito**: Detalhar a governança de dados, conformidade com LGPD e diretrizes da Meta Platforms (Ads e Pixel).
   - **Destaque**: Instruções claras de exclusão de dados (Data Deletion Callback) para usuários.

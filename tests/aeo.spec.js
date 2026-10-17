@@ -11,6 +11,9 @@ const pages = globSync('src/*.html').map((f) => {
   return { slug, url: slug === 'index' ? '/' : `/${slug}.html` };
 });
 
+// Páginas de conversão sem bloco AEO (§B3): o bloco exigiria texto fora da copy.
+const SEM_BLOCO_AEO = ['formulario', 'diagnostico'];
+
 const normalizar = (s) => s.replace(/\s+/g, ' ').trim();
 
 const lerGrafo = (page) =>
@@ -61,8 +64,8 @@ for (const { slug, url } of pages) {
       const bruto = await lerGrafo(page);
       const grafo = JSON.parse(bruto);
       const faq = (grafo['@graph'] ?? []).find((n) => n['@type'] === 'FAQPage');
-      if (slug === 'formulario') {
-        expect(faq, 'formulario: não deve declarar FAQPage sem seção visível').toBeUndefined();
+      if (SEM_BLOCO_AEO.includes(slug)) {
+        expect(faq, `${slug}: não deve declarar FAQPage sem seção visível`).toBeUndefined();
         await expect(page.locator('.aeo')).toHaveCount(0);
         return;
       }
@@ -89,7 +92,7 @@ for (const { slug, url } of pages) {
       await page.goto(url);
       if (!(await indexavel(page))) return;
 
-      if (slug === 'formulario') {
+      if (SEM_BLOCO_AEO.includes(slug)) {
         await expect(page.locator('.aeo')).toHaveCount(0);
         return;
       }

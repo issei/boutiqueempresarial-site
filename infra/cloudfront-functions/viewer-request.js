@@ -29,6 +29,8 @@ var MARKDOWN_MAP = {
   '/': '/index.md',
   '/index': '/index.md',
   '/index.html': '/index.md',
+  '/diagnostico': '/diagnostico.md',
+  '/diagnostico.html': '/diagnostico.md',
   '/auth': '/auth.md',
   '/auth.md': '/auth.md',
   '/llms': '/llms.txt',
