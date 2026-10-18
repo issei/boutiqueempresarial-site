@@ -2,6 +2,7 @@
 
 **Status:** Implementada (branch `feat/pagina-diagnostico-gerente`), com marcadores — não vai ao ar
 antes das pendências do §7
+**Revisão:** layout e copy revisados em 2026-10-18 conforme [`design/diagnostico-ajustes-lp.md`](../design/diagnostico-ajustes-lp.md); a tabela do §3 abaixo é do layout anterior onde diferir dele.
 **Data:** 2026-10-18
 **Fonte:** "Briefing da landing page para o desenvolvedor v2" (Talita, 2026-10-17), seção "Página do
 gerente (só público quente)".
@@ -33,7 +34,7 @@ Ajustes fora do texto do briefing, para a página não contradizer a si mesma:
 - **Mockup do bloco 7:** o rótulo do terceiro grupo acompanha o cartão ("É a sua função de gerente").
 
 Marcadores mantidos: `[X]` (parcelas, vagas), `[número de suporte]`, `[CONFIRMAR: se você emite nota
-fiscal para empresa.]`, `CNPJ [CNPJ]`.
+fiscal para empresa.]`.
 
 ## 3. Layout
 
@@ -74,7 +75,7 @@ do link divulgado (ex.: `utm_source=instagram&utm_medium=stories`).
 
 ## 7. Pendências antes de ir ao ar
 
-As do §7 da `diagnostico.md` (checkout, parcelas, vagas, suporte, CNPJ, assets, CAPI) e mais:
+As do §7 da `diagnostico.md` (checkout, parcelas, vagas, suporte, assets, CAPI) e mais:
 falas de outros gerentes do público quente no 5b (hoje são de um gerente só) e permissão para
 usá-las · linha de abertura do 5b · resposta de "A empresa pode pagar?" (nota fiscal para empresa).
 

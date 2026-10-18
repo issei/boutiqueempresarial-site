@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test';
 
 // Página de venda do diagnóstico — docs/specs/pages/diagnostico.md §4 e §6.
 const CTA = 'Quero descobrir o que parar de aprovar';
+const FIXA = 'Quero descobrir · R$ 197';
+const COM_MICRO = ['topo', 'para-quem', 'recebe', 'caminhos', 'ps'];
 const MICRO = 'R$ 197 · resultado completo em até 2 dias úteis · garantia de 7 dias';
 const POSICOES = ['topo', 'para-quem', 'recebe', 'caminhos', 'oferta', 'ps', 'fixa'];
 const CHECKOUT = 'https://pay.hotmart.com/TESTE';
@@ -21,13 +23,13 @@ const comCheckout = (page) =>
     });
 
 test.describe('diagnostico', () => {
-    test('sete CTAs, mesmo rótulo, microtexto embaixo de cada um', async ({ page }) => {
+    test('sete CTAs com o mesmo rótulo (a barra fixa tem o seu), microtexto nos cinco da página', async ({ page }) => {
         await page.goto('/diagnostico.html');
         const lista = await ctas(page);
         expect(lista.map((c) => c.src)).toEqual(POSICOES);
-        for (const c of lista) expect(c.texto).toBe(CTA);
+        for (const c of lista) expect(c.texto).toBe(c.src === 'fixa' ? FIXA : CTA);
         const micros = await page.locator('.micro').allTextContents();
-        expect(micros).toEqual(POSICOES.map(() => MICRO));
+        expect(micros).toEqual(COM_MICRO.map(() => MICRO));
     });
 
     test('sem link de saída além do checkout, da página do gerente e dos documentos legais', async ({ page }) => {
@@ -84,7 +86,27 @@ test.describe('diagnostico', () => {
         await page.goto('/diagnostico.html');
         const barra = page.locator('.cta-fixa');
         await expect(barra).toBeHidden();
-        await page.locator('.para-quem').scrollIntoViewIfNeeded();
+        await page.locator('.soltar').scrollIntoViewIfNeeded();
         await expect(barra).toBeVisible();
+    });
+
+    test('barra fixa some enquanto outro botão ou a oferta estão na tela', async ({ page }) => {
+        await page.setViewportSize({ width: 375, height: 667 });
+        await page.goto('/diagnostico.html');
+        const barra = page.locator('.cta-fixa');
+        await page.locator('.soltar').scrollIntoViewIfNeeded();
+        await expect(barra).toBeVisible();
+        await page.locator('a[data-checkout="recebe"]').scrollIntoViewIfNeeded();
+        await expect(barra).toBeHidden();
+        await page.locator('#oferta').scrollIntoViewIfNeeded();
+        await expect(barra).toBeHidden();
+    });
+
+    test('checklist marca ao tocar e a página não tem marcador [X]', async ({ page }) => {
+        await page.goto('/diagnostico.html');
+        const item = page.locator('.checklist label').first();
+        await item.click();
+        await expect(item.locator('input')).toBeChecked();
+        expect(await page.locator('main').innerText()).not.toContain('[X]');
     });
 });
