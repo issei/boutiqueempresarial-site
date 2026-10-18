@@ -4,7 +4,7 @@
 antes das pendências do §7
 **Data:** 2026-10-17
 **Fonte:** "Briefing da landing page para o desenvolvedor v2" (Talita, 2026-10-17) — versão do
-**dono**. A página do gerente é outra página, fora deste spec.
+**dono**. A página do gerente é outra página: [`diagnostico-gerente.md`](diagnostico-gerente.md).
 
 ## 1. Informações básicas
 
@@ -32,13 +32,14 @@ instrução de layout do bloco 7.
 Fora do corpo de copy: skip link, `alt` das fotos, rodapé (copyright, CNPJ, links legais), selo
 "Garantia de 7 dias", rótulos `Pix`/`Cartão`, mockup do resultado (`Exemplo`, rótulos dos grupos).
 
-Marcadores mantidos como no briefing: `[X]` (parcelas, vagas), `[número de suporte]`, `[link para
-a página do gerente]`, `CNPJ [CNPJ]`.
+Marcadores mantidos como no briefing: `[X]` (parcelas, vagas), `[número de suporte]`, `CNPJ [CNPJ]`.
+O `[link para a página do gerente]` virou o link para `/diagnostico-gerente.html`, com a URL como texto.
 
 ## 3. Layout
 
 Mobile primeiro (375 px), corpo ≥ 18 px, botão de largura total e ≥ 56 px no celular. Sem menu,
-sem logo-link, sem links de saída: só o checkout e, no rodapé, privacidade e termos.
+sem logo-link, sem links de saída: só o checkout, o link da página do gerente no FAQ e, no rodapé,
+privacidade e termos.
 
 | Bloco | Tratamento |
 | :-- | :-- |
@@ -90,7 +91,7 @@ Botão é o único elemento em `--accent-color`.
 
 `tests/diagnostico.spec.js`:
 1. Sete botões com o rótulo literal, na ordem do §4, e o microtexto embaixo de cada um.
-2. Nenhum link além dos botões e de privacidade/termos.
+2. Nenhum link além dos botões, da página do gerente e de privacidade/termos.
 3. Sem `CHECKOUT`, os botões apontam para `#oferta`, sem rastreio.
 4. Com `CHECKOUT` (injetado no teste): UTMs da URL, `src` e `sck`; fallback para o cookie `be_attr`;
    visita direta só com `src`.
@@ -102,7 +103,7 @@ Botão é o único elemento em `--accent-color`.
 ## 7. Pendências antes de ir ao ar (do briefing)
 
 Link do checkout (Hotmart, Pix e cartão) · número de parcelas e de vagas · número de WhatsApp de
-suporte · link da página do gerente · CNPJ · permissão das clientes para as frases do bloco 5b ·
+suporte · CNPJ · permissão das clientes para as frases do bloco 5b ·
 fotos definitivas, mockup do resultado, tela de WhatsApp, ícones e selo do designer · assinatura
 manuscrita · CAPI e `Purchase` funcionando · compra de teste de ponta a ponta · republicar a
 CloudFront Function.

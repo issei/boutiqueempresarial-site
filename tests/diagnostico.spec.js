@@ -30,11 +30,11 @@ test.describe('diagnostico', () => {
         expect(micros).toEqual(POSICOES.map(() => MICRO));
     });
 
-    test('sem link de saída além do checkout e dos documentos legais', async ({ page }) => {
+    test('sem link de saída além do checkout, da página do gerente e dos documentos legais', async ({ page }) => {
         await page.goto('/diagnostico.html');
         const hrefs = await page.locator('main a[href]:not([data-checkout]), footer a[href]')
             .evaluateAll((els) => els.map((e) => e.getAttribute('href')));
-        expect(hrefs.sort()).toEqual(['/privacidade.html', '/termos.html']);
+        expect(hrefs.sort()).toEqual(['/diagnostico-gerente.html', '/privacidade.html', '/termos.html']);
     });
 
     test('sem link configurado, o CTA leva à oferta, sem rastreio', async ({ page }) => {

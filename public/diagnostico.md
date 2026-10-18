@@ -151,7 +151,7 @@ chega no seu WhatsApp e no seu e-mail. Se não encontrar, chame no WhatsApp [nú
 der errado, dá para arrumar. O que ainda daria errado fica com você até ter estrutura.
 
 **Eu sou gerente, não dono. Serve para mim?** Serve, e tem uma página feita para o seu dia a dia de
-gerente: [link para a página do gerente].
+gerente: [boutiqueempresarial.com.br/diagnostico-gerente](https://boutiqueempresarial.com.br/diagnostico-gerente).
 
 **Meu sócio pode participar?** Pode. Ele é bem-vindo nos 30 minutos.
 
