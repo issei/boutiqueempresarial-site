@@ -3,6 +3,16 @@
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "graphicle": {
+      "command": "graphicle",
+      "args": [
+        "mcp",
+        "--project",
+        ".",
+        "--tools",
+        "essentials"
+      ]
     }
   }
 }

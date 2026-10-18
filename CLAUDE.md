@@ -102,3 +102,9 @@ Marque a spec em `docs/specs/design/` como implementada, com link do PR.
 | :-- | :-- | :-- |
 | Claude Code | `/design-sync` | Importa `design-system/` e a produção real pro Claude Design |
 | Claude Design | Export → Handoff to Claude Code | Envia o design pronto pro Code, com o prompt da seção 5 |
+
+<!-- graphicle:start (added by graphicle setup; graphicle disconnect removes it) -->
+## Graphicle
+When you do not yet know where the code for a task is, who calls it or why it was written that way, ask the `graphicle` MCP server before searching files by hand: `query_graph` or `recall_project` with the question, then `get_node` and `get_neighbors` for one symbol; answers cite file and lines.
+Without the server, run `graphicle context "<question>"` in a terminal.
+<!-- graphicle:end -->
