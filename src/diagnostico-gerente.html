@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Facebook Domain Verification -->
+    <meta name="facebook-domain-verification" content="mwj9leq8r1nzwxtlmfc5ntempn8wst" />
+
+    <!-- Consent Mode v2 (padrão negado) — precede Pixel e GA4 de propósito: um
+         módulo é adiado e chegaria tarde. Interface em /js/cookie-consent.js;
+         contrato em docs/specs/design/cookie-consent.md -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        (function () {
+            var cat = null;
+            try {
+                var raw = JSON.parse(localStorage.getItem("be_consent") || "null");
+                if (raw && raw.v === 1) cat = raw.cat;
+            } catch (e) { /* modo privado: trata como quem ainda não decidiu */ }
+            window.__ccMarketing = !!(cat && cat.marketing);
+            gtag("consent", "default", {
+                ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied",
+                analytics_storage: "denied", functionality_storage: "granted",
+                security_storage: "granted", wait_for_update: 500
+            });
+            if (cat) {
+                var s = function (on) { return on ? "granted" : "denied"; };
+                gtag("consent", "update", {
+                    ad_storage: s(cat.marketing), ad_user_data: s(cat.marketing),
+                    ad_personalization: s(cat.marketing), analytics_storage: s(cat.analytics)
+                });
+            }
+        })();
+    </script>
+    <script type="module" src="/js/cookie-consent.js"></script>
+    <script type="module" src="/js/attribution.js"></script>
+    <!-- Meta Pixel Code 2026 Implementation -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    var go=function(){s.parentNode.insertBefore(t,s)};
+    f.addEventListener('load',function(){'requestIdleCallback' in f?f.requestIdleCallback(go):setTimeout(go,1)})}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+
+    // Previne disparos fantasmas de rotas virtuais (Padrão 2026)
+    fbq.disablePushState = true;
+
+    // Ativa o Processamento Limitado de Dados (LDU) para LGPD/CCPA
+    // Pixel enfileira os eventos enquanto revogado e os libera no grant.
+    fbq('consent', window.__ccMarketing ? 'grant' : 'revoke');
+    fbq('dataProcessingOptions', ['LDU'], 1, 1000);
+
+    fbq('init', '1469019395044653');
+    fbq('track', 'PageView');
+    // Página de venda: ViewContent no carregamento, InitiateCheckout no clique
+    // do CTA (script no fim do body). Purchase é da plataforma de checkout.
+    fbq('track', 'ViewContent', { content_name: 'Diagnóstico (gerente)', value: 197, currency: 'BRL' });
+    </script>
+    <!-- End Meta Pixel Code -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8HNXV7KTY9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-8HNXV7KTY9');
+    </script>
+
+    <!-- Descoberta por agentes de IA (RFC 8288/9727/9728) - docs/AGENT_READINESS.md -->
+    <link rel="api-catalog" href="https://boutiqueempresarial.com.br/.well-known/api-catalog">
+    <link rel="service-desc" type="application/json" href="https://boutiqueempresarial.com.br/.well-known/ai-catalog.json">
+    <link rel="service-doc" type="text/plain" href="https://boutiqueempresarial.com.br/llms.txt">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="BoutiqueEmp" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <title>O que parar de aprovar no seu time | Boutique Empresarial</title>
+
+    <meta name="description"
+        content="Responda em 20 minutos e descubra o que você pode parar de aprovar no seu time sem perder o controle do resultado que cobram de você.">
+    <!-- Só público quente (stories, lista, WhatsApp), nunca anúncio frio: fora da busca.
+         docs/specs/pages/diagnostico-gerente.md §5 -->
+    <meta name="robots" content="noindex, follow">
+
+    <meta property="og:url" content="https://boutiqueempresarial.com.br/diagnostico-gerente" />
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Boutique Empresarial">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="O que parar de aprovar no seu time | Boutique Empresarial">
+    <meta property="og:description"
+        content="Responda em 20 minutos e descubra o que você pode parar de aprovar no seu time sem perder o controle do resultado que cobram de você.">
+    <meta property="og:image" content="https://boutiqueempresarial.com.br/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="O que parar de aprovar no seu time | Boutique Empresarial">
+    <meta name="twitter:description"
+        content="Responda em 20 minutos e descubra o que você pode parar de aprovar no seu time sem perder o controle do resultado que cobram de você.">
+    <meta name="twitter:image" content="https://boutiqueempresarial.com.br/og-image.jpg">
+
+    <link rel="preload" as="image" href="/fotos/talita-issei.webp" fetchpriority="high">
+    <link rel="stylesheet" href="/style.css">
+
+
+    <style>
+        /* Página de venda do Diagnóstico (R$ 197), versão do gerente — docs/specs/pages/diagnostico-gerente.md.
+           Cópia de diagnostico.html: layout e regras iguais, só a copy muda.
+           Mobile primeiro (375 px). Sem menu e sem links de saída: a única saída
+           é o checkout. Botão é o único elemento em --accent-color; as três cores
+           suaves dos grupos são o desvio registrado em adr-diagnostico-cores-grupos.md.
+           Os seletores `main …` existem pelo mesmo motivo da home: o Vite emite
+           este bloco antes do style.css no bundle. */
+        :root {
+            --grupo-verde: #e4ece1;
+            --grupo-amarelo: #f4ead0;
+            --grupo-azul: #e1e9f1;
+            --papel: #fff;
+        }
+
+        body {
+            font-size: 1.125rem;
+        }
+
+        .vh {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        main section {
+            padding: 64px 0;
+        }
+
+        main h1 {
+            font-size: clamp(1.75rem, 7.4vw, 3.5rem);
+            line-height: 1.14;
+            letter-spacing: -0.02em;
+            text-wrap: balance;
+            margin-bottom: 16px;
+        }
+
+        main h2 {
+            font-size: clamp(1.625rem, 5.6vw, 2.5rem);
+            line-height: 1.2;
+            text-wrap: balance;
+            margin-bottom: 24px;
+        }
+
+        main h3 {
+            font-size: 1.25rem;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        main p {
+            font-size: 1.125rem;
+            line-height: 1.65;
+            color: var(--text-secondary);
+            max-width: 60ch;
+            margin-bottom: 1rem;
+        }
+
+        main p:last-child {
+            margin-bottom: 0;
+        }
+
+        main ul,
+        main ol {
+            list-style: none;
+        }
+
+        /* Destaque: um por tela. Playfair, maior, cor primária. */
+        main p.destaque {
+            font-family: var(--font-playfair);
+            font-size: clamp(1.375rem, 4.8vw, 1.875rem);
+            line-height: 1.3;
+            color: var(--text-primary);
+            text-wrap: balance;
+        }
+
+        .destaque strong {
+            font-weight: 400;
+        }
+
+        .rotulo {
+            display: block;
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .ico {
+            width: 22px;
+            height: 22px;
+            flex: none;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.75;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .papel {
+            background: var(--papel);
+        }
+
+        /* ── Botão: a única cor de destaque, só aqui ───────────────────────────── */
+        .cta {
+            margin-top: 32px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 56px;
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--accent-color);
+            color: #fff;
+            border: 1px solid var(--accent-color);
+            border-radius: 4px;
+            font-size: 1.0625rem;
+            font-weight: 500;
+            line-height: 1.3;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            background: transparent;
+            color: var(--accent-color);
+        }
+
+        main p.micro,
+        .micro {
+            margin: 10px 0 0;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: none;
+        }
+
+        /* ── 1 · Topo: título, subtítulo, botão e microtexto na primeira tela ─── */
+        main .topo {
+            padding: 24px 0 40px;
+        }
+
+        .topo-cabeca {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .retrato {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: 53% 20%;
+            flex: none;
+        }
+
+        main .topo .rotulo {
+            margin: 0;
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .topo h1 em {
+            font-style: normal;
+            color: var(--gold-text);
+        }
+
+        .topo .cta {
+            margin-top: 20px;
+        }
+
+        /* ── 2 · A cena ───────────────────────────────────────────────────────── */
+        .cena-grid {
+            display: grid;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .celular {
+            width: 240px;
+            margin: 0 auto;
+            padding: 14px 12px 22px;
+            background: #1f1f1f;
+            border-radius: 32px;
+            box-shadow: 0 18px 40px rgba(31, 31, 31, 0.14);
+        }
+
+        .celular-tela {
+            background: #efe9de;
+            border-radius: 22px;
+            padding: 18px 12px 22px;
+            font-size: 0.8125rem;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+
+        .celular-hora {
+            text-align: center;
+            font-family: var(--font-playfair);
+            font-size: 2.25rem;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .notif {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-top: 8px;
+            box-shadow: 0 1px 2px rgba(31, 31, 31, 0.08);
+        }
+
+        .notif b {
+            display: block;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .notif--pilha {
+            box-shadow: 0 1px 2px rgba(31, 31, 31, 0.08), 0 6px 0 -3px rgba(255, 255, 255, 0.7), 0 11px 0 -6px rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+        }
+
+        main .cena p.destaque {
+            margin: 24px 0;
+        }
+
+        /* ── 3, 5 e 12 · Listas com ícone ─────────────────────────────────────── */
+        .lista-icone li {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 14px 0;
+            font-size: 1.125rem;
+            line-height: 1.55;
+            color: var(--text-primary);
+        }
+
+        .lista-icone li + li {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .lista-icone .ico {
+            margin-top: 3px;
+            color: var(--gold-text);
+        }
+
+        .lista-icone--x .ico {
+            color: var(--text-secondary);
+        }
+
+        .lista-discreta li {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            padding: 10px 0;
+        }
+
+        main .desconfiava p.destaque {
+            margin-top: 32px;
+        }
+
+        /* ── 4 · Por que você não consegue soltar ─────────────────────────────── */
+        .citacao {
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        .citacao::before {
+            content: "";
+            display: block;
+            width: 40px;
+            height: 1px;
+            margin: 0 auto 24px;
+            background: var(--gold-subtle);
+        }
+
+        main .citacao p.destaque {
+            margin: 0 auto;
+            font-size: clamp(1.5rem, 5.6vw, 2.25rem);
+            max-width: 22ch;
+        }
+
+        .caixa {
+            margin-top: 40px;
+            padding: 28px 24px;
+            background: #ece6da;
+            border-radius: 8px;
+        }
+
+        .caixa .retrato {
+            float: right;
+            margin: 0 0 8px 16px;
+        }
+
+        main .caixa p.destaque {
+            clear: both;
+            margin-top: 20px;
+        }
+
+        /* ── 5b · Frases: balões, carrossel no celular ────────────────────────── */
+        .baloes {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 8px 24px 16px;
+            margin: 24px -24px 8px;
+        }
+
+        .balao {
+            flex: 0 0 80%;
+            scroll-snap-align: center;
+            background: var(--bg-color);
+            border-radius: 16px 16px 16px 4px;
+            padding: 20px;
+            font-size: 1.0625rem;
+            line-height: 1.55;
+            color: var(--text-primary);
+        }
+
+        /* ── 6 · Os três grupos ───────────────────────────────────────────────── */
+        .grupos {
+            display: grid;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .grupo {
+            padding: 24px;
+            border-radius: 8px;
+        }
+
+        .grupo--verde { background: var(--grupo-verde); }
+        .grupo--amarelo { background: var(--grupo-amarelo); }
+        .grupo--azul { background: var(--grupo-azul); }
+
+        .grupo .ico {
+            width: 28px;
+            height: 28px;
+            margin-bottom: 14px;
+            color: var(--text-primary);
+        }
+
+        main .grupo p {
+            color: var(--text-primary);
+        }
+
+        .grupo strong {
+            display: block;
+            font-family: var(--font-playfair);
+            font-weight: 400;
+            font-size: 1.375rem;
+            line-height: 1.3;
+            margin-bottom: 6px;
+        }
+
+        /* ── 7 · O que você recebe ────────────────────────────────────────────── */
+        .recebe-grid {
+            display: grid;
+            gap: 40px;
+        }
+
+        .recebe-grid .mockup {
+            order: -1;
+        }
+
+        .itens li {
+            display: flex;
+            gap: 14px;
+            padding: 16px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .itens .ico {
+            margin-top: 4px;
+            color: var(--gold-text);
+        }
+
+        main .itens p {
+            margin: 0;
+        }
+
+        .itens strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .selo-incluido {
+            display: inline-block;
+            margin: 0 6px;
+            padding: 1px 10px;
+            border: 1px solid var(--gold-text);
+            border-radius: 999px;
+            font-size: 0.75rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--gold-text);
+            vertical-align: 2px;
+        }
+
+        main .recebe h3 {
+            margin-top: 40px;
+        }
+
+        /* Mockup do resultado — marcador até a arte do designer. Dados fictícios. */
+        .mockup {
+            max-width: 320px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--papel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 18px 40px rgba(31, 31, 31, 0.1);
+            font-size: 0.8125rem;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+
+        .mockup-exemplo {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 999px;
+            background: var(--text-primary);
+            color: #fff;
+            font-size: 0.6875rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .mockup-titulo {
+            font-family: var(--font-playfair);
+            font-size: 1.125rem;
+            margin-bottom: 10px;
+        }
+
+        .mockup-barra {
+            display: flex;
+            height: 14px;
+            border-radius: 7px;
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+
+        .mockup-barra span:nth-child(1) { flex: 62; background: #c9b48a; }
+        .mockup-barra span:nth-child(2) { flex: 38; background: #e5e0d4; }
+
+        .mockup-grupo {
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-top: 8px;
+        }
+
+        .mockup-grupo b {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .mockup-linha {
+            display: block;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(31, 31, 31, 0.14);
+            margin-top: 5px;
+        }
+
+        .mockup-linha:last-child {
+            width: 64%;
+        }
+
+        .linha-tempo {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .linha-tempo li {
+            position: relative;
+            padding-left: 28px;
+        }
+
+        .linha-tempo li::before {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 8px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--gold-subtle);
+        }
+
+        .linha-tempo li:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 22px;
+            bottom: -16px;
+            width: 1px;
+            background: var(--gold-subtle);
+        }
+
+        .linha-tempo .marco {
+            display: block;
+            font-family: var(--font-playfair);
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        main .linha-tempo p {
+            margin: 0;
+        }
+
+        /* ── 8 · Quem criou ───────────────────────────────────────────────────── */
+        .criou-grid {
+            display: grid;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .criou figure {
+            margin: 0;
+        }
+
+        .criou img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .criou blockquote {
+            margin: 20px 0;
+            padding-left: 20px;
+            border-left: 2px solid var(--gold-subtle);
+        }
+
+        /* ── 9 · Dois caminhos ────────────────────────────────────────────────── */
+        .caminhos {
+            display: grid;
+            gap: 16px;
+        }
+
+        .caminho {
+            padding: 28px 24px;
+            border-radius: 8px;
+        }
+
+        .caminho--1 {
+            background: #ebe8e2;
+        }
+
+        main .caminho--1 p {
+            color: #5f5f5f;
+        }
+
+        .caminho--2 {
+            background: var(--papel);
+            border: 1px solid var(--gold-subtle);
+        }
+
+        main .caminho--2 p {
+            color: var(--text-primary);
+        }
+
+        .caminho strong {
+            display: block;
+            font-family: var(--font-playfair);
+            font-weight: 400;
+            font-size: 1.375rem;
+            margin-bottom: 8px;
+        }
+
+        /* ── 10 · A oferta: uma caixa só ──────────────────────────────────────── */
+        .oferta-caixa {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 32px 20px;
+            background: var(--papel);
+            border: 1px solid var(--text-primary);
+            border-radius: 8px;
+        }
+
+        main .oferta-intro {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .oferta-caixa .lista-icone li {
+            padding: 10px 0;
+        }
+
+        .preco {
+            margin-top: 28px;
+            text-align: center;
+        }
+
+        main .preco p {
+            max-width: none;
+        }
+
+        main .preco p.preco-valor {
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        .preco-valor strong {
+            display: block;
+            font-family: var(--font-playfair);
+            font-weight: 400;
+            font-size: 3.25rem;
+            line-height: 1.1;
+            color: var(--text-primary);
+        }
+
+        .oferta-acao {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .oferta-acao .btn {
+            flex: 1;
+            padding: 12px 16px;
+        }
+
+        .selo-garantia {
+            flex: none;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 1.5px solid var(--gold-text);
+            color: var(--gold-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.6875rem;
+            line-height: 1.2;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 6px;
+        }
+
+        .pagamento {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .pagamento li {
+            padding: 2px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+
+        main p.garantia {
+            margin-top: 20px;
+            text-align: center;
+            max-width: none;
+        }
+
+        .garantia strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* ── 11 · FAQ: acordeão nativo ────────────────────────────────────────── */
+        .faq details {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .faq details:last-child {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .faq summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+            min-height: 56px;
+            cursor: pointer;
+            list-style: none;
+            font-size: 1.125rem;
+            line-height: 1.45;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .faq summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq summary::after {
+            content: "+";
+            font-family: var(--font-playfair);
+            font-size: 1.5rem;
+            line-height: 1;
+            color: var(--gold-text);
+        }
+
+        .faq details[open] summary::after {
+            content: "−";
+        }
+
+        main .faq details p {
+            padding-bottom: 18px;
+        }
+
+        /* ── 13 · PS: bilhete ─────────────────────────────────────────────────── */
+        .bilhete {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 32px 28px;
+            background: var(--papel);
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(31, 31, 31, 0.08);
+        }
+
+        main .bilhete h2 {
+            font-size: 1.25rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+            color: var(--gold-text);
+        }
+
+        main .bilhete p {
+            color: var(--text-primary);
+        }
+
+        /* Marcador da assinatura manuscrita (a Talita envia a definitiva). */
+        main .bilhete p.assinatura {
+            margin-top: 20px;
+            font-family: var(--font-playfair);
+            font-style: italic;
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        /* ── Rodapé ───────────────────────────────────────────────────────────── */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        footer p {
+            margin-bottom: 8px;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            display: inline-block;
+            padding: 8px 10px;
+        }
+
+        /* ── Barra fixa no celular: aparece depois do topo ────────────────────── */
+        .cta-fixa {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            .cta-fixa {
+                display: block;
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 20;
+                padding: 10px 16px 8px;
+                background: var(--bg-color);
+                border-top: 1px solid var(--border-color);
+                transform: translateY(110%);
+                visibility: hidden;
+                transition: transform 0.25s, visibility 0.25s;
+            }
+
+            .cta-fixa.visivel {
+                transform: none;
+                visibility: visible;
+            }
+
+            .cta-fixa .micro {
+                margin-top: 6px;
+                font-size: 0.75rem;
+            }
+
+            body {
+                padding-bottom: 112px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cta-fixa {
+                transition: none;
+            }
+        }
+
+        /* ── Desktop ──────────────────────────────────────────────────────────── */
+        @media (min-width: 768px) {
+            main section {
+                padding: 96px 0;
+            }
+
+            main .topo {
+                padding: 64px 0 80px;
+            }
+
+            .retrato--topo {
+                width: 72px;
+                height: 72px;
+            }
+
+            .cta {
+                display: inline-block;
+            }
+
+            .btn {
+                padding: 14px 40px;
+            }
+
+            .cena-grid {
+                grid-template-columns: 1fr 280px;
+                gap: 64px;
+            }
+
+            .baloes {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                overflow: visible;
+                margin: 32px 0 16px;
+                padding: 0;
+            }
+
+            .grupos {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .recebe-grid .mockup {
+                order: 0;
+            }
+
+            .recebe-grid {
+                grid-template-columns: 1fr 320px;
+                gap: 64px;
+                align-items: start;
+            }
+
+            .mockup {
+                position: sticky;
+                top: 32px;
+            }
+
+            .linha-tempo {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+
+            .linha-tempo li {
+                padding: 28px 0 0;
+            }
+
+            .linha-tempo li::before {
+                left: 0;
+                top: 0;
+            }
+
+            .linha-tempo li:not(:last-child)::after {
+                left: 14px;
+                right: -14px;
+                top: 4px;
+                bottom: auto;
+                width: auto;
+                height: 1px;
+            }
+
+            .criou-grid {
+                grid-template-columns: 5fr 7fr;
+                gap: 64px;
+            }
+
+            .caminhos {
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+            }
+
+            .oferta-caixa {
+                padding: 48px;
+            }
+
+            .selo-garantia {
+                width: 76px;
+                height: 76px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .baloes {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1469019395044653&ev=PageView&noscript=1"
+    /></noscript>
+    <a href="#conteudo" class="skip-link">Pular para o conteúdo principal</a>
+
+    <!-- Ícones de traço único: check, x, mão abrindo, cadeado, estrela. -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.5 3 3 6-6.5"/></symbol>
+        <symbol id="i-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+        <symbol id="i-mao" viewBox="0 0 24 24"><path d="M7 11V6.5a1.5 1.5 0 0 1 3 0V11M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V11M16 11V8.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-.5a6 6 0 0 1-4.9-2.5L3.4 14a1.6 1.6 0 0 1 2.5-2l1.1 1.3"/></symbol>
+        <symbol id="i-cadeado" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5M12 14.5v2"/></symbol>
+        <symbol id="i-estrela" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></symbol>
+    </svg>
+
+    <main id="conteudo">
+        <!-- 1 · Topo -->
+        <section class="topo" id="topo">
+            <div class="container">
+                <div class="topo-cabeca">
+                    <img class="retrato retrato--topo" src="/fotos/talita-issei.webp" width="800" height="1000"
+                        alt="Talita Issei, sorrindo e olhando para a câmera." fetchpriority="high">
+                    <p class="rotulo">PARA GERENTES QUE VIRARAM O PONTO POR ONDE TUDO PASSA</p>
+                </div>
+                <h1>Responda em 20 minutos e descubra o que você pode <em>parar de aprovar</em> no seu time
+                    <em>sem perder o controle</em> do resultado que cobram de você.</h1>
+                <p class="lead">Aprovar tudo parece o único jeito de garantir a sua meta. Não é. Dá para saber que está certo
+                    sem tudo passar pela sua mão.</p>
+                <div class="cta">
+                    <a href="#oferta" class="btn" data-checkout="topo">Quero descobrir o que parar de aprovar</a>
+                    <p class="micro">R$ 197 · resultado completo em até 2 dias úteis · garantia de 7 dias</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2 · A cena -->
+        <section class="cena papel">
+            <div class="container cena-grid">
+                <div>
+                    <h2 class="vh">A cena</h2>
+                    <p>São 8h. Antes da primeira reunião, o WhatsApp já tem 14 mensagens do time. Uma venda que só fecha se
+                        você entrar na conversa. Um problema pequeno de pós-venda que qualquer um resolveria, mas que
+                        chegou em você.</p>
+                    <p class="destaque">Você montou um time para fazer. <strong>Mas parece que montou um time para te
+                            chamar.</strong></p>
+                    <p>E vem o pensamento que você não fala em voz alta: "Eu virei o gargalo do meu próprio time."</p>
+                    <p>Você não virou por falta de capacidade. Virou porque o seu dia vai inteiro para o trabalho do seu
+                        time.</p>
+                </div>
+                <div class="celular" aria-hidden="true">
+                    <div class="celular-tela">
+                        <div class="celular-hora">8:00</div>
+                        <div class="notif notif--pilha"><b>WhatsApp</b>14 mensagens</div>
+                        <div class="notif"><b>Time</b>Pode aprovar?</div>
+                        <div class="notif"><b>Time</b>Só para confirmar...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 · Isto é para você se -->
+        <section class="para-quem">
+            <div class="container">
+                <h2>Isto é para você se</h2>
+                <ul class="lista-icone">
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>o time não fecha, ou não entrega, sem você entrar no meio;</li>
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>quase tudo precisa da sua aprovação;</li>
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>você resolve coisas pequenas que o time sabe resolver, mas não resolve;</li>
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>você deixa passar coisas por medo de perder a pessoa, e aquilo vira costume;</li>
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>o urgente sempre ganha do importante;</li>
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>cobram números de você, e você não tem tempo de olhar para eles.</li>
+                </ul>
+                <div class="cta">
+                    <a href="#oferta" class="btn" data-checkout="para-quem">Quero descobrir o que parar de aprovar</a>
+                    <p class="micro">R$ 197 · resultado completo em até 2 dias úteis · garantia de 7 dias</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4 · Por que você não consegue soltar -->
+        <section class="soltar papel">
+            <div class="container">
+                <h2>Por que você não consegue soltar</h2>
+                <p>Você já tentou. Passou uma tarefa para o time, deu errado, e o cliente reclamou com você.</p>
+                <p>Desde então, você pensa:</p>
+                <blockquote class="citacao"><p class="destaque">"Se eu solto, dá errado. Se eu seguro, eu afundo."</p></blockquote>
+                <p>Mas não deu errado porque o seu time é ruim. Deu errado porque só você sabe como é o jeito certo.
+                    Está tudo na sua cabeça.</p>
+                <p>Então você volta a aprovar tudo. O time continua sem saber, e continua te chamando. No fim, você trabalha
+                    duas vezes: na sua função e na do time. E quando dá errado, quem responde para cima é você.</p>
+
+                <aside class="caixa">
+                    <img class="retrato" src="/fotos/talita-issei.webp" width="800" height="1000" loading="lazy"
+                        alt="Talita Issei.">
+                    <p>Por mais de 15 anos, trabalhei em empresas grandes, como o Itaú. Lá, nenhuma área para quando
+                        alguém sai de férias. Não porque as pessoas são melhores, mas porque o jeito certo está escrito.
+                    </p>
+                    <p class="destaque">No seu time, o jeito certo é você. Por isso tudo passa pela sua mão.</p>
+                </aside>
+            </div>
+        </section>
+
+        <!-- 5 · Você já desconfiava -->
+        <section class="desconfiava">
+            <div class="container">
+                <h2>Você já desconfiava</h2>
+                <p>Que não era falta de treinamento.</p>
+                <ul class="lista-icone lista-icone--x">
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>Você já levou o time para curso.</li>
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>Já fez mais uma reunião, mais uma planilha.</li>
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>Já explicou o processo de novo.</li>
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>Já ouviu "é só delegar", de quem nunca te disse o quê.</li>
+                </ul>
+                <p class="destaque">Ninguém te respondeu o que importa: o que dá para tirar da sua mão agora, e como você
+                    vai saber que está certo sem olhar tudo de novo.</p>
+            </div>
+        </section>
+
+        <!-- 5b · Frases que eu ouço nos meus diagnósticos -->
+        <section class="frases papel">
+            <div class="container">
+                <h2>Frases que eu ouço nos meus diagnósticos</h2>
+                <p>[CONFIRMAR: linha de abertura das frases de gerentes]</p>
+                <ul class="baloes" tabindex="0" aria-label="Frases que eu ouço nos meus diagnósticos">
+                    <li class="balao">"Eu acabo sendo o gargalo do meu time."</li>
+                    <li class="balao">"É importante que todos saibam fazer o processo. Mas acaba sendo urgente que eu coloque a mão na operação."</li>
+                    <li class="balao">"Sabe resolver, mas é chato de fazer."</li>
+                    <li class="balao">"Se apertar demais, a pessoa sai. Vou relevar isso aqui, e isso acaba virando cultura."</li>
+                </ul>
+                <p>Se você se viu em alguma delas, você não está sozinho.</p>
+            </div>
+        </section>
+
+        <!-- 6 · O que o diagnóstico separa -->
+        <section class="separa">
+            <div class="container">
+                <span class="rotulo">O que o diagnóstico separa</span>
+                <h2>Você não precisa aprovar tudo para ter controle. Precisa saber o que olhar.</h2>
+                <ul class="grupos">
+                    <li class="grupo grupo--verde">
+                        <svg class="ico" aria-hidden="true"><use href="#i-mao"/></svg>
+                        <p><strong>Já pode sair da sua mão.</strong> O seu time já sabe fazer e, se der errado, dá para
+                            arrumar.</p>
+                    </li>
+                    <li class="grupo grupo--amarelo">
+                        <svg class="ico" aria-hidden="true"><use href="#i-cadeado"/></svg>
+                        <p><strong>Ainda não dá para soltar.</strong> E o que falta para dar.</p>
+                    </li>
+                    <li class="grupo grupo--azul">
+                        <svg class="ico" aria-hidden="true"><use href="#i-estrela"/></svg>
+                        <p><strong>É a sua função de gerente.</strong> E está parada porque você não tem tempo.</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 7 · O que você recebe -->
+        <section class="recebe papel">
+            <div class="container">
+                <h2>O que você recebe</h2>
+                <div class="recebe-grid">
+                <div>
+                    <ul class="itens">
+                        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>
+                            <p><strong>Para onde vai o seu dia.</strong> Assim que terminar de responder, você vê quanto
+                                do seu tempo é trabalho do seu time.</p></li>
+                        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>
+                            <p><strong>O que você pode tirar da sua mão já.</strong> De 2 a 3 coisas que o seu time já
+                                sabe fazer, com quem fica, o que dizer e a única coisa que você olha no lugar de aprovar
+                                tudo.</p></li>
+                        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>
+                            <p><strong>O que ainda não dá para soltar, e por quê.</strong> Para você parar de se culpar
+                                por não conseguir.</p></li>
+                        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>
+                            <p><strong>O que é a sua função e está parado.</strong> Olhar os números, desenvolver o time,
+                                pensar o próximo passo.</p></li>
+                        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>
+                            <p><strong>30 minutos comigo.</strong><span class="selo-incluido">incluído</span>Você me
+                                conta como foi, e sai sabendo o próximo passo.</p></li>
+                    </ul>
+
+                    <h3>Como funciona:</h3>
+                    <ol class="linha-tempo">
+                        <li><span class="marco">20 min</span>
+                            <p>Você responde pelo celular, quando quiser. Pode ser às 6h.</p></li>
+                        <li><span class="marco">na hora</span>
+                            <p>A primeira parte chega na hora.</p></li>
+                        <li><span class="marco">até 2 dias úteis</span>
+                            <p>O resultado completo chega em até 2 dias úteis, revisado por mim.</p></li>
+                    </ol>
+
+                    <div class="cta">
+                        <a href="#oferta" class="btn" data-checkout="recebe">Quero descobrir o que parar de aprovar</a>
+                        <p class="micro">R$ 197 · resultado completo em até 2 dias úteis · garantia de 7 dias</p>
+                    </div>
+                </div>
+
+                <!-- Mockup do resultado: marcador até a arte do designer. -->
+                <div class="mockup" aria-hidden="true">
+                    <span class="mockup-exemplo">Exemplo</span>
+                    <div class="mockup-titulo">Para onde vai o seu dia</div>
+                    <div class="mockup-barra"><span></span><span></span></div>
+                    <div class="mockup-grupo" style="background:var(--grupo-verde)"><b>Já pode sair da sua mão</b>
+                        <span class="mockup-linha"></span><span class="mockup-linha"></span></div>
+                    <div class="mockup-grupo" style="background:var(--grupo-amarelo)"><b>Ainda não dá para soltar</b>
+                        <span class="mockup-linha"></span><span class="mockup-linha"></span></div>
+                    <div class="mockup-grupo" style="background:var(--grupo-azul)"><b>É a sua função de gerente</b>
+                        <span class="mockup-linha"></span><span class="mockup-linha"></span></div>
+                </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8 · Quem criou -->
+        <section class="criou">
+            <div class="container criou-grid">
+                <figure>
+                    <img src="/fotos/talita-issei.webp" width="800" height="1000" loading="lazy"
+                        alt="Talita Issei, de blusa branca de um ombro só, sorrindo, sentada em uma poltrona clara.">
+                </figure>
+                <div>
+                    <h2>Ninguém nasce sabendo gerir. Eu também não nasci.</h2>
+                    <p>Eu sou a Talita. Sou mais quieta do que falante. Mesmo assim, passei mais de 15 anos organizando
+                        equipes em empresas grandes. Lá eu aprendi: gestão não é dom. É técnica. Dá para aprender.</p>
+                    <p>Há 5 anos, atendo donos de empresa como você. Um dia, pedi para uma cliente listar o que ela fazia
+                        de mais importante na empresa.</p>
+                    <p>A primeira coisa da lista foi:</p>
+                    <blockquote><p class="destaque">"conferir o que o time entrega".</p></blockquote>
+                    <p>Ela achava que aquilo era o trabalho dela. Não era. Era o trabalho do time, na mão dela.</p>
+                    <p>Se você se viu nessa história, o problema também não é você.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9 · Dois caminhos -->
+        <section class="dois-caminhos papel">
+            <div class="container">
+                <h2>Dois caminhos</h2>
+                <div class="caminhos">
+                    <div class="caminho caminho--1">
+                        <p><strong>Caminho 1.</strong> Daqui a um ano, você ainda é o gargalo do time. E ainda não teve
+                            tempo de mostrar o que faria se pudesse olhar para os números.</p>
+                    </div>
+                    <div class="caminho caminho--2">
+                        <p><strong>Caminho 2.</strong> Você descobre agora o que pode tirar da sua mão. E começa a ter
+                            tempo para o que um gerente faz: desenvolver o time e bater a meta sem estar em tudo.</p>
+                        <div class="cta">
+                            <a href="#oferta" class="btn" data-checkout="caminhos">Quero descobrir o que parar de aprovar</a>
+                            <p class="micro">R$ 197 · resultado completo em até 2 dias úteis · garantia de 7 dias</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10 · A oferta -->
+        <section class="oferta" id="oferta">
+            <div class="container">
+                <div class="oferta-caixa">
+                    <h2 class="vh">A oferta</h2>
+                    <p class="oferta-intro">Tudo o que você recebe:</p>
+                    <ul class="lista-icone">
+                        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Para onde vai o seu dia, na hora</li>
+                        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>O que você pode tirar da sua mão já, e o que olhar no lugar</li>
+                        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>O que ainda não dá para soltar, e por quê</li>
+                        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>O que só você sabe fazer e está parado</li>
+                        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>30 minutos comigo</li>
+                    </ul>
+
+                    <div class="preco">
+                        <p class="preco-valor"><strong>R$ 197</strong> ou em até [X] vezes de R$ [X]</p>
+                        <p>Se você entrar na mentoria para gerentes depois, esse valor é descontado.</p>
+                        <p>Eu olho cada resultado pessoalmente. Por isso, são [X] vagas por semana.</p>
+                    </div>
+
+                    <div class="oferta-acao">
+                        <a href="#oferta" class="btn" data-checkout="oferta">Quero descobrir o que parar de aprovar</a>
+                        <span class="selo-garantia" aria-hidden="true">Garantia de 7 dias</span>
+                    </div>
+                    <p class="micro">R$ 197 · resultado completo em até 2 dias úteis · garantia de 7 dias</p>
+                    <ul class="pagamento" aria-label="Formas de pagamento"><li>Pix</li><li>Cartão</li></ul>
+
+                    <p class="garantia"><strong>Garantia de 7 dias.</strong> Se não fizer sentido para você, eu devolvo
+                        tudo.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11 · Perguntas frequentes -->
+        <section class="faq papel">
+            <div class="container">
+                <h2>Perguntas frequentes</h2>
+                <details>
+                    <summary>Preciso de reunião para responder?</summary>
+                    <p>Não. Você responde pelo celular, no seu horário.</p>
+                </details>
+                <details>
+                    <summary>Quando eu recebo o resultado?</summary>
+                    <p>Você leva cerca de 20 minutos para responder. A primeira parte chega na hora. O resultado
+                        completo chega em até 2 dias úteis, depois que eu reviso.</p>
+                </details>
+                <details>
+                    <summary>Posso responder no fim de semana?</summary>
+                    <p>Pode. O prazo de 2 dias úteis começa a contar no primeiro dia útil depois que você termina de
+                        responder.</p>
+                </details>
+                <details>
+                    <summary>Comprei e não recebi o questionário. E agora?</summary>
+                    <p>Ele aparece na tela logo depois do pagamento e chega no seu WhatsApp e no seu e-mail. Se não
+                        encontrar, chame no WhatsApp [número de suporte].</p>
+                </details>
+                <details>
+                    <summary>E se eu soltar e der errado?</summary>
+                    <p>Você só recebe para soltar o que o seu time já sabe fazer e que, se der errado, dá para arrumar.
+                        O que ainda daria errado fica com você até ter estrutura.</p>
+                </details>
+                <details>
+                    <summary>Preciso envolver o meu chefe?</summary>
+                    <p>Não. O diagnóstico é sobre o seu dia e o seu time.</p>
+                </details>
+                <details>
+                    <summary>A empresa pode pagar?</summary>
+                    <p>[CONFIRMAR: se você emite nota fiscal para empresa.]</p>
+                </details>
+                <details>
+                    <summary>Quando posso marcar os 30 minutos?</summary>
+                    <p>Entre o 5º e o 15º dia depois do resultado, para você chegar já tendo tirado a primeira coisa da
+                        sua mão. Dá para remarcar uma vez, com até 3 horas de antecedência. Se faltar sem avisar, a
+                        sessão é encerrada.</p>
+                </details>
+                <details>
+                    <summary>É um curso?</summary>
+                    <p>Não. É a análise da sua semana, com as suas atividades.</p>
+                </details>
+            </div>
+        </section>
+
+        <!-- 12 · Não é para você se -->
+        <section class="nao-e">
+            <div class="container">
+                <h2>Não é para você se</h2>
+                <ul class="lista-icone lista-icone--x lista-discreta">
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>você ainda não tem um time sob a sua gestão;</li>
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>você quer que alguém resolva tudo, sem mudar nada do seu lado;</li>
+                    <li><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>você vai ler o resultado e não vai tirar nada da sua mão.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 13 · PS -->
+        <section class="ps">
+            <div class="container">
+                <div class="bilhete">
+                    <h2>PS</h2>
+                    <p>Você não é um gerente ruim. Você só nunca teve tempo de ser gerente.</p>
+                    <p>Responda em 20 minutos e descubra o que você pode parar de aprovar, sem perder o controle.</p>
+                    <p class="assinatura">Talita</p>
+                    <div class="cta">
+                        <a href="#oferta" class="btn" data-checkout="ps">Quero descobrir o que parar de aprovar</a>
+                        <p class="micro">R$ 197 · resultado completo em até 2 dias úteis · garantia de 7 dias</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Boutique Empresarial™ &copy; 2026 · CNPJ [CNPJ]</p>
+            <a href="/privacidade.html">Política de Privacidade</a>
+            <a href="/termos.html">Termos de Uso</a>
+        </div>
+    </footer>
+
+    <div class="cta-fixa">
+        <a href="#oferta" class="btn" data-checkout="fixa">Quero descobrir o que parar de aprovar</a>
+        <p class="micro">R$ 197 · resultado completo em até 2 dias úteis · garantia de 7 dias</p>
+    </div>
+
+    <!-- CTA → checkout com rastreio — docs/specs/pages/diagnostico.md §4.
+         DOMContentLoaded, não execução imediata: attribution.js é módulo e só
+         define BE_ATTR depois do parse; módulos rodam antes desse evento. -->
+    <script>
+        // Link do checkout (Hotmart). Vazio = os botões levam à oferta (#oferta), sem rastreio.
+        const CHECKOUT = '';
+        const UTM = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctas = document.querySelectorAll('a[data-checkout]');
+
+            if (CHECKOUT) {
+                const url = new URLSearchParams(location.search);
+                const last = window.BE_ATTR?.last ?? {};
+                const valor = (k) => url.get(k) || last[k] || '';
+                const sck = UTM.map(valor).join('|');
+
+                for (const a of ctas) {
+                    const destino = new URL(CHECKOUT);
+                    for (const k of [...UTM, 'fbclid', 'gclid']) if (valor(k)) destino.searchParams.set(k, valor(k));
+                    destino.searchParams.set('src', a.dataset.checkout);
+                    if (sck.replace(/\|/g, '')) destino.searchParams.set('sck', sck);
+                    a.href = destino.href;
+                }
+            }
+
+            for (const a of ctas) {
+                a.addEventListener('click', () => {
+                    try { fbq('track', 'InitiateCheckout', { value: 197, currency: 'BRL' }); } catch (e) { /* bloqueado */ }
+                });
+            }
+
+            // Barra fixa: só depois que o topo sai da tela.
+            const barra = document.querySelector('.cta-fixa');
+            new IntersectionObserver(([e]) => barra.classList.toggle('visivel', !e.isIntersecting))
+                .observe(document.getElementById('topo'));
+        });
+    </script>
+
+</body>
+
+</html>
