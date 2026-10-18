@@ -2,6 +2,7 @@
 
 **Status:** Implementada (branch `feat/pagina-diagnostico`, PR #46), com marcadores — não vai ao ar
 antes das pendências do §7
+**Revisão:** layout e copy revisados em 2026-10-18 conforme [`design/diagnostico-ajustes-lp.md`](../design/diagnostico-ajustes-lp.md); a tabela do §3 abaixo é do layout anterior onde diferir dele.
 **Data:** 2026-10-17
 **Fonte:** "Briefing da landing page para o desenvolvedor v2" (Talita, 2026-10-17) — versão do
 **dono**. A página do gerente é outra página: [`diagnostico-gerente.md`](diagnostico-gerente.md).
@@ -32,7 +33,7 @@ instrução de layout do bloco 7.
 Fora do corpo de copy: skip link, `alt` das fotos, rodapé (copyright, CNPJ, links legais), selo
 "Garantia de 7 dias", rótulos `Pix`/`Cartão`, mockup do resultado (`Exemplo`, rótulos dos grupos).
 
-Marcadores mantidos como no briefing: `[X]` (parcelas, vagas), `[número de suporte]`, `CNPJ [CNPJ]`.
+Marcadores mantidos como no briefing: `[X]` (parcelas, vagas), `[número de suporte]`.
 O `[link para a página do gerente]` virou o link para `/diagnostico-gerente.html`, com a URL como texto.
 
 ## 3. Layout
@@ -103,7 +104,7 @@ Botão é o único elemento em `--accent-color`.
 ## 7. Pendências antes de ir ao ar (do briefing)
 
 Link do checkout (Hotmart, Pix e cartão) · número de parcelas e de vagas · número de WhatsApp de
-suporte · CNPJ · permissão das clientes para as frases do bloco 5b ·
+suporte · permissão das clientes para as frases do bloco 5b ·
 fotos definitivas, mockup do resultado, tela de WhatsApp, ícones e selo do designer · assinatura
 manuscrita · CAPI e `Purchase` funcionando · compra de teste de ponta a ponta · republicar a
 CloudFront Function.

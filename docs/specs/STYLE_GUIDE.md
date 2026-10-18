@@ -18,7 +18,7 @@ O design deve transmitir autoridade sem gritar.
 | **Background Principal** | `--bg-color` | `bg-offwhite-50` ou `bg-[#f5f2eb]` | `#f5f2eb` | Fundo geral, reduz cansaço visual. |
 | **Texto Primário** | `--text-primary` | `text-gray-900` ou `text-[#1f1f1f]` | `#1f1f1f` | Títulos e texto principal. |
 | **Texto Secundário** | `--text-secondary` | `text-gray-600` ou `text-[#555555]` | `#555555` | Descrições e notas. |
-| **Destaque (Accent)** | `--accent-color` | `text-black` ou `bg-black` | `#1C1C1C` | Botões e elementos de ênfase máxima. |
+| **Destaque (Accent)** | `--accent-color` | `bg-[#B84A22]` | `#B84A22` | Só botões (laranja queimado, texto branco ≥ 5:1). `adr-botao-laranja.md`. |
 | **Ouro Sutil (Detalhe)** | `--gold-subtle` | `text-gold-400` ou `text-[#C5A059]` | `#C5A059` | Filetes, bordas, o ponto do wordmark. **Não** para texto — 2.20:1 sobre o creme. |
 | **Ouro para texto** | `--gold-text` | `text-[#886829]` | `#886829` | O único ouro que pode carregar uma palavra (≥ 4.5:1). `HARNESS_AEO.md` §B5. |
 | **Borda** | `--border-color` | `border-gray-200` ou `border-[#E5E5E5]` | `#E5E5E5` | Divisórias sutis. |
