@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 // O rótulo do CTA mudou com a LP do Diagnóstico. Ele é afirmado literalmente porque é a
 // única coisa que liga a página ao funil: se alguém reescrever o botão sem reescrever o
 // destino, ou o contrário, é aqui que aparece.
-const CTA = 'Solicitar Diagnóstico Gratuito';
+const CTA = 'Quero meu diagnóstico gratuito';
 
 test.describe('home', () => {
     test('carrega os elementos principais', async ({ page }) => {
@@ -11,7 +11,7 @@ test.describe('home', () => {
 
         await expect(page).toHaveTitle(/Boutique Empresarial/);
         await expect(page.locator('header')).toBeVisible();
-        await expect(page.locator('h1')).toContainText('onde sua equipe trava sem você');
+        await expect(page.locator('h1')).toContainText('Seu time ainda depende de você');
     });
 
     test('todo CTA aponta para o mesmo formulário', async ({ page }) => {

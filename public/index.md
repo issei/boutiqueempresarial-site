@@ -4,7 +4,7 @@
 > e o que ajustar para o time decidir sozinho.
 
 **URL:** https://boutiqueempresarial.com.br/
-**Atualizado:** 2026-09-10
+**Atualizado:** 2026-10-21
 
 ## Em síntese
 

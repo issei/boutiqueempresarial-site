@@ -160,9 +160,10 @@ Nenhum verbo proibido por §B6 ("garante", "elimina", "assegura") aparece na cop
 
 **Hero**
 
-* H1: `Descubra exatamente onde sua equipe trava sem você, e o que fazer pra resolver`
-* Subheadline: `Uma sessão individual de 45 minutos para analisar a operação da sua empresa de serviços e apontar exatamente onde a estrutura precisa de ajuste para o seu time rodar com autonomia.`
-* CTA 1: `Solicitar Diagnóstico Gratuito` → `/formulario.html`
+* Linha acima do título: `Para donos de empresas de serviço com time de 5 ou mais pessoas` (§6.3 A5)
+* H1: `Sua empresa cresceu. Seu time ainda depende de você para tudo.`
+* Subheadline: `Em uma sessão individual de 45 minutos, eu analiso a operação da sua empresa e mostro quais decisões, entregas e informações ainda passam por você, e o que mudar primeiro para o time resolver sem a sua aprovação.`
+* CTA 1: `Quero meu diagnóstico gratuito` → `/formulario.html`
 
 **Seção 2 — O que analisamos e entregamos na sua sessão**
 
@@ -196,7 +197,7 @@ Intro: `Por ser uma análise individual, conduzida diretamente por mim, libero a
 2. `Eu analiso se o momento da sua empresa se encaixa na metodologia`
 3. `Com o perfil aprovado, minha equipe entra em contato pra agendar seu horário`
 
-CTA 2: `Solicitar Diagnóstico Gratuito` → `/formulario.html`
+CTA 2: `Quero meu diagnóstico gratuito` → `/formulario.html` — mesmo rótulo do CTA 1 e da barra fixa do mobile; `tests/home.spec.js` exige rótulo único
 
 ### 3.4 Bloco AEO — §B3
 
@@ -244,7 +245,7 @@ Um `@graph`. Nós persistentes com `@id` estável; toda URL absoluta e **sem `.h
 `BreadcrumbList` não se aplica: §B2 o exige em "todas exceto a home".
 
 O `Offer` com `price: "0"` é o ganho de AEO desta página: torna a gratuidade um fato estruturado
-e citável por answer engine, com contraparte visível no eyebrow (`Sem custo`) e no FAQ.
+e citável por answer engine, com contraparte visível no rótulo do CTA (`Quero meu diagnóstico gratuito`) e no FAQ.
 
 ---
 
@@ -353,6 +354,7 @@ A autora revisou a página na branch e pediu quatro ajustes. Onde houver conflit
 | A2 | "O que analisamos" com a estrutura da "Arquitetura Operacional" do `index-legado.html` | V4 e §6.2 R2 revertidos: cartão branco com borda sobre o creme, numeral `01/02/03` em Playfair `--gold-text`, título da copy em `h3`, corpo abaixo. Três colunas a partir de 900px — não 768px como no legado, onde o cartão ficaria com ~130px de texto útil. Sem o hover com sombra do legado: o cartão não é clicável |
 | A3 | Trocar o retrato | nova origem em §6.1; mesmo destino, mesmas dimensões. `src`, `width`/`height` e o `image` do nó `Person` não mudam — só o `alt` |
 | A4 | Texto fiel à copy de origem, sem reinventar palavra ou expressão | §3 R1 e R2 revertidos. Saem as perguntas `Quem decide?` · `Onde erra?` · `Onde se perde?` (inclusive de `index.md` e `llms-full.txt`) e a nota de escassez (V10) — nada disso está na copy. O bloco AEO (§3.4) fica: é contrato do gate, não copy da página |
+| A5 | Nova copy da primeira dobra (2026-10-21) | Linha de público acima do H1, H1, subheadline e rótulo do CTA trocados — §3.3. O rótulo vale para os três CTAs (hero, seleção, barra fixa). A linha acima do título é frase em caixa normal, Inter 500, `--gold-text`: reverte o §6.2 R1 só no conteúdo (há uma linha), não no formato que ele retirou (caixa-alta, `letter-spacing` largo, ponto médio). Bloco AEO, JSON-LD (fora `dateModified`) e `public/*.md`/`llms*.txt` não mudam: nenhum deles reproduz o texto do hero |
 
 ---
 
