@@ -8,83 +8,99 @@
 
 ## Em síntese
 
-O Diagnóstico Gratuito é uma sessão individual de 45 minutos que analisa a operação de uma
-empresa de serviços e aponta onde a estrutura precisa de ajuste para o time rodar com
-autonomia. A análise cobre três pontos: quais decisões ainda dependem só da fundadora, em que
-etapa da entrega o time erra ou gera retrabalho, e onde a informação se perde entre WhatsApp e
-rotina indefinida. É conduzida por Talita Issei, com mais de 15 anos gerindo projeto, processo
-e gente em operações multinacionais. São três vagas por semana, para empresas de serviço com
-equipe a partir de 5 colaboradores.
+O Diagnóstico Gratuito é uma sessão individual de 45 minutos, conduzida por Talita Issei, que
+analisa como a operação de uma empresa de serviços funciona hoje. A análise mostra quais
+decisões, entregas e informações ainda passam pelo dono e por onde começar a mudar isso. Cobre
+três pontos: decisões que dependem do dono, falhas na entrega e fluxo de informação. É para
+donos e sócios de empresas de serviço com equipe a partir de 5 colaboradores.
+
+## Sinais de que a operação depende do dono
+
+- Orçamentos, prazos e respostas para clientes só saem depois que o dono aprova
+- O dono revisa tarefas que já pagou alguém para fazer
+- Para saber como está cada entrega, o dono precisa perguntar para a equipe
+- Mesmo de férias, o dono continua respondendo mensagens de trabalho
+
+Na maioria das vezes, isso tem uma raiz comum: a operação ainda não tem processos, papéis e
+indicadores bem definidos.
 
 ## O que a sessão examina
 
-Durante a reunião, avaliamos o momento atual da operação e entregamos clareza sobre três
-pontos centrais:
+1. **Decisões que dependem do dono** — Quais decisões do dia a dia hoje precisam da aprovação
+   do dono, e por que elas ainda não saem sem ele.
+2. **Falhas na entrega** — Em qual etapa do serviço acontecem os erros e o retrabalho, e por
+   que eles se repetem.
+3. **Fluxo de informação** — Como as demandas circulam pelo WhatsApp e pelos canais internos, e
+   onde a informação se perde ou atrasa.
 
-1. **O que ainda trava em você** — Mapeamos quais decisões do dia a dia hoje dependem só da aprovação da
-   fundadora, e indicamos o que o time já pode decidir sozinho, sem precisar dela no meio.
-2. **Onde a entrega falha** — Identificamos em que etapa do serviço a equipe mais erra ou gera
-   retrabalho, e apontamos o que falta para isso parar de se repetir.
-3. **Onde a informação se perde** — Avaliamos se o WhatsApp e a falta de rotina clara estão fazendo a
-   fundadora perder o controle do que cada um está fazendo, e mostramos como organizar isso.
+Ao final, o dono sai com clareza sobre o que trava a operação e o que corrigir primeiro. Se
+fizer sentido para o momento, Talita apresenta como a reestruturação pode ser feita com a
+Boutique Empresarial.
 
-Ao final do encontro, a fundadora sai sabendo com clareza o que está travando a operação, e o
-que precisa corrigir primeiro. Se fizer sentido para o momento, Talita apresenta como a
-reestruturação pode ser conduzida através da Boutique Empresarial.
+## O que muda quando a equipe ganha autonomia
+
+- Mais tempo na agenda, porque o dono deixa de aprovar e revisar tarefas que a equipe já
+  consegue resolver
+- Operação mais previsível: rotina, metas e indicadores mostram o que cada pessoa está
+  entregando
+- Decisão com mais segurança, com dados para saber quem está entregando, quando contratar e
+  quando desligar
+
+## O que acontece se nada mudar
+
+- Sem indicador, as decisões sobre a equipe — contratar, demitir, remunerar — continuam no
+  achismo, porque não há dado que mostre quem realmente entrega
+- Retrabalho vira rotina: a mesma informação é checada e refeita várias vezes, e a mesma hora
+  de trabalho é paga mais de uma vez
 
 ## Quem conduz
 
-**Talita Issei** já viu dezenas de empresários trabalhando 12 horas por dia porque o time não
-decide nada sem eles. Antes de ajudar empresários a resolver isso, passou mais de 15 anos
-gerindo projeto, processo e gente em operações multinacionais — KPMG, Itaú, Vivo, Accenture.
-Há 5 anos aplica essa bagagem em empresas de serviço, ajudando empresários a identificar falha
-operacional e transformar time dependente em time que roda sozinho.
+**Talita Issei** passou 15 anos em multinacionais como KPMG, Itaú, Vivo e Accenture, 9 deles à
+frente de gestão de equipes e projetos. Há 5 anos leva essa experiência para pequenas e médias
+empresas, ajudando donos e sócios a formar equipes que decidem sem precisar deles o tempo todo.
 
 ## Para quem é
 
-- Empresas de serviço com equipe a partir de 5 colaboradores
-- Negócio com operação ativa e carteira de clientes em expansão
-- Fundadoras decididas a sair do operacional para focar em gestão e crescimento
+- Donos e sócios de empresas de serviço com 5 ou mais colaboradores
+- Empresas com operação ativa e carteira de clientes em crescimento
+- Empresários que decidiram sair do operacional para cuidar da gestão e do crescimento
 
-## Como funciona a seleção
+**Para quem não é:** negócios em fase inicial, quem trabalha sozinho ou quem procura
+estratégias de marketing.
 
-Por ser uma análise individual, conduzida diretamente por Talita, são liberadas apenas 3 vagas
-por semana.
+## Como funciona
 
-1. Preenche o formulário de aplicação
-2. Talita analisa se o momento da empresa se encaixa na metodologia
-3. Com o perfil aprovado, a equipe entra em contato para agendar o horário
+1. O dono preenche o formulário, que leva cerca de 2 minutos
+2. Talita entra em contato por telefone para entender o momento da empresa
+3. Se fizer sentido, marcam a sessão de 45 minutos com o dono e com quem decide junto com ele
 
 ## Perguntas frequentes
 
-### O que é o Diagnóstico Gratuito?
-
-O Diagnóstico Gratuito é uma sessão individual de 45 minutos, conduzida por Talita Issei, que
-analisa a operação da sua empresa de serviços e aponta onde a estrutura precisa de ajuste para
-o time rodar com autonomia.
-
 ### A sessão tem custo?
 
-Não. A sessão é gratuita e dura 45 minutos. Ao final, se fizer sentido para o seu momento,
-Talita apresenta como a reestruturação pode ser conduzida através da Boutique Empresarial.
+Não, a sessão é gratuita e dura 45 minutos.
+
+### No final, vou receber uma proposta de venda?
+
+O foco da conversa é entender o que trava a sua operação hoje. Se ao final fizer sentido para o
+seu momento, mostro como a reestruturação pode ser feita com a Boutique Empresarial.
 
 ### Para quem é a sessão?
 
-A sessão é para empresas de serviço com equipe a partir de 5 colaboradores, com operação ativa
-e carteira de clientes em expansão, conduzidas por fundadoras decididas a sair do operacional.
+Para donos e sócios de empresas de serviço com equipe a partir de 5 colaboradores, com operação
+ativa e que querem sair do operacional.
+
+### Como funciona?
+
+Você preenche o formulário, eu entro em contato por telefone para entender o seu momento e, se
+fizer sentido, marcamos a sessão.
 
 ### Para quem a sessão não é?
 
-A sessão não é para negócio em fase inicial, para operação de uma pessoa só, nem para quem
-procura tática de marketing e crescimento rápido. Nesses casos a resposta é não.
-
-### Como funciona a seleção?
-
-São três vagas por semana. Você preenche o formulário de aplicação, Talita analisa se o
-momento da sua empresa se encaixa na metodologia e, com o perfil aprovado, a equipe entra em
-contato para agendar o horário.
+Para negócios em fase inicial, para quem trabalha sozinho ou para quem procura estratégias de
+marketing.
 
 ## Próximo passo
 
-Aplicação em https://boutiqueempresarial.com.br/formulario.html — são três vagas por semana,
-conduzidas diretamente por Talita Issei.
+Formulário em https://boutiqueempresarial.com.br/formulario.html — leva cerca de 2 minutos, e
+Talita Issei entra em contato pessoalmente por telefone.

@@ -145,59 +145,94 @@ Nenhum verbo proibido por §B6 ("garante", "elimina", "assegura") aparece na cop
 
 ### 3.2 Estrutura da página
 
+Revisada em 2026-10-21 (§6.3 A6).
+
 | # | Seção | Conteúdo |
 | :-- | :-- | :-- |
 | 0 | `header` | logo + link "Aplicação" → `/formulario.html` (inalterado) |
-| 1 | Hero | eyebrow · H1 · subheadline · **CTA 1** |
-| 2 | O que analisamos | 3 blocos numerados + parágrafo de fechamento |
-| 3 | Quem conduz | seção invertida, retrato, credenciais |
-| 4 | Para quem é a sessão | 3 itens |
-| 5 | Como funciona a seleção | 3 passos + nota de escassez + **CTA 2** |
-| 6 | Bloco AEO | "Em síntese" + 5 `<details>` — §B3 |
-| 7 | `footer` | inalterado |
+| 1 | Hero | linha de público · H1 · subheadline · **CTA 1** · nota abaixo do botão · linha de credibilidade |
+| 2 | Você se reconhece | 4 situações + parágrafo de fechamento |
+| 3 | O que analisamos | 3 cartões numerados + parágrafo de fechamento |
+| 4 | O que muda / se nada mudar | duas listas lado a lado a partir de 900px |
+| 5 | Quem conduz | seção invertida, retrato, credenciais |
+| 6 | Para quem é | 3 itens + "Para quem não é" |
+| 7 | Como funciona | 3 passos + **CTA 2** |
+| 8 | Bloco AEO | "Em síntese" + "Perguntas frequentes" (5 `<details>`) — §B3 |
+| 9 | Fechamento | frase de fechamento + **CTA 3** |
+| 10 | `footer` | sem a frase de fechamento, que subiu para a seção 9 |
+
+**CTA 4** é a barra fixa do mobile. Os quatro têm o mesmo rótulo e o mesmo destino
+(`tests/home.spec.js`).
 
 ### 3.3 Texto literal
 
+Copy da autora de 2026-10-21, publicada literalmente.
+
 **Hero**
 
-* Linha acima do título: `Para donos de empresas de serviço com time de 5 ou mais pessoas` (§6.3 A5)
-* H1: `Sua empresa cresceu. Seu time ainda depende de você para tudo.`
-* Subheadline: `Em uma sessão individual de 45 minutos, eu analiso a operação da sua empresa e mostro quais decisões, entregas e informações ainda passam por você, e o que mudar primeiro para o time resolver sem a sua aprovação.`
-* CTA 1: `Quero meu diagnóstico gratuito` → `/formulario.html`
+* Linha acima do título: `Para donos de empresas de serviço com equipe a partir de 5 pessoas`
+* H1: `Sua empresa cresceu, mas a sua equipe ainda depende de você para quase tudo`
+* Subheadline: `Em uma sessão individual de 45 minutos, analiso como a sua operação funciona hoje, mostro quais decisões, entregas e informações ainda passam por você e por onde começar a mudar isso.`
+* CTA 1: `Quero agendar meu diagnóstico` → `/formulario.html`
+* Abaixo do botão: `Leva 2 minutos. Eu mesma ligo para você — sem robô, sem automação.`
+* Linha de credibilidade: `Talita Issei, 15 anos de experiência em multinacionais como KPMG, Itaú, Vivo e Accenture`
 
-**Seção 2 — O que analisamos e entregamos na sua sessão**
+**Seção 2 — Você se reconhece em alguma destas situações?**
 
-Intro: `Durante a reunião, avaliamos o momento atual da sua operação e entregamos clareza sobre três pontos centrais:`
+* `Orçamentos, prazos e respostas para clientes só saem depois que você aprova`
+* `Você revisa tarefas que já pagou alguém para fazer`
+* `Para saber como está cada entrega, você precisa perguntar para a equipe`
+* `Mesmo de férias, você continua respondendo mensagens de trabalho`
+
+Fechamento: `Na maioria das vezes, isso tem uma raiz comum: a operação ainda não tem processos, papéis e indicadores bem definidos.`
+
+**Seção 3 — O que analisamos na sessão**
 
 | Nº | Título | Corpo |
 | :-- | :-- | :-- |
-| 01 | O que ainda trava em você | Mapeamos quais decisões do dia a dia hoje dependem só da sua aprovação, e indicamos o que seu time já pode decidir sozinho, sem precisar de você no meio. |
-| 02 | Onde a entrega falha | Identificamos em que etapa do serviço sua equipe mais erra ou gera retrabalho, e apontamos o que falta pra isso parar de se repetir. |
-| 03 | Onde a informação se perde | Avaliamos se o WhatsApp e a falta de rotina clara tão te fazendo perder o controle do que cada um tá fazendo, e mostramos como organizar isso. |
+| 01 | Decisões que dependem de você | Mapeio quais decisões do dia a dia hoje precisam da sua aprovação, e por que elas ainda não saem sem você. |
+| 02 | Falhas na entrega | Identifico em qual etapa do serviço acontecem os erros e o retrabalho, e por que eles se repetem. |
+| 03 | Fluxo de informação | Avalio como as demandas circulam pelo WhatsApp e pelos canais internos, e identifico onde a informação se perde ou atrasa. |
 
-Fechamento: `Ao final do encontro, você sai sabendo com clareza o que tá travando sua operação, e o que precisa corrigir primeiro. Se fizer sentido pro seu momento, apresento como podemos fazer essa reestruturação juntas através da Boutique Empresarial.`
+Fechamento: `Ao final, você sai com clareza sobre o que trava a sua operação e o que corrigir primeiro. Se fizer sentido para o seu momento, apresento como podemos fazer essa reestruturação juntos na Boutique Empresarial.`
 
-**Seção 3 — Quem conduz a sua análise**
+**Seção 4 — O que muda quando a equipe ganha autonomia**
+
+* `Você ganha mais tempo na agenda, porque deixa de aprovar e revisar tarefas que a equipe já consegue resolver`
+* `A operação fica mais previsível: rotina, metas e indicadores mostram o que cada pessoa está entregando`
+* `Você decide com mais segurança, porque passa a ter dados para saber quem está entregando, quando contratar e quando desligar`
+
+**Seção 4 — O que acontece se nada mudar**
+
+* `Sem indicador, as decisões sobre a equipe — contratar, demitir, remunerar — continuam no achismo, porque não há dado que mostre quem realmente entrega`
+* `Retrabalho vira rotina: a mesma informação é checada e refeita várias vezes, e você paga a mesma hora de trabalho mais de uma vez`
+
+**Seção 5 — Quem conduz a sua análise**
 
 * Nome: `Talita Issei`
-* P1: `Já vi dezenas de empresários trabalhando 12 horas por dia porque o time não decide nada sem eles. Antes de ajudar empresários a resolver isso, passei mais de 15 anos gerindo projeto, processo e gente em operações multinacionais — KPMG, Itaú, Vivo, Accenture.` — as marcas ficam **dentro da frase**, como na copy de origem: linha própria de credenciais separada por ponto médio é a mesma meta-string que o §6.2 R1 retirou. **Nunca logo** — marca de terceiro sem licença não entra no repositório.
-* P2: `Há 5 anos aplico essa bagagem em empresas de serviço, ajudando empresários a identificar falha operacional e transformar time dependente em time que roda sozinho.`
+* P1: `Já acompanhei empresários que não saem de férias sem o celular, que aprovam orçamento dentro do carro e que só descobrem que um prazo atrasou quando o cliente liga reclamando. Antes de trabalhar com esse problema, passei 15 anos em multinacionais como KPMG, Itaú, Vivo e Accenture, 9 deles à frente de gestão de equipes e projetos.` — marcas dentro da frase, **nunca logo**.
+* P2: `Há 5 anos levo essa experiência para pequenas e médias empresas, ajudando donos e sócios a formar equipes que decidem sem precisar deles o tempo todo.`
 
-**Seção 4 — Para quem é a sessão**
+**Seção 6 — Para quem é**
 
-* `Empresas de serviço com equipe a partir de 5 colaboradores`
-* `Negócio com operação ativa e carteira de clientes em expansão`
-* `Fundadoras decididas a sair do operacional pra focar em gestão e crescimento`
+* `Donos e sócios de empresas de serviço com 5 ou mais colaboradores`
+* `Empresas com operação ativa e carteira de clientes em crescimento`
+* `Empresários que decidiram sair do operacional para cuidar da gestão e do crescimento`
 
-**Seção 5 — Como funciona a seleção**
+`Para quem não é: negócios em fase inicial, quem trabalha sozinho ou quem procura estratégias de marketing.`
 
-Intro: `Por ser uma análise individual, conduzida diretamente por mim, libero apenas 3 vagas por semana.`
+**Seção 7 — Como funciona**
 
-1. `Preenche o formulário de aplicação abaixo`
-2. `Eu analiso se o momento da sua empresa se encaixa na metodologia`
-3. `Com o perfil aprovado, minha equipe entra em contato pra agendar seu horário`
+1. `Você preenche o formulário, que leva cerca de 2 minutos`
+2. `Eu mesma entro em contato por telefone para entender o momento da sua empresa`
+3. `Se fizer sentido, marcamos a sessão de 45 minutos com você e com quem decide junto com você`
 
-CTA 2: `Quero meu diagnóstico gratuito` → `/formulario.html` — mesmo rótulo do CTA 1 e da barra fixa do mobile; `tests/home.spec.js` exige rótulo único
+CTA 2: `Quero agendar meu diagnóstico` → `/formulario.html`
+
+**Seção 9 — Fechamento**
+
+* Frase: `Quando tudo depende de você, o crescimento vira peso. Nós transformamos isso em estrutura.`
+* CTA 3: `Quero agendar meu diagnóstico` → `/formulario.html`
 
 ### 3.4 Bloco AEO — §B3
 
@@ -205,25 +240,29 @@ Delimitado por `<!-- AEO-BODY:START -->` / `<!-- AEO-BODY:END -->`, imediatament
 `<footer>`. **Este texto é literalmente o mesmo do `FAQPage` no JSON-LD** — `tests/aeo.spec.js`
 compara os dois por `textContent` normalizado; parafrasear reprova o gate.
 
-**Em síntese** (`.aeo-tldr`, alvo do `SpeakableSpecification`):
+**Em síntese** (`.aeo-tldr`, alvo do `SpeakableSpecification`). Não está na copy da autora —
+é contrato do gate (§6.3 A4) — e foi reescrito em 2026-10-21 a partir da copy nova:
 
-> O Diagnóstico Gratuito é uma sessão individual de 45 minutos que analisa a operação de uma
-> empresa de serviços e aponta onde a estrutura precisa de ajuste para o time rodar com
-> autonomia. A análise cobre três pontos: quais decisões ainda dependem só da fundadora, em que
-> etapa da entrega o time erra ou gera retrabalho, e onde a informação se perde entre WhatsApp e
-> rotina indefinida. É conduzida por Talita Issei, com mais de 15 anos gerindo projeto, processo
-> e gente em operações multinacionais. São três vagas por semana, para empresas de serviço com
-> equipe a partir de 5 colaboradores.
+> O Diagnóstico Gratuito é uma sessão individual de 45 minutos, conduzida por Talita Issei, que
+> analisa como a operação de uma empresa de serviços funciona hoje. A análise mostra quais
+> decisões, entregas e informações ainda passam pelo dono e por onde começar a mudar isso. Cobre
+> três pontos: decisões que dependem do dono, falhas na entrega e fluxo de informação. É para
+> donos e sócios de empresas de serviço com equipe a partir de 5 colaboradores.
 
-**FAQ** (`.aeo-faq`, `<details>` nativo, sem JavaScript):
+**Perguntas frequentes** (`.aeo-faq`, título `h2` visível, `<details>` nativo, sem JavaScript) —
+texto literal da autora:
 
 | Pergunta | Resposta |
 | :-- | :-- |
-| O que é o Diagnóstico Gratuito? | O Diagnóstico Gratuito é uma sessão individual de 45 minutos, conduzida por Talita Issei, que analisa a operação da sua empresa de serviços e aponta onde a estrutura precisa de ajuste para o time rodar com autonomia. |
-| A sessão tem custo? | Não. A sessão é gratuita e dura 45 minutos. Ao final, se fizer sentido para o seu momento, Talita apresenta como a reestruturação pode ser conduzida através da Boutique Empresarial. |
-| Para quem é a sessão? | A sessão é para empresas de serviço com equipe a partir de 5 colaboradores, com operação ativa e carteira de clientes em expansão, conduzidas por fundadoras decididas a sair do operacional. |
-| Para quem a sessão não é? | A sessão não é para negócio em fase inicial, para operação de uma pessoa só, nem para quem procura tática de marketing e crescimento rápido. Nesses casos a resposta é não. |
-| Como funciona a seleção? | São três vagas por semana. Você preenche o formulário de aplicação, Talita analisa se o momento da sua empresa se encaixa na metodologia e, com o perfil aprovado, a equipe entra em contato para agendar o horário. |
+| A sessão tem custo? | Não, a sessão é gratuita e dura 45 minutos. |
+| No final, vou receber uma proposta de venda? | O foco da conversa é entender o que trava a sua operação hoje. Se ao final fizer sentido para o seu momento, mostro como a reestruturação pode ser feita com a Boutique Empresarial. |
+| Para quem é a sessão? | Para donos e sócios de empresas de serviço com equipe a partir de 5 colaboradores, com operação ativa e que querem sair do operacional. |
+| Como funciona? | Você preenche o formulário, eu entro em contato por telefone para entender o seu momento e, se fizer sentido, marcamos a sessão. |
+| Para quem a sessão não é? | Para negócios em fase inicial, para quem trabalha sozinho ou para quem procura estratégias de marketing. |
+
+O bloco AEO **deixa de ser o último elemento antes do `<footer>`**: a seção 9 (Fechamento) vem
+depois dele, por pedido da autora. Nenhum teste cobra a posição; os marcadores
+`AEO-BODY:START/END` continuam delimitando o bloco.
 
 ---
 
@@ -355,6 +394,7 @@ A autora revisou a página na branch e pediu quatro ajustes. Onde houver conflit
 | A3 | Trocar o retrato | nova origem em §6.1; mesmo destino, mesmas dimensões. `src`, `width`/`height` e o `image` do nó `Person` não mudam — só o `alt` |
 | A4 | Texto fiel à copy de origem, sem reinventar palavra ou expressão | §3 R1 e R2 revertidos. Saem as perguntas `Quem decide?` · `Onde erra?` · `Onde se perde?` (inclusive de `index.md` e `llms-full.txt`) e a nota de escassez (V10) — nada disso está na copy. O bloco AEO (§3.4) fica: é contrato do gate, não copy da página |
 | A5 | Nova copy da primeira dobra (2026-10-21) | Linha de público acima do H1, H1, subheadline e rótulo do CTA trocados — §3.3. O rótulo vale para os três CTAs (hero, seleção, barra fixa). A linha acima do título é frase em caixa normal, Inter 500, `--gold-text`: reverte o §6.2 R1 só no conteúdo (há uma linha), não no formato que ele retirou (caixa-alta, `letter-spacing` largo, ponto médio). Bloco AEO, JSON-LD (fora `dateModified`) e `public/*.md`/`llms*.txt` não mudam: nenhum deles reproduz o texto do hero |
+| A6 | Reescrita da página inteira (2026-10-21) | Copy nova em §3.3 e estrutura nova em §3.2: entram "Você se reconhece", "O que muda / se nada mudar", "Para quem não é" visível, a seção Fechamento e um 4º CTA. Sai a escassez "3 vagas por semana" (D5): a seleção passa a ser contato por telefone, e a página não cita mais limite de agenda — por isso também sai de `index.md`, `llms*.txt` e do FAQ. Público passa de "fundadoras" a "donos e sócios" (página, JSON-LD `audience`, `ProfessionalService`, `Person`, `llms*.txt`, `boutique-brand-voice/SKILL.md` + digest em `agent-skills/index.json`). A5 tem a linha acima do título e o rótulo do CTA substituídos pelos desta revisão |
 
 ---
 
