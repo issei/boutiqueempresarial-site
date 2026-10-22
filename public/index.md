@@ -4,87 +4,113 @@
 > e o que ajustar para o time decidir sozinho.
 
 **URL:** https://boutiqueempresarial.com.br/
-**Atualizado:** 2026-09-10
+**Atualizado:** 2026-10-21
 
-## Em síntese
+## Resumo
 
-O Diagnóstico Gratuito é uma sessão individual de 45 minutos que analisa a operação de uma
-empresa de serviços e aponta onde a estrutura precisa de ajuste para o time rodar com
-autonomia. A análise cobre três pontos: quais decisões ainda dependem só da fundadora, em que
-etapa da entrega o time erra ou gera retrabalho, e onde a informação se perde entre WhatsApp e
-rotina indefinida. É conduzida por Talita Issei, com mais de 15 anos gerindo projeto, processo
-e gente em operações multinacionais. São três vagas por semana, para empresas de serviço com
-equipe a partir de 5 colaboradores.
+O Diagnóstico Gratuito é uma sessão individual de 45 minutos, conduzida por Talita Issei, para
+donos e sócios de empresas de serviço com equipe a partir de 5 colaboradores. A sessão analisa
+quais decisões ainda dependem do dono, em que etapa da entrega acontecem os erros e o
+retrabalho, e como a informação circula pelo WhatsApp e pelos canais internos. Ao final, você
+sai sabendo o que trava a sua operação e o que corrigir primeiro.
 
-## O que a sessão examina
+## Sua empresa cresceu, mas a sua equipe ainda depende de você para quase tudo
 
-Durante a reunião, avaliamos o momento atual da operação e entregamos clareza sobre três
-pontos centrais:
+Para donos de empresas de serviço com equipe a partir de 5 pessoas. Em uma sessão individual de
+45 minutos, Talita Issei analisa como a sua operação funciona hoje, mostra quais decisões,
+entregas e informações ainda passam por você e por onde começar a mudar isso.
 
-1. **O que ainda trava em você** — Mapeamos quais decisões do dia a dia hoje dependem só da aprovação da
-   fundadora, e indicamos o que o time já pode decidir sozinho, sem precisar dela no meio.
-2. **Onde a entrega falha** — Identificamos em que etapa do serviço a equipe mais erra ou gera
-   retrabalho, e apontamos o que falta para isso parar de se repetir.
-3. **Onde a informação se perde** — Avaliamos se o WhatsApp e a falta de rotina clara estão fazendo a
-   fundadora perder o controle do que cada um está fazendo, e mostramos como organizar isso.
+## Você se reconhece em alguma destas situações?
 
-Ao final do encontro, a fundadora sai sabendo com clareza o que está travando a operação, e o
-que precisa corrigir primeiro. Se fizer sentido para o momento, Talita apresenta como a
-reestruturação pode ser conduzida através da Boutique Empresarial.
+- Orçamentos, prazos e respostas para clientes só saem depois que você aprova
+- Você revisa tarefas que já pagou alguém para fazer
+- Para saber como está cada entrega, você precisa perguntar para a equipe
+- Mesmo de férias, você continua respondendo mensagens de trabalho
+
+Na maioria das vezes, isso tem uma raiz comum: a operação ainda não tem processos, papéis e
+indicadores bem definidos.
+
+## O que analisamos na sessão
+
+1. **Decisões que dependem de você** — Mapeio quais decisões do dia a dia hoje precisam da sua
+   aprovação e quais a equipe já pode assumir.
+2. **Falhas na entrega** — Identifico em qual etapa do serviço acontecem os erros e o
+   retrabalho, e o que precisa mudar para que eles não se repitam.
+3. **Fluxo de informação** — Avalio como as demandas circulam pelo WhatsApp e pelos canais
+   internos, e mostro como organizar isso para você acompanhar as entregas sem precisar
+   perguntar o status.
+
+Ao final, você sai com clareza sobre o que trava a sua operação e o que corrigir primeiro. Se
+fizer sentido para o seu momento, Talita apresenta como fazer essa reestruturação com a
+Boutique Empresarial.
+
+## O que muda quando a equipe ganha autonomia
+
+- Você ganha mais tempo na agenda, porque deixa de aprovar e revisar tarefas que a equipe já
+  consegue resolver
+- A operação fica mais previsível: rotina, metas e indicadores mostram o que cada pessoa está
+  entregando
+- Você decide com mais segurança, porque passa a ter dados para saber quem está entregando,
+  quando contratar e quando desligar
+
+## O que acontece se nada mudar
+
+- Você continua pagando a equipe e gastando o seu tempo para revisar e refazer o trabalho
+- Sem dados sobre quem realmente entrega, a decisão de contratar ou demitir continua no
+  feeling — e o risco de contratar errado cresce junto com a equipe
 
 ## Quem conduz
 
-**Talita Issei** já viu dezenas de empresários trabalhando 12 horas por dia porque o time não
-decide nada sem eles. Antes de ajudar empresários a resolver isso, passou mais de 15 anos
-gerindo projeto, processo e gente em operações multinacionais — KPMG, Itaú, Vivo, Accenture.
-Há 5 anos aplica essa bagagem em empresas de serviço, ajudando empresários a identificar falha
-operacional e transformar time dependente em time que roda sozinho.
+**Talita Issei** já acompanhou empresários que não saem de férias sem o celular, que aprovam
+orçamento dentro do carro e que só descobrem que um prazo atrasou quando o cliente liga
+reclamando. Antes de trabalhar com esse problema, passou 15 anos em multinacionais como KPMG,
+Itaú, Vivo e Accenture, 4 deles à frente de gestão de equipes e projetos. Há 5 anos leva essa
+experiência para pequenas e médias empresas, ajudando donos e sócios a formar equipes que
+decidem sem precisar deles o tempo todo.
 
 ## Para quem é
 
-- Empresas de serviço com equipe a partir de 5 colaboradores
-- Negócio com operação ativa e carteira de clientes em expansão
-- Fundadoras decididas a sair do operacional para focar em gestão e crescimento
+- Donos e sócios de empresas de serviço com 5 ou mais colaboradores
+- Empresas com operação ativa e carteira de clientes em crescimento
+- Empresários que decidiram sair do operacional para cuidar da gestão e do crescimento
 
-## Como funciona a seleção
+**Para quem não é:** negócios em fase inicial, quem trabalha sozinho ou quem procura
+estratégias de marketing.
 
-Por ser uma análise individual, conduzida diretamente por Talita, são liberadas apenas 3 vagas
-por semana.
+## Como funciona
 
-1. Preenche o formulário de aplicação
-2. Talita analisa se o momento da empresa se encaixa na metodologia
-3. Com o perfil aprovado, a equipe entra em contato para agendar o horário
+1. Você preenche o formulário, que leva cerca de 2 minutos
+2. Talita entra em contato por telefone para entender o momento da sua empresa
+3. Se fizer sentido, vocês marcam a sessão de 45 minutos, com você e com quem decide junto com
+   você
 
 ## Perguntas frequentes
 
-### O que é o Diagnóstico Gratuito?
-
-O Diagnóstico Gratuito é uma sessão individual de 45 minutos, conduzida por Talita Issei, que
-analisa a operação da sua empresa de serviços e aponta onde a estrutura precisa de ajuste para
-o time rodar com autonomia.
-
 ### A sessão tem custo?
 
-Não. A sessão é gratuita e dura 45 minutos. Ao final, se fizer sentido para o seu momento,
-Talita apresenta como a reestruturação pode ser conduzida através da Boutique Empresarial.
+Não, a sessão é gratuita e dura 45 minutos.
+
+### No final, vou receber uma proposta de venda?
+
+O foco da conversa é entender o que trava a sua operação hoje. Se ao final fizer sentido para o
+seu momento, mostro como a reestruturação pode ser feita com a Boutique Empresarial.
 
 ### Para quem é a sessão?
 
-A sessão é para empresas de serviço com equipe a partir de 5 colaboradores, com operação ativa
-e carteira de clientes em expansão, conduzidas por fundadoras decididas a sair do operacional.
+Para donos e sócios de empresas de serviço com equipe a partir de 5 colaboradores, com operação
+ativa e que querem sair do operacional.
+
+### Como funciona?
+
+Você preenche o formulário, eu entro em contato por telefone para entender o seu momento e, se
+fizer sentido, marcamos a sessão.
 
 ### Para quem a sessão não é?
 
-A sessão não é para negócio em fase inicial, para operação de uma pessoa só, nem para quem
-procura tática de marketing e crescimento rápido. Nesses casos a resposta é não.
-
-### Como funciona a seleção?
-
-São três vagas por semana. Você preenche o formulário de aplicação, Talita analisa se o
-momento da sua empresa se encaixa na metodologia e, com o perfil aprovado, a equipe entra em
-contato para agendar o horário.
+Para negócios em fase inicial, para quem trabalha sozinho ou para quem procura estratégias de
+marketing.
 
 ## Próximo passo
 
-Aplicação em https://boutiqueempresarial.com.br/formulario.html — são três vagas por semana,
-conduzidas diretamente por Talita Issei.
+Aplicação em https://boutiqueempresarial.com.br/formulario.html — leva cerca de 2 minutos, e
+Talita Issei entra em contato por telefone.
