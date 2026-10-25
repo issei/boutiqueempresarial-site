@@ -1,6 +1,7 @@
 # SDD — Formulário de Aplicação (Sessão Estratégica de Análise Operacional)
 
 *   **Status**: Aprovado para implementação — contrato de dados vigente. **Frontend**: superseded por `docs/specs/pages/aplicacao-conversacional.md` (Fase 5, fluxo conversacional com diagnóstico espelhado); este documento continua a fonte da verdade do contrato de dados (§3) e dos critérios 1–9 (§7)
+*   **Emendado por**: [`design/formulario-dois-caminhos.md`](../design/formulario-dois-caminhos.md) (2026-10-25: pergunta de posição, caminho do gerente, faixas novas de `tamanho_equipe`, colunas novas da planilha) — prevalece sobre §3, §4.2 e §5.1 onde diferir
 *   **Arquivos afetados**: `src/formulario.html`, `src/obrigada.html`, `apps_script_atualizado.gs`
 *   **Fonte da verdade do conteúdo**: `COPY FORMULÁRIO.md` (revisão da autora — substitui o PDF `Aplicação - Boutique Empresarial`)
 *   **Substitui**: formulário legado de 7 perguntas (Nome, WhatsApp, E-mail, Faturamento, Time, Operação, Investimento)
