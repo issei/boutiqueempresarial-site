@@ -161,6 +161,7 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
   // be_perfil — conveniência de renderização do fechamento (§3 da Fase 5)
   const perfil = JSON.parse(await page.evaluate(() => localStorage.getItem('be_perfil')));
   expect(perfil).toEqual({
+    caminho: 'empresario',
     eixo: 'outro',
     segmento: 'b2c',
     nome: 'Maria',
@@ -523,4 +524,115 @@ test('critério 2: faixas novas de tamanho_equipe (D1)', async ({ page }) => {
   await page.goto('/formulario.html');
   const valores = await page.locator('input[name=tamanho_equipe]').evaluateAll(l => l.map(i => i.value));
   expect(valores).toEqual(['Menos de 3 colaboradores', '3 a 4 colaboradores', '5 a 15 colaboradores', 'Mais de 15 colaboradores']);
+});
+
+// ---------------------------------------------------------------------------
+// Devolutivas e fechamento do gerente (RASCUNHO, aguarda revisão da Talita)
+// ---------------------------------------------------------------------------
+
+test('devolutivas do gerente aparecem na etapa seguinte à pergunta que as alimenta', async ({ page }) => {
+  await page.goto('/formulario.html');
+  await escolher(page, 'posicao', GERENTE);
+  await contatoDoGerente(page);
+
+  await escolher(page, 'vinculo', 'CLT');
+  await expect(page.locator('#q-pessoas_lideradas')).toBeVisible({ timeout: 2000 });
+  await expect(page.locator('#an-pessoas_lideradas .cf-an-kicker')).toHaveText('Como isso muda a análise');
+  await expect(page.locator('#an-pessoas_lideradas .cf-an-axis')).toHaveText('O que está no seu alcance');
+  await expect(page.locator('#an-pessoas_lideradas .cf-an-text')).toHaveText('Como CLT, você tem limites de decisão definidos pela empresa. Eu olho o que você já pode mudar na condução do time sem pedir autorização a ninguém.');
+
+  await escolher(page, 'pessoas_lideradas', '11 a 20');
+  await expect(page.locator('#q-maior_desafio_gerente')).toBeVisible({ timeout: 2000 });
+  await expect(page.locator('#an-maior_desafio_gerente .cf-an-kicker')).toHaveText('A prioridade no tamanho do seu time');
+  await expect(page.locator('#an-maior_desafio_gerente .cf-an-axis')).toHaveText('Quem decide o quê');
+
+  await escolher(page, 'maior_desafio_gerente', 'Preciso cobrar pendências uma por uma');
+  await expect(page.locator('#q-objetivo_12m')).toBeVisible({ timeout: 2000 });
+  await expect(page.locator('#an-objetivo_12m .cf-an-kicker')).toHaveText('O que eu vou analisar no seu caso');
+  await expect(page.locator('#an-objetivo_12m .cf-an-axis')).toHaveText('Acompanhamento das entregas');
+  await expect(page.locator('#an-objetivo_12m .cf-an-text')).toHaveText('Na sua sessão eu olho onde ficam as pendências, as prioridades e os responsáveis, para você saber o status sem precisar perguntar.');
+
+  // Voltar e trocar a resposta troca o bloco.
+  await page.locator('#prev').click();
+  await escolher(page, 'maior_desafio_gerente', 'Outro');
+  await page.fill('#maior_desafio_gerente_outro', 'qualquer coisa');
+  await page.locator('#next').click();
+  await expect(page.locator('#an-objetivo_12m .cf-an-axis')).toHaveText('Os pontos que travam o time');
+});
+
+test('toda opção que alimenta uma devolutiva tem texto (nenhum bloco vazio)', async ({ page }) => {
+  await page.goto('/formulario.html');
+  const faltam = await page.evaluate(() => {
+    const out = [];
+    for (const campo of ['maior_problema_gestao', 'modelo_negocio', 'tamanho_equipe', 'vinculo', 'pessoas_lideradas', 'maior_desafio_gerente']) {
+      const grupo = FormCopy.ANALISE[campo];
+      for (const r of document.querySelectorAll('input[name=' + campo + ']')) {
+        const e = grupo && grupo.by[r.value];
+        if (!e || !e.axis || !e.text || /\[|\]/.test(e.text)) out.push(campo + ': ' + r.value);
+      }
+    }
+    return out;
+  });
+  expect(faltam).toEqual([]);
+});
+
+test('empresário: "Menos de 3" e "3 a 4 colaboradores" têm devolutiva própria', async ({ page }) => {
+  await page.goto('/formulario.html');
+  await escolher(page, 'posicao', EMPRESARIO);
+  await expect(page.locator('#q-maior_problema_gestao')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'maior_problema_gestao', 'Falta de padrão nas entregas e retrabalho');
+  await page.fill('#nome_completo', 'Eva Empresária');
+  await page.locator('#next').click();
+  await page.fill('#whatsapp', '11987654321');
+  await page.locator('#next').click();
+  await page.fill('#email', 'eva@exemplo.com');
+  await page.locator('#next').click();
+  await escolher(page, 'modelo_negocio', 'Agência / Assessoria');
+  await expect(page.locator('#q-tamanho_equipe')).toBeVisible({ timeout: 2000 });
+
+  await escolher(page, 'tamanho_equipe', 'Menos de 3 colaboradores');
+  await expect(page.locator('#q-faturamento_mensal')).toBeVisible({ timeout: 2000 });
+  await expect(page.locator('#an-faturamento_mensal .cf-an-axis')).toHaveText('Estrutura antes do time crescer');
+  await expect(page.locator('#an-faturamento_mensal .cf-an-text')).toHaveText('Com menos de 3 pessoas, o risco é você virar o gargalo de um negócio que ainda vai crescer. Eu olho o que precisa estar descrito antes das próximas contratações.');
+
+  await page.locator('#prev').click();
+  await escolher(page, 'tamanho_equipe', '3 a 4 colaboradores');
+  await expect(page.locator('#q-faturamento_mensal')).toBeVisible({ timeout: 2000 });
+  await expect(page.locator('#an-faturamento_mensal .cf-an-axis')).toHaveText('A saída do combinado verbal');
+  await expect(page.locator('#an-faturamento_mensal .cf-an-text')).toHaveText('Com 3 ou 4 pessoas quase tudo funciona por combinado verbal. Eu olho quais rotinas já precisam existir por escrito para o time não parar quando você não responde.');
+});
+
+test('critério 11: obrigada do gerente com fechamento acima da nota "em análise", sem seletor', async ({ page }) => {
+  await capturarPosts(page);
+  // O CRM devolve em_analise para todo gerente (D7); a rota padrão do beforeEach devolveria 503.
+  await page.route('**/api.boutiqueempresarial.com.br/**', route => route.fulfill({
+    status: 200, contentType: 'application/json', body: JSON.stringify({ em_analise: true, envio_email: true }),
+  }));
+  await page.goto(URL);
+  await escolher(page, 'posicao', GERENTE);
+  await contatoDoGerente(page);
+  await escolher(page, 'vinculo', 'PJ');
+  await expect(page.locator('#q-pessoas_lideradas')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'pessoas_lideradas', '6 a 10');
+  await expect(page.locator('#q-maior_desafio_gerente')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'maior_desafio_gerente', 'O time me procura para quase tudo');
+  await expect(page.locator('#q-objetivo_12m')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'objetivo_12m', 'Liderar com menos desgaste');
+  await page.locator('#next').click();
+  await page.waitForURL(/obrigada\.html/, { timeout: 8000 });
+
+  // be_perfil: o caminho e o que o fechamento usa; nada de contato nem texto livre.
+  const perfil = JSON.parse(await page.evaluate(() => localStorage.getItem('be_perfil')));
+  expect(perfil).toEqual({
+    caminho: 'gerente', nome: 'Gil', pessoas: '6 a 10',
+    desafio: 'O time me procura para quase tudo', objetivo: 'Liderar com menos desgaste',
+  });
+
+  await expect(page.locator('#titulo')).toHaveText('Aplicação recebida, Gil.');
+  await expect(page.locator('#fechamento')).toHaveText(
+    'Gil, liderar um time de 6 a 10 pessoas que te procura para quase tudo deixa o seu próprio trabalho para o fim do dia. Na sessão vamos definir o que o time pode decidir sem você. E vemos como fazer isso com menos desgaste para você e para o time.');
+  await expect(page.locator('#nota-analise')).toBeVisible();
+  await expect(page.locator('#agendamento')).toBeHidden(); // sem seletor de datas
+  const antes = await page.evaluate(() => !!(document.getElementById('fechamento').compareDocumentPosition(document.getElementById('nota-analise')) & Node.DOCUMENT_POSITION_FOLLOWING));
+  expect(antes, 'o fechamento precisa vir acima da nota em análise').toBe(true);
 });

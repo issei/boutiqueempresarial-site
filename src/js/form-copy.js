@@ -1,5 +1,7 @@
 // Copy do diagnóstico conversacional (Fase 5) — docs/specs/pages/aplicacao-conversacional.md §2.1/§6.
 // Módulo de dados, sem lógica de UI. Compartilhado por formulario.html e obrigada.html.
+// RASCUNHO (docs/specs/design/formulario-dois-caminhos.md, D5): os textos do caminho do gerente e
+// da faixa "Menos de 3 colaboradores" aguardam a revisão da Talita antes de ir ao ar.
 (function (global) {
   "use strict";
 
@@ -55,6 +57,14 @@
     tamanho_equipe: {
       kicker: "A prioridade no seu tamanho de operação",
       by: {
+        "Menos de 3 colaboradores": {
+          axis: "Estrutura antes do time crescer",
+          text: "Com menos de 3 pessoas, o risco é você virar o gargalo de um negócio que ainda vai crescer. Eu olho o que precisa estar descrito antes das próximas contratações.",
+        },
+        "3 a 4 colaboradores": {
+          axis: "A saída do combinado verbal",
+          text: "Com 3 ou 4 pessoas quase tudo funciona por combinado verbal. Eu olho quais rotinas já precisam existir por escrito para o time não parar quando você não responde.",
+        },
         "Apenas eu": {
           axis: "Estrutura antes da primeira contratação",
           text: "Sozinha, o risco não é o time: é você se tornar o gargalo de um negócio que ainda vai crescer. Eu olho o que precisa estar descrito antes da primeira contratação.",
@@ -94,10 +104,73 @@
         },
       },
     },
+
+    // Caminho do gerente. Cada bloco aparece na etapa SEGUINTE à pergunta que o alimenta.
+    vinculo: {
+      kicker: "Como isso muda a análise",
+      by: {
+        CLT: {
+          axis: "O que está no seu alcance",
+          text: "Como CLT, você tem limites de decisão definidos pela empresa. Eu olho o que você já pode mudar na condução do time sem pedir autorização a ninguém.",
+        },
+        PJ: {
+          axis: "Entrega combinada, método seu",
+          text: "Como PJ, você costuma ser cobrado pela entrega e tem mais liberdade no método. Eu olho como você conduz o time para essa entrega acontecer sem depender de você em cada etapa.",
+        },
+      },
+    },
+    pessoas_lideradas: {
+      kicker: "A prioridade no tamanho do seu time",
+      by: {
+        "3 a 5": {
+          axis: "Perto de cada pessoa",
+          text: "Com 3 a 5 pessoas você fala com todo mundo todo dia, e por isso tudo chega até você. Eu olho o que cada pessoa já pode decidir sem te procurar.",
+        },
+        "6 a 10": {
+          axis: "Acompanhar sem perguntar",
+          text: "De 6 a 10 pessoas já não dá para saber o status de tudo de cabeça. Eu olho como você acompanha as entregas sem perguntar uma por uma.",
+        },
+        "11 a 20": {
+          axis: "Quem decide o quê",
+          text: "De 11 a 20 pessoas você precisa de gente que decida no seu lugar. Eu olho quem pode assumir parte das decisões e como você acompanha o que foi decidido.",
+        },
+        "Mais de 20": {
+          axis: "Liderar por meio de outros líderes",
+          text: "Acima de 20 pessoas você conduz o time por meio de outras pessoas. Eu olho como as informações e as decisões passam por essa camada até chegar a você.",
+        },
+      },
+    },
+    maior_desafio_gerente: {
+      kicker: "O que eu vou analisar no seu caso",
+      by: {
+        "O time me procura para quase tudo": {
+          axis: "Dependência de você",
+          text: "Na sua sessão eu separo o que precisa mesmo da sua autorização do que o time pode resolver sozinho, se souber que pode.",
+        },
+        "Preciso cobrar pendências uma por uma": {
+          axis: "Acompanhamento das entregas",
+          text: "Na sua sessão eu olho onde ficam as pendências, as prioridades e os responsáveis, para você saber o status sem precisar perguntar.",
+        },
+        "Tenho dificuldade de cobrar e dar retorno sem desgastar a relação": {
+          axis: "Cobrança e retorno",
+          text: "Na sua sessão eu olho como e quando você dá retorno ao time, para a cobrança virar uma rotina combinada e não uma conversa difícil.",
+        },
+        "Sou cobrado pelo resultado, mas não consigo mostrar o que o time entrega": {
+          axis: "Visibilidade do resultado",
+          text: "Na sua sessão eu olho como o trabalho do time é registrado hoje, para você mostrar com números o que foi entregue.",
+        },
+        Outro: {
+          axis: "Os pontos que travam o time",
+          text: "Na sua sessão eu percorro como você acompanha o time, como as decisões chegam até você e o que já custou caro, para localizar por onde começar.",
+        },
+      },
+    },
   };
 
   // [Tamanho do Time]: forma que encaixa depois de "com …".
   var TIME_COM = {
+    "Menos de 3 colaboradores": "um time de menos de 3 pessoas",
+    "3 a 4 colaboradores": "um time de 3 a 4 pessoas",
     "Apenas eu": "apenas você",
     "2 a 4 colaboradores": "um time de 2 a 4 pessoas",
     "5 a 15 colaboradores": "um time de 5 a 15 pessoas",
@@ -153,6 +226,41 @@
     outro_segmento_outro: "[Nome], com [Tamanho do Time] e faturamento de [Faturamento], cada empresa tem falhas específicas na operação. Na sessão vamos mapear a rotina do seu time e organizar as etapas.",
   };
 
+  // Caminho do gerente — fechamento da obrigada (RASCUNHO, aguarda a revisão da Talita).
+  // [Pessoas] ← pessoas_lideradas; o fechamento sai acima da nota "em análise" (D7).
+  var PESSOAS_LIDERADAS_COM = {
+    "3 a 5": "um time de 3 a 5 pessoas",
+    "6 a 10": "um time de 6 a 10 pessoas",
+    "11 a 20": "um time de 11 a 20 pessoas",
+    "Mais de 20": "um time de mais de 20 pessoas",
+  };
+
+  // slug ← maior_desafio_gerente
+  var DESAFIO_GERENTE_SLUG = {
+    "O time me procura para quase tudo": "quase_tudo",
+    "Preciso cobrar pendências uma por uma": "pendencias",
+    "Tenho dificuldade de cobrar e dar retorno sem desgastar a relação": "retorno",
+    "Sou cobrado pelo resultado, mas não consigo mostrar o que o time entrega": "resultado",
+    Outro: "outro",
+  };
+
+  var FECHAMENTO_GERENTE = {
+    quase_tudo: "[Nome], liderar [Pessoas] que te procura para quase tudo deixa o seu próprio trabalho para o fim do dia. Na sessão vamos definir o que o time pode decidir sem você.",
+    pendencias: "[Nome], com [Pessoas], cobrar pendência por pendência ocupa o dia inteiro. Na sessão vamos montar uma rotina para você acompanhar as entregas sem perguntar uma a uma.",
+    retorno: "[Nome], com [Pessoas], cobrar e dar retorno sem uma rotina vira conversa difícil. Na sessão vamos combinar quando e como o retorno acontece.",
+    resultado: "[Nome], você responde pelo resultado de [Pessoas], mas o que o time entrega não aparece. Na sessão vamos organizar o registro das entregas para o resultado ficar visível.",
+    outro: "[Nome], liderar [Pessoas] traz questões bem específicas. Na sessão vamos olhar como você conduz o time hoje e por onde começar a mudar.",
+  };
+
+  // Frase final, por objetivo em 12 meses. "Outro" fica sem frase.
+  var OBJETIVO_FRASE = {
+    "Ser reconhecido pelo resultado do time": "E deixamos claro como isso aparece para quem avalia o resultado do seu time.",
+    "Crescer de cargo": "E olhamos como essa mudança prepara você para o próximo cargo.",
+    "Ter tempo para o trabalho que só eu faço": "E vemos quanto tempo isso devolve para o trabalho que só você faz.",
+    "Liderar com menos desgaste": "E vemos como fazer isso com menos desgaste para você e para o time.",
+    Outro: "",
+  };
+
   // Replace literal dos três tokens — a copy é editada pela autora, não deve exigir
   // toque em código (template string exigiria). Sem [Nome], a frase abre sem vocativo.
   function preencher(tpl, vars) {
@@ -174,6 +282,10 @@
     AXIS_SLUG: AXIS_SLUG,
     SEG_SLUG: SEG_SLUG,
     FECHAMENTO: FECHAMENTO,
+    PESSOAS_LIDERADAS_COM: PESSOAS_LIDERADAS_COM,
+    DESAFIO_GERENTE_SLUG: DESAFIO_GERENTE_SLUG,
+    FECHAMENTO_GERENTE: FECHAMENTO_GERENTE,
+    OBJETIVO_FRASE: OBJETIVO_FRASE,
     preencher: preencher,
   };
 })(window);

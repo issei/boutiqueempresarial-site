@@ -988,6 +988,7 @@
             </div>
 
             <div class="step" data-id="pessoas_lideradas" data-path="gerente">
+                <div class="cf-an" id="an-pessoas_lideradas" aria-live="off" hidden></div>
                 <fieldset>
                     <legend id="q-pessoas_lideradas">Quantas pessoas respondem diretamente a você?</legend>
                     <div class="cf-opts" role="radiogroup" aria-labelledby="q-pessoas_lideradas">
@@ -1001,6 +1002,7 @@
             </div>
 
             <div class="step" data-id="maior_desafio_gerente" data-path="gerente">
+                <div class="cf-an" id="an-maior_desafio_gerente" aria-live="off" hidden></div>
                 <fieldset>
                     <legend id="q-maior_desafio_gerente">Qual é o maior desafio com o seu time hoje?</legend>
                     <div class="cf-opts" role="radiogroup" aria-labelledby="q-maior_desafio_gerente">
@@ -1018,6 +1020,7 @@
             </div>
 
             <div class="step" data-id="objetivo_12m" data-path="gerente">
+                <div class="cf-an" id="an-objetivo_12m" aria-live="off" hidden></div>
                 <fieldset>
                     <legend id="q-objetivo_12m">O que você quer conquistar nos próximos 12 meses?</legend>
                     <div class="cf-opts" role="radiogroup" aria-labelledby="q-objetivo_12m">
@@ -1099,7 +1102,11 @@
             // Etapa de escolha única avança sozinha, menos a última (que envia).
             function isChoice() { return current < TOTAL - 1 && !!cur().querySelector("input[type=radio]"); }
             // Etapa que mostra o bloco de análise (#an-<id>) e a pergunta cuja resposta ele lê.
-            var ANALYSIS_SOURCE = { nome_completo: "maior_problema_gestao", tamanho_equipe: "modelo_negocio", faturamento_mensal: "tamanho_equipe" };
+            var ANALYSIS_SOURCE = {
+                nome_completo: "maior_problema_gestao", tamanho_equipe: "modelo_negocio", faturamento_mensal: "tamanho_equipe",
+                // Caminho do gerente: cada bloco lê a resposta da etapa anterior.
+                pessoas_lideradas: "vinculo", maior_desafio_gerente: "pessoas_lideradas", objetivo_12m: "maior_desafio_gerente"
+            };
 
             function fieldValue(name) {
                 var radio = form.querySelector('input[name="' + name + '"][type=radio]:checked');
@@ -1582,9 +1589,17 @@
 
                 // be_perfil — conveniência de renderização do fechamento em obrigada.html.
                 // Nenhum dado novo: slugs derivados das próprias respostas (§3 da Fase 5).
+                // Leva o caminho; o do gerente só traz o que o fechamento dele usa (sem contato nem texto livre).
                 try {
                     var FC = window.FormCopy;
-                    localStorage.setItem("be_perfil", JSON.stringify({
+                    localStorage.setItem("be_perfil", JSON.stringify(path === "gerente" ? {
+                        caminho: "gerente",
+                        nome: firstNameCap(payload.nome_completo),
+                        pessoas: payload.pessoas_lideradas,
+                        desafio: payload.maior_desafio_gerente,
+                        objetivo: payload.objetivo_12m
+                    } : {
+                        caminho: "empresario",
                         eixo: (FC && FC.AXIS_SLUG[payload.maior_problema_gestao]) || "outro",
                         segmento: (FC && FC.SEG_SLUG[payload.modelo_negocio]) || "segmento_outro",
                         nome: firstNameCap(payload.nome_completo),

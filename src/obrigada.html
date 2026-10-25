@@ -290,6 +290,25 @@
                 if (!raw) return;
                 var p = JSON.parse(raw);
                 var FC = window.FormCopy;
+
+                // Caminho do gerente (docs/specs/design/formulario-dois-caminhos.md, D7): o fechamento
+                // fica acima da nota "em análise", que o obrigada-agendar.js mostra para todo gerente.
+                if (FC && p && p.caminho === "gerente") {
+                    var slug = FC.DESAFIO_GERENTE_SLUG[p.desafio];
+                    var tplG = slug && FC.FECHAMENTO_GERENTE[slug];
+                    var pessoas = FC.PESSOAS_LIDERADAS_COM[p.pessoas];
+                    if (!tplG || !pessoas) return;
+                    var nomeG = (p.nome || "").trim();
+                    var textoG = FC.preencher(tplG, { "[Nome]": nomeG, "[Pessoas]": pessoas });
+                    var frase = FC.OBJETIVO_FRASE[p.objetivo];
+                    if (frase) textoG += " " + frase;
+                    document.getElementById("titulo").textContent = nomeG ? "Aplicação recebida, " + nomeG + "." : "Aplicação recebida.";
+                    var elG = document.getElementById("fechamento");
+                    elG.textContent = textoG;
+                    elG.hidden = false;
+                    return;
+                }
+
                 if (!FC || !p || !p.eixo || !p.segmento) return;
 
                 var tpl = FC.FECHAMENTO[p.eixo + "_" + p.segmento] || FC.FECHAMENTO.outro_segmento_outro;
