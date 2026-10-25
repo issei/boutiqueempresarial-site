@@ -80,7 +80,7 @@ de dono (contrato do `HARNESS_AEO.md`; a home é outro arquivo e outra spec).
   `n/N` e barra derivam do caminho ativo (princípio do D5 de `formulario.md`).
 - Voltar à posição e trocar de opção limpa as respostas do outro caminho.
 - Campos "Outro" só aparecem, e só vão no payload, com "Outro" marcado.
-- Pré-captura (`sendPartial()`) igual nos dois caminhos: dispara quando nome + WhatsApp + e-mail validam.
+- Pré-captura (`sendPartial()`) igual nos dois caminhos: dispara quando nome + WhatsApp + e-mail validam e leva `posicao` (G1), que já foi respondida na etapa 1.
 - WebMCP: `get_form_state`, `answer_field` e `next_step` só enxergam as etapas do caminho ativo.
 - Celular: opções longas do gerente (até 72 caracteres) cabem no bloco de opções em 360 px sem rolagem
   horizontal.
@@ -105,6 +105,7 @@ Todo gerente passa por análise: a rota `link` do CRM devolve `em_analise: true`
 - Colunas novas no fim do cabeçalho: `Posição | Vínculo | Pessoas Lideradas | Maior Desafio (Gerente) |
   Desafio Gerente (Outro) | Objetivo 12 meses | Objetivo (Outro)`. Efeito conhecido: o primeiro `doPost`
   após publicar arquiva a aba `Respostas` como `Respostas_legado_<timestamp>` (nada é apagado).
+- Aba `Parciais` ganha a coluna `Posição` no fim. Efeito conhecido: o primeiro parcial após publicar arquiva a aba `Parciais`, como acontece com a `Respostas` (nada é apagado).
 - E-mail interno (`notifyNewLead`) mostra o caminho e os campos dele.
 - Repasse ao CRM inalterado (manda o JSON inteiro).
 
@@ -126,6 +127,7 @@ depois da revisão.
 | D5 | Claude rascunha os textos do gerente; Talita revisa | Esperar a Talita escrever |
 | D6 | CAPI recebe só `lead_caminho` | Nada novo; caminho + pessoas lideradas |
 | D7 | Todo gerente passa por análise antes do agendamento | Só "Outro" + "Outro" |
+| G1 | Pré-captura leva `posicao` junto do contato | Só o contato |
 
 ## Critérios de pronto
 
@@ -135,7 +137,7 @@ depois da revisão.
    sem modelo, tamanho, faturamento e maior problema.
 4. "Outro" do gerente: campo só aparece e só vai no payload com "Outro" marcado.
 5. Trocar a posição limpa o outro caminho; contador e barra mostram o total do caminho ativo.
-6. Pré-captura dispara nos dois caminhos, uma vez por `event_id`.
+6. Pré-captura dispara nos dois caminhos, uma vez por `event_id`, com `posicao` no payload.
 7. Eventos GA4 com `path`; nenhum evento com contato ou texto livre.
 8. WebMCP só expõe etapas do caminho ativo.
 9. axe sem `serious`/`critical`; 360 px sem rolagem horizontal.
