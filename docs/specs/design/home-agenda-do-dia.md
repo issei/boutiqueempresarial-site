@@ -31,7 +31,7 @@ Lista ordenada. Marcação semântica:
 ```
 
 *   `<time>` **sem** atributo `datetime`: o horário é ilustrativo.
-*   O horário é um rótulo à esquerda: Inter 600, cor `--gold` ou tinta, largura fixa para os textos alinharem.
+*   O horário é um rótulo à esquerda: Inter 600, cor `--be-ink` (tinta), largura fixa para os textos alinharem. A copy v3 admitia `--gold` ou tinta; o ouro `#C5A059` não carrega texto (2.20:1, `obrigada-agendamento.md` §3), então fica a tinta. O ouro continua só no filete.
 *   Acima de 640 px: grade `5.5rem 1fr`. Abaixo de 640 px: empilhado, com o horário **acima** do texto.
 *   Reaproveita o filete dourado da `.pain-list`.
 *   O último item (18h) tem destaque: peso maior, por ser o fecho da cena.
@@ -81,7 +81,7 @@ Linha final de cada um dos três cartões da seção "O que olhamos juntos nos 4
 
 *   `<ol>` e `<time>` entregam a ordem e o horário a leitores de tela sem ARIA extra.
 *   Em 375 px, sem rolagem horizontal; o horário fica acima do texto.
-*   A copy v3 deixa a cor do horário em aberto ("`--gold` ou tinta"). O ouro `#C5A059` não carrega texto (2.20:1, `obrigada-agendamento.md` §3); se `--gold` não cumprir o contraste do axe (`tests/a11y.spec.js`), o horário usa a tinta. Decidir ao verificar no `/design-sync`.
+*   Cor do horário: tinta (`--be-ink`), decidido. A copy v3 admitia "`--gold` ou tinta", mas o ouro `#C5A059` não carrega texto (2.20:1, `obrigada-agendamento.md` §3) e reprovaria o contraste do axe (`tests/a11y.spec.js`).
 
 ## 6. Critérios de pronto
 
@@ -95,8 +95,7 @@ Linha final de cada um dos três cartões da seção "O que olhamos juntos nos 4
 ## 7. Passos antes de implementar
 
 1.  Rodar `/design-sync` na sessão local do site e conferir os três componentes contra `design-system/` e `STYLE_GUIDE.md` (`CLAUDE.md` do site, regras 1 e 2).
-2.  Resolver o ponto aberto de §5 (cor do horário).
-3.  Só então implementar `src/index.html` e `tests/home.spec.js`, junto com o resto da copy v3.
+2.  Só então implementar `src/index.html` e `tests/home.spec.js`, junto com o resto da copy v3.
 
 ## 8. Fora de escopo
 
