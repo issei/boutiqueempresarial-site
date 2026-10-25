@@ -128,6 +128,6 @@ test('formulario.html reabre as preferências pelo texto legal', async ({ page }
 test('o rodapé do formulário condiciona o consentimento a responder, não a enviar', async ({ page }) => {
   await page.goto('/formulario.html');
   const leg = page.locator('.leg').last();
-  await expect(leg).toContainText('Ao responder, você concorda');
+  await expect(leg).toContainText('Ao responder, você autoriza'); // texto literal de formulario-dois-caminhos.md (D2)
   await expect(leg).not.toContainText('Ao enviar');
 });

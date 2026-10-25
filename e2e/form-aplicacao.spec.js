@@ -42,6 +42,14 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
 
   const next = page.locator('#next');
 
+  // 0 posição — primeira etapa, obrigatória, avança sozinha
+  // (docs/specs/design/formulario-dois-caminhos.md, critérios 1 e 2).
+  await expect(next).toBeHidden();
+  await expect(page.locator('#q-posicao')).toHaveText('Qual é a sua posição na empresa?');
+  await page.locator('input[name=posicao][value="Sou dono ou sócio"]').check({ force: true });
+  await expect(page.locator('#q-maior_problema_gestao')).toBeVisible({ timeout: 2000 });
+  await expect(page.locator('.step.a .transicao')).toHaveText('Agora me conta um pouco sobre a sua empresa.');
+
   // 1 maior desafio da operação — etapa de radio: sem botão "Continuar" até
   // "Outro" ser escolhido (critério 11/12 da Fase 5).
   await expect(next).toBeHidden();
@@ -57,8 +65,8 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
   // 2 nome — valida obrigatoriedade; bloco de análise vem do desafio "Outro"
   // escolhido acima (critério 13/14: nenhum bloco fica vazio ou com token cru).
   await expect(page.locator('#q-nome_completo')).toBeVisible();
-  await expect(page.locator('#an-1')).toBeVisible();
-  await expect(page.locator('#an-1 .cf-an-kicker')).toHaveText('O que eu vou analisar no seu caso');
+  await expect(page.locator('#an-nome_completo')).toBeVisible();
+  await expect(page.locator('#an-nome_completo .cf-an-kicker')).toHaveText('O que eu vou analisar no seu caso');
   await next.click();
   await expect(page.locator('#err-nome_completo')).toBeVisible();
   await page.fill('#nome_completo', 'maria silva souza');
@@ -84,14 +92,14 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
   await expect(page.locator('#q-tamanho_equipe')).toBeVisible({ timeout: 2000 });
 
   // 6 tamanho do time — bloco de análise vem do modelo de negócio (critério 13).
-  await expect(page.locator('#an-5')).toBeVisible();
-  await expect(page.locator('#an-5 .cf-an-kicker')).toHaveText('Como isso muda a análise');
+  await expect(page.locator('#an-tamanho_equipe')).toBeVisible();
+  await expect(page.locator('#an-tamanho_equipe .cf-an-kicker')).toHaveText('Como isso muda a análise');
   await page.locator('input[name=tamanho_equipe][value="5 a 15 colaboradores"]').check({ force: true });
   await expect(page.locator('#q-faturamento_mensal')).toBeVisible({ timeout: 2000 });
 
   // 7 faturamento — bloco de análise vem do tamanho do time; envio após esta etapa.
-  await expect(page.locator('#an-6')).toBeVisible();
-  await expect(page.locator('#an-6 .cf-an-kicker')).toHaveText('A prioridade no seu tamanho de operação');
+  await expect(page.locator('#an-faturamento_mensal')).toBeVisible();
+  await expect(page.locator('#an-faturamento_mensal .cf-an-kicker')).toHaveText('A prioridade no seu tamanho de operação');
   await page.locator('input[name=faturamento_mensal][value="R$ 100 mil a R$ 300 mil/mês"]').check({ force: true });
 
   // Envio: consentimento é agora implícito (rodapé). Nenhuma step adicional.
@@ -105,6 +113,7 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
 
   const parcial = JSON.parse(posts[0]);
   expect(parcial.parcial).toBe(true);
+  expect(parcial.posicao).toBe('Sou dono ou sócio'); // G1: a pré-captura leva a posição
   expect(parcial.nome_completo).toBe('maria silva souza');
   expect(parcial.email).toBe('Maria@Exemplo.COM');
   expect(parcial.whatsapp).toBe('(11) 98765-4321');
@@ -118,6 +127,12 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
   // A flag só existe no parcial: é ela que faz o backend pular CAPI e e-mail.
   expect(d.parcial).toBeUndefined();
   expect(d.event_id).toBe(parcial.event_id);
+
+  // Critério 2: payload de hoje + posicao, sem nenhuma chave do gerente.
+  expect(d.posicao).toBe('Sou dono ou sócio');
+  for (const k of ['vinculo', 'pessoas_lideradas', 'maior_desafio_gerente', 'maior_desafio_gerente_outro', 'objetivo_12m', 'objetivo_12m_outro']) {
+    expect(d[k], k).toBeUndefined();
+  }
 
   expect(d.nome_completo).toBe('maria silva souza');
   expect(d.email).toBe('Maria@Exemplo.COM');
@@ -177,6 +192,8 @@ test('funil: eventos GA4/Meta por etapa, sem dado pessoal', async ({ page }) => 
   const ga = () => page.evaluate(() =>
     (window.dataLayer || []).map(a => Array.from(a)).filter(a => a[0] === 'event').map(a => [a[1], a[2]]));
 
+  await page.locator('input[name=posicao][value="Sou dono ou sócio"]').check({ force: true });
+  await expect(page.locator('#q-maior_problema_gestao')).toBeVisible({ timeout: 2000 });
   await page.locator('input[name=maior_problema_gestao][value="Falta de padrão nas entregas e retrabalho"]').check({ force: true });
   await expect(page.locator('#q-nome_completo')).toBeVisible({ timeout: 2000 });
   await next.click(); // vazio -> erro de validação
@@ -192,16 +209,20 @@ test('funil: eventos GA4/Meta por etapa, sem dado pessoal', async ({ page }) => 
   expect(events.map(e => e[0])).toEqual([
     'form_step_view',
     'form_answer', 'form_step_complete', 'form_begin', 'form_step_view',
+    'form_answer', 'form_step_complete', 'form_step_view',
     'form_validation_error',
     'form_step_complete', 'form_step_view',
     'form_step_complete', 'form_step_view',
     'form_step_complete', 'form_contact_captured', 'form_step_view',
     'form_back', 'form_step_view',
   ]);
-  expect(events[0][1]).toEqual({ step_index: 0, step_name: 'maior_problema_gestao', direction: 'init' });
-  expect(events[1][1]).toEqual({ step_name: 'maior_problema_gestao', answer: 'Falta de padrão nas entregas e retrabalho' });
-  expect(events[5][1]).toEqual({ step_name: 'nome_completo' });
-  expect(events.at(-1)[1]).toMatchObject({ step_index: 3, step_name: 'email', direction: 'back' });
+  // Antes da posição não há caminho; depois, todo form_* leva path (critério 7).
+  expect(events[0][1]).toEqual({ step_index: 0, step_name: 'posicao', direction: 'init' });
+  expect(events[1][1]).toEqual({ step_name: 'posicao', answer: 'Sou dono ou sócio', path: 'empresario' });
+  expect(events[5][1]).toEqual({ step_name: 'maior_problema_gestao', answer: 'Falta de padrão nas entregas e retrabalho', path: 'empresario' });
+  expect(events[8][1]).toEqual({ step_name: 'nome_completo', path: 'empresario' });
+  expect(events.at(-1)[1]).toMatchObject({ step_index: 4, step_name: 'email', direction: 'back', path: 'empresario' });
+  for (const [nome, params] of events.slice(1)) expect(params.path, nome).toBe('empresario');
 
   // Só valores de conjuntos fechados: nada do que foi digitado vaza para os parâmetros.
   const flat = JSON.stringify(events);
@@ -221,6 +242,8 @@ test('abandono após o e-mail deixa só a pré-captura', async ({ page }) => {
 
   await page.goto('/formulario.html');
   const next = page.locator('#next');
+  await page.locator('input[name=posicao][value="Sou dono ou sócio"]').check({ force: true });
+  await expect(page.locator('#q-maior_problema_gestao')).toBeVisible({ timeout: 2000 });
   await page.locator('input[name=maior_problema_gestao][value="Falta de padrão nas entregas e retrabalho"]').check({ force: true });
   await expect(page.locator('#q-nome_completo')).toBeVisible({ timeout: 2000 });
   await page.fill('#nome_completo', 'João Abandono');
@@ -235,6 +258,7 @@ test('abandono após o e-mail deixa só a pré-captura', async ({ page }) => {
   await expect.poll(() => posts.length).toBe(1);
   const parcial = JSON.parse(posts[0]);
   expect(parcial.parcial).toBe(true);
+  expect(parcial.posicao).toBe('Sou dono ou sócio');
   expect(parcial.email).toBe('joao@exemplo.com');
 
   // Voltar e avançar de novo não pode gerar uma segunda pré-captura.
@@ -266,4 +290,237 @@ test('sem be_perfil, obrigada.html cai no agradecimento genérico e ainda dispar
   await page.goto('/obrigada.html?eid=test-event-id');
   await expect(page.locator('#titulo')).toHaveText('Solicitação Recebida');
   await expect(page.locator('#fechamento')).toBeHidden();
+});
+
+// ---------------------------------------------------------------------------
+// Dois caminhos (docs/specs/design/formulario-dois-caminhos.md, critérios 1 a 10)
+// ---------------------------------------------------------------------------
+
+const EMPRESARIO = 'Sou dono ou sócio';
+const GERENTE = 'Lidero um time na empresa (gerente, coordenador, supervisor)';
+const escolher = (page, name, value) => page.locator(`input[name=${name}][value="${value}"]`).check({ force: true });
+
+// Captura os POSTs ao Apps Script e responde sucesso.
+async function capturarPosts(page) {
+  const posts = [];
+  await page.route('**/script.google.com/**', route => {
+    posts.push(JSON.parse(route.request().postData()));
+    route.fulfill({ status: 200, contentType: 'application/json', body: '{"result":"success"}' });
+  });
+  return posts;
+}
+
+// Contato do gerente: nome → e-mail → WhatsApp (D4).
+async function contatoDoGerente(page) {
+  const next = page.locator('#next');
+  await expect(page.locator('#q-nome_completo')).toBeVisible({ timeout: 2000 });
+  await page.fill('#nome_completo', 'Gil Gerente');
+  await next.click();
+  await expect(page.locator('#q-email')).toBeVisible();
+  await page.fill('#email', 'gil@exemplo.com');
+  await next.click();
+  await expect(page.locator('#q-whatsapp')).toBeVisible();
+  await page.fill('#whatsapp', '11988887777');
+  await next.click();
+}
+
+test('critério 1: sem resposta na posição o formulário não avança', async ({ page }) => {
+  await page.goto('/formulario.html');
+  await expect(page.locator('#q-posicao')).toBeVisible();
+  await expect(page.locator('#next')).toBeHidden();
+  await page.evaluate(() => window.nav(1));
+  await expect(page.locator('#err-posicao')).toBeVisible();
+  await expect(page.locator('#q-posicao')).toBeVisible();
+  await expect(page.locator('.step.a')).toHaveCount(1);
+});
+
+test('critérios 3 e 6: caminho do gerente, ordem da Talita, 8 etapas e payload', async ({ page }) => {
+  const posts = await capturarPosts(page);
+  await page.goto(URL);
+  const next = page.locator('#next');
+  await expect(page.locator('#dots .dot')).toHaveCount(8);
+
+  await escolher(page, 'posicao', GERENTE);
+  await expect(page.locator('.step.a .transicao')).toHaveText('Agora me conta um pouco sobre o time que você lidera.');
+  await expect(page.locator('#dots .dot')).toHaveCount(8);
+  await contatoDoGerente(page);
+
+  // A pré-captura sai quando nome + e-mail + WhatsApp validam, uma vez só, com a posição.
+  await expect(page.locator('#q-vinculo')).toBeVisible();
+  await expect.poll(() => posts.length).toBe(1);
+  expect(posts[0].parcial).toBe(true);
+  expect(posts[0].posicao).toBe(GERENTE);
+  expect(posts[0].vinculo).toBeUndefined();
+
+  await escolher(page, 'vinculo', 'CLT');
+  await expect(page.locator('#q-pessoas_lideradas')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'pessoas_lideradas', '6 a 10');
+  await expect(page.locator('#q-maior_desafio_gerente')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'maior_desafio_gerente', 'Outro');
+  await expect(page.locator('#maior_desafio_gerente_outro')).toBeVisible();
+  await expect(page.locator('#maior_desafio_gerente_outro')).toBeFocused();
+  await next.click();
+  await expect(page.locator('#err-maior_desafio_gerente')).toBeVisible();
+  await page.fill('#maior_desafio_gerente_outro', 'Cobrança entre áreas');
+  await next.click();
+  await expect(page.locator('#q-objetivo_12m')).toBeVisible();
+  await escolher(page, 'objetivo_12m', 'Crescer de cargo');
+  await expect(next).toHaveText('Enviar aplicação');
+  await next.click();
+  await page.waitForURL(/obrigada\.html/, { timeout: 8000 });
+
+  expect(posts.length).toBe(2); // só a pré-captura e o envio final
+  const d = posts[1];
+  expect(d.parcial).toBeUndefined();
+  expect(d.event_id).toBe(posts[0].event_id);
+  expect(d).toMatchObject({
+    posicao: GERENTE, vinculo: 'CLT', pessoas_lideradas: '6 a 10',
+    maior_desafio_gerente: 'Outro', maior_desafio_gerente_outro: 'Cobrança entre áreas',
+    objetivo_12m: 'Crescer de cargo',
+    nome_completo: 'Gil Gerente', email: 'gil@exemplo.com', whatsapp: '(11) 98888-7777', consentimento: true,
+  });
+  // Critério 3: sem modelo, tamanho, faturamento e maior problema (vazios, para o backend alinhar colunas).
+  for (const k of ['modelo_negocio', 'tamanho_equipe', 'faturamento_mensal', 'maior_problema_gestao']) expect(d[k], k).toBe('');
+  // Critério 4: "Outro" não marcado em objetivo_12m → a chave nem vai.
+  expect(d.objetivo_12m_outro).toBeUndefined();
+});
+
+test('critério 4: "Outro" do gerente só vai no payload com "Outro" marcado', async ({ page }) => {
+  const posts = await capturarPosts(page);
+  await page.goto(URL);
+  await escolher(page, 'posicao', GERENTE);
+  await contatoDoGerente(page);
+  await escolher(page, 'vinculo', 'PJ');
+  await expect(page.locator('#q-pessoas_lideradas')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'pessoas_lideradas', 'Mais de 20');
+  await expect(page.locator('#q-maior_desafio_gerente')).toBeVisible({ timeout: 2000 });
+
+  // Marca "Outro", digita, escolhe outra opção: o campo some e o texto não vai.
+  await escolher(page, 'maior_desafio_gerente', 'Outro');
+  await page.fill('#maior_desafio_gerente_outro', 'texto que será descartado');
+  await escolher(page, 'maior_desafio_gerente', 'Preciso cobrar pendências uma por uma');
+  await expect(page.locator('#q-objetivo_12m')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'objetivo_12m', 'Outro');
+  await expect(page.locator('#objetivo_12m_outro')).toBeVisible();
+  await page.fill('#objetivo_12m_outro', 'Abrir o meu negócio');
+  await page.locator('#next').click();
+  await page.waitForURL(/obrigada\.html/, { timeout: 8000 });
+
+  const d = posts.at(-1);
+  expect(d.maior_desafio_gerente).toBe('Preciso cobrar pendências uma por uma');
+  expect(d.maior_desafio_gerente_outro).toBeUndefined();
+  expect(d.objetivo_12m).toBe('Outro');
+  expect(d.objetivo_12m_outro).toBe('Abrir o meu negócio');
+  expect(JSON.stringify(d)).not.toContain('descartado');
+});
+
+test('critério 5: trocar a posição limpa o outro caminho; contador e barra seguem o caminho ativo', async ({ page }) => {
+  const posts = await capturarPosts(page);
+  await page.goto(URL);
+
+  // Começa como empresário e responde o desafio com "Outro" e texto.
+  await escolher(page, 'posicao', EMPRESARIO);
+  await expect(page.locator('#q-maior_problema_gestao')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'maior_problema_gestao', 'Outro');
+  await page.fill('#maior_problema_gestao_outro', 'resposta do empresário');
+  await page.locator('#next').click();
+  await expect(page.locator('#q-nome_completo')).toBeVisible();
+  await expect(page.locator('#dots .dot.act')).toHaveCount(1);
+
+  // Volta à posição (duas vezes) e troca para gerente.
+  await page.locator('#prev').click();
+  await page.locator('#prev').click();
+  await expect(page.locator('#q-posicao')).toBeVisible();
+  await escolher(page, 'posicao', GERENTE);
+  await expect(page.locator('#q-nome_completo')).toBeVisible({ timeout: 2000 });
+
+  // As respostas do empresário foram apagadas e a barra tem o total do gerente (8) na etapa 2.
+  await expect(page.locator('input[name=maior_problema_gestao]:checked')).toHaveCount(0);
+  await expect(page.locator('#maior_problema_gestao_outro')).toHaveValue('');
+  await expect(page.locator('#dots .dot')).toHaveCount(8);
+  expect(await page.locator('#dots .dot').evaluateAll(d => d.findIndex(x => x.classList.contains('act')))).toBe(1);
+
+  await contatoDoGerente(page);
+  await escolher(page, 'vinculo', 'CLT');
+  await expect(page.locator('#q-pessoas_lideradas')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'pessoas_lideradas', '3 a 5');
+  await expect(page.locator('#q-maior_desafio_gerente')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'maior_desafio_gerente', 'O time me procura para quase tudo');
+  await expect(page.locator('#q-objetivo_12m')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'objetivo_12m', 'Liderar com menos desgaste');
+  await page.locator('#next').click();
+  await page.waitForURL(/obrigada\.html/, { timeout: 8000 });
+
+  const d = posts.at(-1);
+  expect(d.posicao).toBe(GERENTE);
+  expect(d.maior_problema_gestao).toBe(''); // nada do empresário sobrou
+  expect(JSON.stringify(d)).not.toContain('resposta do empresário');
+
+  // Caminho inverso: gerente que vira empresário perde as respostas do gerente.
+  await page.goto(URL);
+  await escolher(page, 'posicao', GERENTE);
+  await contatoDoGerente(page);
+  await escolher(page, 'vinculo', 'PJ');
+  await expect(page.locator('#q-pessoas_lideradas')).toBeVisible({ timeout: 2000 });
+  for (let i = 0; i < 5; i++) await page.locator('#prev').click();
+  await escolher(page, 'posicao', EMPRESARIO);
+  await expect(page.locator('#q-maior_problema_gestao')).toBeVisible({ timeout: 2000 });
+  await expect(page.locator('input[name=vinculo]:checked')).toHaveCount(0);
+  await expect(page.locator('#dots .dot')).toHaveCount(8);
+});
+
+test('critério 7: eventos GA4 do gerente levam path e nenhum dado pessoal nem texto livre', async ({ page }) => {
+  await page.goto('/formulario.html');
+  const ga = () => page.evaluate(() =>
+    (window.dataLayer || []).map(a => Array.from(a)).filter(a => a[0] === 'event').map(a => [a[1], a[2]]));
+  await escolher(page, 'posicao', GERENTE);
+  await contatoDoGerente(page);
+  await escolher(page, 'vinculo', 'CLT');
+  await expect(page.locator('#q-pessoas_lideradas')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'pessoas_lideradas', '11 a 20');
+  await expect(page.locator('#q-maior_desafio_gerente')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'maior_desafio_gerente', 'Outro');
+  await page.fill('#maior_desafio_gerente_outro', 'segredo do gerente');
+  await page.locator('#next').click();
+  await expect(page.locator('#q-objetivo_12m')).toBeVisible();
+
+  const events = (await ga()).filter(e => e[0].startsWith('form_'));
+  expect(events.length).toBeGreaterThan(10);
+  for (const [nome, params] of events.slice(1)) expect(params.path, nome).toBe('gerente');
+  expect(events.find(e => e[0] === 'form_contact_captured')[1]).toEqual({ path: 'gerente' });
+  const flat = JSON.stringify(events);
+  for (const pii of ['Gil', 'gil@', '98888', 'segredo do gerente']) expect(flat).not.toContain(pii);
+  const meta = await page.evaluate(() => (window.fbq.queue || []).map(a => Array.from(a)).filter(a => a[0] === 'trackCustom').map(a => a[1]));
+  expect(meta).toEqual(['FormStart', 'ContactCaptured']); // Pixel inalterado
+});
+
+test('critério 10: topo, texto acima do botão e rodapé com o texto literal da spec', async ({ page }) => {
+  await page.goto('/formulario.html');
+  // textContent: o CSS põe o eyebrow em caixa alta, e o texto literal da spec é o do HTML.
+  const t = async (sel) => ((await page.locator(sel).first().textContent()) ?? '').replace(/\s+/g, ' ').trim();
+  expect(await t('.intro-eyebrow')).toBe('Para empresários e líderes com equipe a partir de 3 pessoas');
+  expect(await t('.intro-headline')).toBe('Quantas vezes o seu time te procurou hoje?');
+  expect(await t('.intro-subtitle')).toBe('E quantas dessas vezes precisavam mesmo de você? Em um diagnóstico de 45 minutos, eu te mostro por que o time depende tanto de você e o que mudar primeiro na forma de conduzir a equipe.');
+  expect(await t('.intro-cred')).toBe('Talita Issei · 15 anos em multinacionais como KPMG, Itaú, Vivo e Accenture');
+  expect(await t('.intro-details summary')).toBe('O que olhamos juntos');
+  const itens = (await page.locator('.intro-details li').allTextContents()).map(x => x.replace(/\s+/g, ' ').trim());
+  expect(itens).toEqual([
+    'Como você acompanha o time: onde estão as pendências, as prioridades e os responsáveis',
+    'Como as decisões chegam até você: quais precisam mesmo da sua autorização',
+    'O que já custou caro: erros e retrabalhos recentes, com exemplos da sua realidade',
+  ]);
+  expect(await t('#prg-txt')).toBe('Leva cerca de 2 minutos. Depois do envio, eu mesma entro em contato. Deixe um número com WhatsApp.');
+  const rodape = ((await page.locator('form > .leg:not(#l-msg)').textContent()) ?? '').replace(/\s+/g, ' ');
+  expect(rodape).toContain('Esta é uma aplicação e não garante o agendamento. Ao responder, você autoriza o uso dos seus dados apenas para avaliação desta aplicação, conforme a nossa Política de Privacidade.');
+  // Sem caixa de consentimento (D3) e o bloco do topo só na etapa de posição.
+  await expect(page.locator('input[type=checkbox]')).toHaveCount(0);
+  await escolher(page, 'posicao', EMPRESARIO);
+  await expect(page.locator('#q-maior_problema_gestao')).toBeVisible({ timeout: 2000 });
+  await expect(page.locator('.intro')).toBeHidden();
+});
+
+test('critério 2: faixas novas de tamanho_equipe (D1)', async ({ page }) => {
+  await page.goto('/formulario.html');
+  const valores = await page.locator('input[name=tamanho_equipe]').evaluateAll(l => l.map(i => i.value));
+  expect(valores).toEqual(['Menos de 3 colaboradores', '3 a 4 colaboradores', '5 a 15 colaboradores', 'Mais de 15 colaboradores']);
 });

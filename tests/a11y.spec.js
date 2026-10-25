@@ -47,3 +47,68 @@ for (const { slug, url } of pages) {
     });
   });
 }
+
+// Formulário com dois caminhos (docs/specs/design/formulario-dois-caminhos.md, critério 9): as
+// opções longas do gerente (até 72 caracteres) cabem em 360 px sem rolagem horizontal e nenhuma
+// etapa dos dois caminhos tem violação axe serious/critical. O glob acima só vê a 1ª etapa.
+const RESPOSTAS = {
+  maior_problema_gestao: 'Falta de padrão nas entregas e retrabalho',
+  nome_completo: 'Maria Silva',
+  whatsapp: '11987654321',
+  email: 'maria@exemplo.com.br',
+  modelo_negocio: 'Agência / Assessoria',
+  tamanho_equipe: '5 a 15 colaboradores',
+  faturamento_mensal: 'Até R$ 30 mil/mês',
+  vinculo: 'CLT',
+  pessoas_lideradas: '6 a 10',
+  maior_desafio_gerente: 'Sou cobrado pelo resultado, mas não consigo mostrar o que o time entrega', // a mais longa (72)
+  objetivo_12m: 'Ser reconhecido pelo resultado do time',
+};
+const CAMINHOS = [
+  ['empresário', 'Sou dono ou sócio', 8],
+  ['gerente', 'Lidero um time na empresa (gerente, coordenador, supervisor)', 8],
+];
+
+for (const [nome, posicao, total] of CAMINHOS) {
+  test(`formulario (${nome}): 360px sem rolagem horizontal e axe sem serious/critical em cada etapa`, async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('be_consent', JSON.stringify({ v: 1, ts: '2026-01-01T00:00:00.000Z', cat: { analytics: true, marketing: true } }));
+    });
+    await page.route('**/script.google.com/**', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: '{"result":"success"}' }));
+    await page.route('**/api.ipify.org/**', (r) => r.abort());
+    await page.setViewportSize({ width: 360, height: 780 });
+    await page.goto('/formulario.html');
+
+    const vistas = [];
+    for (let i = 0; i < total; i++) {
+      const id = await page.locator('.step.a').getAttribute('data-id');
+      vistas.push(id);
+
+      const excedente = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(excedente, `${nome}/${id}: transborda ${excedente}px em 360`).toBeLessThanOrEqual(1);
+      const direita = await page.evaluate(() =>
+        Math.max(0, ...Array.from(document.querySelectorAll('.step.a .cf-opt')).map((o) => o.getBoundingClientRect().right)));
+      expect(direita, `${nome}/${id}: opção passa da largura da tela`).toBeLessThanOrEqual(360);
+
+      const { violations } = await new AxeBuilder({ page }).analyze();
+      const graves = violations.filter((v) => ['serious', 'critical'].includes(v.impact));
+      expect(graves.map((v) => `${v.id} (${v.nodes.length}×)`).join(', '), `${nome}/${id}: violações graves`).toBe('');
+
+      if (i === total - 1) break; // a última etapa envia; o teste para antes
+      const resposta = id === 'posicao' ? posicao : RESPOSTAS[id];
+      const radio = page.locator(`.step.a input[type=radio][value="${resposta}"]`);
+      if (await radio.count()) {
+        await radio.check({ force: true }); // avança sozinha (380 ms)
+      } else {
+        await page.locator(`.step.a input[name=${id}]`).fill(resposta);
+        await page.locator('#next').click();
+      }
+      await expect(page.locator('.step.a')).not.toHaveAttribute('data-id', id);
+    }
+    expect(vistas).toEqual(nome === 'gerente'
+      ? ['posicao', 'nome_completo', 'email', 'whatsapp', 'vinculo', 'pessoas_lideradas', 'maior_desafio_gerente', 'objetivo_12m']
+      : ['posicao', 'maior_problema_gestao', 'nome_completo', 'whatsapp', 'email', 'modelo_negocio', 'tamanho_equipe', 'faturamento_mensal']);
+  });
+}

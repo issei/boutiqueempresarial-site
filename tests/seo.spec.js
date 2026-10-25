@@ -93,3 +93,24 @@ for (const { slug, url } of pages) {
     });
   });
 }
+
+// Formulário: meta e JSON-LD usam só a copy da spec do formulário com dois caminhos e não
+// restringem o público a "empresas de serviço" (docs/specs/design/formulario-dois-caminhos.md,
+// critério 10). A home é outro arquivo e outra spec.
+test('formulario: description, OG, Twitter e JSON-LD com a copy da spec', async ({ page }) => {
+  await page.goto('/formulario.html');
+  const esperado = 'Para empresários e líderes com equipe a partir de 3 pessoas. Quantas vezes o seu time te procurou hoje? E quantas dessas vezes precisavam mesmo de você?';
+  const desc = await attr(page, 'meta[name="description"]');
+  expect(desc).toBe(esperado);
+  expect(await attr(page, 'meta[property="og:description"]')).toBe(esperado);
+  expect(await attr(page, 'meta[name="twitter:description"]')).toBe(esperado);
+
+  const jsonld = await page.evaluate(() => document.querySelector('script[type="application/ld+json"]')?.textContent ?? '');
+  const html = (await (await page.request.get('/formulario.html')).text());
+  for (const [onde, texto] of [['description', desc], ['JSON-LD', jsonld], ['HTML', html]]) {
+    expect(texto, `formulario: ${onde} ainda restringe o público`).not.toMatch(/empresas de servi[cç]o|donos de empresas|a partir de 5 pessoas/i);
+  }
+  const grafo = JSON.parse(jsonld);
+  const servico = grafo['@graph'].find((n) => n['@type'] === 'ProfessionalService');
+  expect(servico.description).toBe('Em um diagnóstico de 45 minutos, eu te mostro por que o time depende tanto de você e o que mudar primeiro na forma de conduzir a equipe.');
+});

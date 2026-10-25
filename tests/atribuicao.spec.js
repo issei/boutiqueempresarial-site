@@ -30,6 +30,9 @@ test.beforeEach(async ({ context }) => {
 });
 
 async function fillContact(page) {
+  // A 1ª etapa é a posição (docs/specs/design/formulario-dois-caminhos.md): dono ou sócio é o caminho de hoje.
+  await page.locator('input[name=posicao]').first().check({ force: true });
+  await expect(page.locator('#q-maior_problema_gestao')).toBeVisible({ timeout: 2000 });
   await page.locator('input[name=maior_problema_gestao]').first().check({ force: true });
   await expect(page.locator('#q-nome_completo')).toBeVisible({ timeout: 2000 });
   await page.fill('#nome_completo', 'maria silva');
