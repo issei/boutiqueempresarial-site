@@ -270,3 +270,76 @@ test('Pixel: um Lead por eid, nenhum sem eid', async ({ page }) => {
   await page.goto('/obrigada.html');
   expect(await leads(page)).toEqual([]);
 });
+
+// ---------------------------------------------------------------------------
+// Fechamento do gerente (publicado em 27/10) — docs/specs/design/formulario-dois-caminhos.md
+// be_perfil é a conveniência de renderização que o formulário grava; aqui é gravado direto.
+// ---------------------------------------------------------------------------
+
+async function comPerfil(page, perfil) {
+  await page.addInitScript((p) => localStorage.setItem('be_perfil', JSON.stringify(p)), perfil);
+  await page.goto('/obrigada.html'); // sem eid: sem cartão, só o fechamento
+}
+const gerente = (extra) => ({ caminho: 'gerente', nome: 'Gil', pessoas: '3 a 5', desafio: 'Outro', objetivo: 'Outro', ...extra });
+
+// Vários comPerfil na mesma página: o init script registrado por último roda por último e vence.
+
+test('gerente: um fechamento por maior desafio, com o time e o nome preenchidos', async ({ page }) => {
+  const esperado = {
+    'O time me procura para quase tudo': 'Gil, liderar um time de 3 a 5 pessoas que te procura para quase tudo deixa o seu próprio trabalho para o fim do dia. Na sessão vamos definir o que o time pode decidir sem você.',
+    'Preciso cobrar pendências uma por uma': 'Gil, com um time de 3 a 5 pessoas, cobrar pendência por pendência ocupa o dia inteiro. Na sessão vamos montar uma rotina para você acompanhar as entregas sem perguntar uma por uma.',
+    'Tenho dificuldade de cobrar e dar retorno sem desgastar a relação': 'Gil, com um time de 3 a 5 pessoas, cobrar e dar retorno sem uma rotina vira conversa difícil. Na sessão vamos combinar quando e como o retorno acontece.',
+    'Sou cobrado pelo resultado, mas não consigo mostrar o que o time entrega': 'Gil, você responde pelo resultado de um time de 3 a 5 pessoas, mas o que o time entrega não aparece. Na sessão vamos organizar o registro das entregas para o resultado ficar visível.',
+    Outro: 'Gil, liderar um time de 3 a 5 pessoas traz questões bem específicas. Na sessão vamos olhar como você conduz o time hoje e por onde começar a mudar.',
+  };
+  for (const [desafio, texto] of Object.entries(esperado)) {
+    await comPerfil(page, gerente({ desafio }));
+    await expect(page.locator('#titulo'), desafio).toHaveText('Aplicação recebida, Gil.');
+    await expect(page.locator('#fechamento'), desafio).toHaveText(texto);
+    expect(await page.locator('#fechamento').textContent()).not.toMatch(/[\[\]]/);
+  }
+});
+
+test('gerente: [Pessoas] muda com pessoas lideradas', async ({ page }) => {
+  for (const [pessoas, forma] of [['3 a 5', 'um time de 3 a 5 pessoas'], ['6 a 10', 'um time de 6 a 10 pessoas'], ['11 a 20', 'um time de 11 a 20 pessoas'], ['Mais de 20', 'um time de mais de 20 pessoas']]) {
+    await comPerfil(page, gerente({ pessoas, desafio: 'O time me procura para quase tudo' }));
+    await expect(page.locator('#fechamento'), pessoas).toContainText(`liderar ${forma} que te procura`);
+  }
+});
+
+test('gerente: frase final por objetivo em 12 meses ("Outro" fica sem frase)', async ({ page }) => {
+  const frases = {
+    'Ser reconhecido pelo resultado do time': 'E vamos ver como o resultado do seu time aparece para quem avalia o seu trabalho.',
+    'Crescer de cargo': 'E vamos ver como essa mudança prepara você para o próximo cargo.',
+    'Ter tempo para o trabalho que só eu faço': 'E vamos ver quanto tempo isso devolve para o trabalho que só você faz.',
+    'Liderar com menos desgaste': 'E vamos ver como fazer isso com menos desgaste para você e para o time.',
+    Outro: '',
+  };
+  const base = 'Gil, liderar um time de 3 a 5 pessoas traz questões bem específicas. Na sessão vamos olhar como você conduz o time hoje e por onde começar a mudar.';
+  for (const [objetivo, frase] of Object.entries(frases)) {
+    await comPerfil(page, gerente({ objetivo }));
+    await expect(page.locator('#fechamento'), objetivo).toHaveText(frase ? `${base} ${frase}` : base);
+  }
+});
+
+test('gerente: sem nome a frase abre sem vocativo e o título fica sem nome', async ({ page }) => {
+  await comPerfil(page, gerente({ nome: '', desafio: 'O time me procura para quase tudo' }));
+  await expect(page.locator('#titulo')).toHaveText('Aplicação recebida.');
+  const texto = await page.locator('#fechamento').textContent();
+  expect(texto.startsWith('Liderar um time de 3 a 5 pessoas')).toBe(true);
+});
+
+test('gerente: perfil incompleto ou corrompido cai no agradecimento genérico', async ({ page }) => {
+  for (const perfil of [gerente({ pessoas: 'inventado' }), gerente({ desafio: 'inventado' }), { caminho: 'gerente' }]) {
+    await comPerfil(page, perfil);
+    await expect(page.locator('#titulo')).toHaveText('Solicitação Recebida');
+    await expect(page.locator('#fechamento')).toBeHidden();
+  }
+});
+
+test('empresário: o fechamento de sempre continua, com as faixas novas de equipe', async ({ page }) => {
+  for (const [time, forma] of [['Menos de 3 colaboradores', 'um time de menos de 3 pessoas'], ['3 a 4 colaboradores', 'um time de 3 a 4 pessoas']]) {
+    await comPerfil(page, { caminho: 'empresario', eixo: 'dependencia', segmento: 'agencia', nome: 'Eva', time, faturamento: 'Até R$ 30 mil/mês' });
+    await expect(page.locator('#fechamento'), time).toHaveText(`Eva, tocar uma agência com ${forma} e faturamento de até R$ 30 mil/mês aprovando cada entrega final limita a capacidade da empresa. Na sessão vamos alinhar onde e como passar autonomia para o time.`);
+  }
+});

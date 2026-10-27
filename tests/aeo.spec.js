@@ -148,3 +148,13 @@ test.describe('camada para máquinas', () => {
     expect(res.status(), `companion ${href} não encontrado`).toBe(200);
   });
 });
+
+// Formulário: o JSON-LD não afirma nada que a página não mostre (§B2). A descrição do serviço é uma
+// frase da Subheadline, que está visível no topo da primeira etapa.
+test('formulario: description do JSON-LD tem contraparte visível na página', async ({ page }) => {
+  await page.goto('/formulario.html');
+  const grafo = JSON.parse(await lerGrafo(page));
+  const servico = grafo['@graph'].find((n) => n['@type'] === 'ProfessionalService');
+  const visivel = normalizar(await page.locator('.intro-subtitle').textContent());
+  expect(visivel, 'formulario: a frase do JSON-LD não está no topo visível').toContain(normalizar(servico.description));
+});
