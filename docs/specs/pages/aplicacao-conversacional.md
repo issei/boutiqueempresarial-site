@@ -1,6 +1,7 @@
 # SDD — Formulário de Aplicação, Fase 5: fluxo conversacional com diagnóstico espelhado
 
 *   **Status**: Implementado
+*   **Emendado por**: [`design/formulario-dois-caminhos.md`](../design/formulario-dois-caminhos.md) (2026-10-25) — o fluxo ganhou a etapa de posição e dois caminhos; ver §8, que prevalece sobre §4 onde diferir
 *   **Arquivos afetados**: `src/formulario.html`, `src/obrigada.html`, `e2e/form-aplicacao.spec.js`, `tests/a11y.spec.js`
 *   **Não afetados**: `apps_script_atualizado.gs` (contrato de dados inalterado — ver §3)
 *   **Contrato de dados**: `docs/specs/pages/formulario.md` §3 permanece a fonte da verdade. Esta fase **não** cria, renomeia ou remove chave alguma
@@ -153,6 +154,52 @@ Substituição por **replace literal** dos três tokens, não template string: a
 ### 6.3 Degradação
 
 `obrigada.html` já é a página que dispara o Pixel e pode ser alcançada por URL direta. Se `be_perfil` não existir, estiver incompleta ou a chave não resolver, a página renderiza o agradecimento atual sem o bloco personalizado. **Nunca** exibe token cru, `undefined` ou bloco vazio — e o `fbq('track','Lead', {}, {eventID})` dispara em qualquer um dos caminhos.
+
+## 8. Emenda — dois caminhos (`design/formulario-dois-caminhos.md`)
+
+### 8.1 Etapa de posição e sequências
+
+A 1ª etapa é `posicao`: escolha única obrigatória, com o avanço automático de 380 ms das outras escolhas únicas. A opção escolhida define o caminho, e a frase de transição aparece na etapa seguinte: empresário, "Agora me conta um pouco sobre a sua empresa."; gerente, "Agora me conta um pouco sobre o time que você lidera."
+
+Cada caminho tem uma lista explícita de etapas (`SEQ` em `src/formulario.html`); `nav()`, os pontos de progresso e o total derivam da lista ativa. Antes de a posição ser escolhida vale a do empresário, que tem o mesmo total. Nome, WhatsApp e e-mail são as mesmas três etapas nos dois caminhos; só a ordem muda (D4).
+
+| # | Empresário | Gerente |
+| :-- | :-- | :-- |
+| 1 | `posicao` | `posicao` |
+| 2 | `maior_problema_gestao` (+`_outro`) | `nome_completo` |
+| 3 | `nome_completo` | `email` |
+| 4 | `whatsapp` | `whatsapp` |
+| 5 | `email` | `vinculo` |
+| 6 | `modelo_negocio` (+`_outro`) | `pessoas_lideradas` |
+| 7 | `tamanho_equipe` | `maior_desafio_gerente` (+`_outro`) |
+| 8 | `faturamento_mensal` | `objetivo_12m` (+`_outro`) |
+
+*   Cada etapa carrega `data-id` e `data-path` (`empresario`, `gerente` ou os dois).
+*   Voltar à posição e trocar de opção limpa as respostas das etapas do outro caminho; o contato (compartilhado) fica.
+*   Campos "Outro" só aparecem, e só vão no payload, com "Outro" marcado.
+*   A pré-captura (`sendPartial()`) dispara quando nome + WhatsApp + e-mail validam, nos dois caminhos, e leva `posicao` (G1).
+*   As tools do WebMCP só enxergam as etapas do caminho ativo.
+*   Textos do topo, do aviso acima do botão e do rodapé (sem caixa de consentimento, "Ao responder"): literais em `design/formulario-dois-caminhos.md`.
+
+### 8.2 Onde aparece cada devolutiva
+
+O bloco de análise (§2.1) aparece na etapa **seguinte** à pergunta que o alimenta. Os textos do gerente e da faixa "Menos de 3 colaboradores" são rascunho até a revisão da Talita (D5) e ficam em `src/js/form-copy.js`.
+
+| Bloco (`#an-<etapa>`) | Lê a resposta de | Título do bloco |
+| :-- | :-- | :-- |
+| `nome_completo` (empresário) | `maior_problema_gestao` | O que eu vou analisar no seu caso |
+| `tamanho_equipe` (empresário) | `modelo_negocio` | Como isso muda a análise |
+| `faturamento_mensal` (empresário) | `tamanho_equipe` | A prioridade no seu tamanho de operação |
+| `pessoas_lideradas` (gerente) | `vinculo` | Como isso muda a análise |
+| `maior_desafio_gerente` (gerente) | `pessoas_lideradas` | A prioridade no tamanho do seu time |
+| `objetivo_12m` (gerente) | `maior_desafio_gerente` | O que eu vou analisar no seu caso |
+
+### 8.3 Conclusão e `be_perfil`
+
+*   `be_perfil` passa a levar o caminho. Empresário: `{ caminho: "empresario", eixo, segmento, nome, time, faturamento }`. Gerente: `{ caminho: "gerente", nome, pessoas, desafio, objetivo }` — nunca contato nem texto livre.
+*   Fechamento do gerente (`obrigada.html`): um parágrafo por `maior_desafio_gerente` (5), com os tokens `[Nome]` e `[Pessoas]` (`um time de 3 a 5 pessoas`, `… de 6 a 10 …`, `… de 11 a 20 …`, `… de mais de 20 …`), mais uma frase final por `objetivo_12m` (`Outro` fica sem frase). Mesma degradação de §6.3: perfil incompleto ou corrompido cai no agradecimento genérico.
+*   O fechamento fica **acima** da nota "em análise": o CRM devolve `em_analise` para todo gerente (D7), então a obrigada não mostra seletor de datas.
+*   As faixas novas do empresário entram em `[Tamanho do Time]`: `um time de menos de 3 pessoas` e `um time de 3 a 4 pessoas`.
 
 ## 7. Fora de escopo
 

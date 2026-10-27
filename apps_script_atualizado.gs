@@ -70,6 +70,13 @@ const CONFIG = {
  * perguntas ainda não foram feitas.
  */
 const PARTIAL_SHEET_NAME = 'Parciais';
+
+/**
+ * Valores de `posicao` (docs/specs/design/formulario-dois-caminhos.md): iguais, letra por letra,
+ * aos do formulário e aos do CRM (Spec 030). Qualquer outro valor não define caminho.
+ */
+const POSICAO_EMPRESARIO = 'Sou dono ou sócio';
+const POSICAO_GERENTE = 'Lidero um time na empresa (gerente, coordenador, supervisor)';
 const CRM_SHEET_NAME = 'CRM';
 const CRM_HEADERS = ['Event ID', 'Status', 'Notas', 'Próxima Ação', 'Data Ação', 'Atualizado em'];
 
@@ -87,7 +94,8 @@ const PARTIAL_HEADERS = [
   'Nome Completo', 'E-mail', 'WhatsApp',
   'Maior Desafio (Equipe)', 'Maior Desafio (Outro)',
   'utm_source', 'utm_medium', 'utm_campaign',
-  'Página', 'Referrer'
+  'Página', 'Referrer',
+  'Posição'   // docs/specs/design/formulario-dois-caminhos.md (G1): a pré-captura leva a posição
 ];
 
 /** Ordem canônica das colunas. Alterar aqui exige republicar o Web App. */
@@ -100,7 +108,11 @@ const HEADERS = [
   'Consentimento',
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
   'FBCLID', 'GCLID', 'FBC', 'FBP',
-  'Página', 'Referrer', 'IP', 'User Agent', 'Status CAPI'
+  'Página', 'Referrer', 'IP', 'User Agent', 'Status CAPI',
+  // Caminho do gerente (docs/specs/design/formulario-dois-caminhos.md): sempre no fim.
+  'Posição', 'Vínculo', 'Pessoas Lideradas',
+  'Maior Desafio (Gerente)', 'Desafio Gerente (Outro)',
+  'Objetivo 12 meses', 'Objetivo (Outro)'
 ];
 
 /* ========================================================================== */
@@ -389,7 +401,9 @@ function savePartialLead(data) {
     sanitizeInput(data.utm_campaign),
 
     sanitizeInput(data.page_url),
-    sanitizeInput(data.referrer)
+    sanitizeInput(data.referrer),
+
+    sanitizeInput(data.posicao)
   ]);
   sendToCrm(data);
 
@@ -459,7 +473,15 @@ function saveToSheet(data, capiStatus) {
     sanitizeInput(data.referrer),
     sanitizeInput(data.ip_address),
     sanitizeInput(data.user_agent),
-    sanitizeInput(capiStatus)
+    sanitizeInput(capiStatus),
+
+    sanitizeInput(data.posicao),
+    sanitizeInput(data.vinculo),
+    sanitizeInput(data.pessoas_lideradas),
+    sanitizeInput(data.maior_desafio_gerente),
+    sanitizeInput(data.maior_desafio_gerente_outro),
+    sanitizeInput(data.objetivo_12m),
+    sanitizeInput(data.objetivo_12m_outro)
   ]);
 }
 
@@ -524,6 +546,7 @@ function buildLeadEmail(data, capiStatus) {
     plainText(data.utm_source), plainText(data.utm_medium), plainText(data.utm_campaign)
   ].filter(String).join(' / ');
 
+  const caminho = leadCaminho(data);
   const body = [
     'Recebido em: ' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm'),
     '',
@@ -531,10 +554,20 @@ function buildLeadEmail(data, capiStatus) {
     'E-mail: ' + plainText(data.email),
     'WhatsApp: ' + plainText(data.whatsapp),
     '',
+    // Caminho (formulario-dois-caminhos): gerente mostra os campos dele no lugar dos de empresário;
+    // sem posição reconhecida (site antigo), o aviso fica como era.
+    caminho === 'gerente' ? 'Caminho: Gerente' : (caminho === 'empresario' ? 'Caminho: Empresário' : null),
+  ].concat(caminho === 'gerente' ? [
+    'Vínculo: ' + plainText(data.vinculo),
+    'Pessoas lideradas: ' + plainText(data.pessoas_lideradas),
+    'Maior desafio: ' + withOther(data.maior_desafio_gerente, data.maior_desafio_gerente_outro),
+    'Objetivo em 12 meses: ' + withOther(data.objetivo_12m, data.objetivo_12m_outro)
+  ] : [
     'Modelo de negócio: ' + withOther(data.modelo_negocio, data.modelo_negocio_outro),
     'Tamanho da equipe: ' + plainText(data.tamanho_equipe),
     'Faturamento mensal: ' + faturamento,
-    'Maior desafio: ' + withOther(data.maior_problema_gestao, data.maior_problema_gestao_outro),
+    'Maior desafio: ' + withOther(data.maior_problema_gestao, data.maior_problema_gestao_outro)
+  ]).concat([
     '',
     // Mesma regra de saveToSheet, repetida em vez de extraída: unificar exigiria
     // tocar no caminho de gravação, que esta mudança se comprometeu a não alterar.
@@ -543,7 +576,7 @@ function buildLeadEmail(data, capiStatus) {
     'Página: ' + plainText(data.page_url),
     'Status CAPI: ' + plainText(capiStatus),
     'ID do evento: ' + plainText(data.event_id)
-  ].filter(function (line) { return line !== null; }).join('\n');
+  ]).filter(function (line) { return line !== null; }).join('\n');
 
   return { subject: subject, body: body };
 }
@@ -566,6 +599,16 @@ function withOther(value, other) {
   const extra = plainText(other);
   if (base && extra) return base + ' — ' + extra;
   return base || extra;
+}
+
+/**
+ * Caminho do lead pela posição EXATA do formulário: 'gerente', 'empresario' ou '' (ausente ou
+ * qualquer outro valor). Sem trim nem normalização: o valor vem de uma lista fechada.
+ */
+function leadCaminho(data) {
+  if (data.posicao === POSICAO_GERENTE) return 'gerente';
+  if (data.posicao === POSICAO_EMPRESARIO) return 'empresario';
+  return '';
 }
 
 /* ========================================================================== */
@@ -659,7 +702,9 @@ function sendToMetaCAPI(data) {
         content_name: CONFIG.CONTENT_NAME,
         status: 'submitted',
         lead_faturamento: data.faturamento_mensal || '',
-        lead_equipe: data.tamanho_equipe || ''
+        lead_equipe: data.tamanho_equipe || '',
+        // D6: só o caminho vai à Meta. Vínculo, objetivo, desafio e pessoas lideradas ficam fora.
+        lead_caminho: leadCaminho(data)
       }
     }]
   };

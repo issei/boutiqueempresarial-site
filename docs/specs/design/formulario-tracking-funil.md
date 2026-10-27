@@ -54,6 +54,17 @@ O Pixel já roda com `fbq('dataProcessingOptions', ['LDU'], 1, 1000)` em todas a
 `data_processing_options_country: 1`, `data_processing_options_state: 1000`, para os dois canais tratarem o mesmo
 evento igual. **Não** reabre a decisão de negócio sobre LDU forçado a todos os visitantes (1, 1000 vs. 0, 0).
 
+## Emenda — dois caminhos (`formulario-dois-caminhos.md`)
+
+*   **`path`** (`empresario` | `gerente`) vai em **todos** os eventos `form_*`, a partir do momento em que a posição é escolhida. O `form_step_view` de `init` (etapa da posição) não tem `path`; o `form_answer` da própria posição já tem. O Pixel (`FormStart`, `ContactCaptured`, `Lead`) não muda.
+*   **`step_name`** continua sendo o `name` do primeiro campo da etapa. A lista ganha `posicao` (1ª etapa) e, no gerente, `vinculo`, `pessoas_lideradas`, `maior_desafio_gerente` e `objetivo_12m`.
+*   **Mudança de significado de `step_index`**: passa a ser o índice na **sequência ativa** (começa em 0), e a posição é sempre 0. Empresário e gerente têm ordens diferentes, então o mesmo índice não é a mesma etapa nos dois caminhos; para comparar etapas use `step_name`. Séries anteriores à emenda não têm a etapa da posição: o índice antigo 0 (`maior_problema_gestao`) é o 1 do empresário agora.
+*   Nenhum evento leva contato nem o texto livre dos campos "Outro".
+*   **Passo manual (GA4)**: assim como as dimensões de §5, `path` precisa ser registrada como dimensão personalizada de escopo Evento para aparecer em relatórios e Explorações; a Exploração de funil fica uma por caminho, com as etapas na ordem de cada sequência.
+*   CAPI: `custom_data.lead_caminho` (D6); ver `pages/formulario.md` §3.1.
+
+Cobertura: `e2e/form-aplicacao.spec.js` (sequência de eventos do empresário e "critério 7" do gerente).
+
 ## Critérios de pronto
 
 1. `e2e/form-aplicacao.spec.js`: sequência de eventos do fluxo (sem rede), ausência de PII, `FormStart`/

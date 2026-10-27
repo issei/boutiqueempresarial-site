@@ -1,6 +1,7 @@
 # SDD — Formulário de Aplicação (Sessão Estratégica de Análise Operacional)
 
 *   **Status**: Aprovado para implementação — contrato de dados vigente. **Frontend**: superseded por `docs/specs/pages/aplicacao-conversacional.md` (Fase 5, fluxo conversacional com diagnóstico espelhado); este documento continua a fonte da verdade do contrato de dados (§3) e dos critérios 1–9 (§7)
+*   **Emendado por**: [`design/formulario-dois-caminhos.md`](../design/formulario-dois-caminhos.md) (2026-10-25: pergunta de posição, caminho do gerente, faixas novas de `tamanho_equipe`, colunas novas da planilha) — prevalece sobre §3, §4.2 e §5.1 onde diferir
 *   **Arquivos afetados**: `src/formulario.html`, `src/obrigada.html`, `apps_script_atualizado.gs`
 *   **Fonte da verdade do conteúdo**: `COPY FORMULÁRIO.md` (revisão da autora — substitui o PDF `Aplicação - Boutique Empresarial`)
 *   **Substitui**: formulário legado de 7 perguntas (Nome, WhatsApp, E-mail, Faturamento, Time, Operação, Investimento)
@@ -56,6 +57,25 @@ Antes de escrever qualquer linha, o fluxo legado foi auditado. Os defeitos abaix
 | 7 | Faturamento médio mensal nos últimos 3 meses | `faturamento_mensal` | string | ✅ | `radio` |
 | 8 | ~~Termo de Consentimento~~ | `consentimento` | boolean | ✅ | **Sem controle.** Implícito desde a Fase 5: o rodapé diz "Ao responder, você concorda…" e `collect()` grava sempre `true`. A chave e a coluna da planilha seguem no contrato |
 
+#### Emenda — dois caminhos (`design/formulario-dois-caminhos.md`, 2026-10-25)
+
+A 1ª pergunta passou a ser `posicao`, que decide o caminho. As chaves abaixo são novas; as de §3.1 acima seguem valendo para o caminho do empresário.
+
+| Pergunta | Chave JSON | Valores | Caminho |
+| :--- | :--- | :--- | :--- |
+| Qual é a sua posição na empresa? | `posicao` | `Sou dono ou sócio` (empresário) · `Lidero um time na empresa (gerente, coordenador, supervisor)` (gerente) | os dois; sempre vai no payload, também na pré-captura (G1) |
+| Qual é o seu vínculo com a empresa? | `vinculo` | `CLT` · `PJ` | gerente |
+| Quantas pessoas respondem diretamente a você? | `pessoas_lideradas` | `3 a 5` · `6 a 10` · `11 a 20` · `Mais de 20` | gerente |
+| Qual é o maior desafio com o seu time hoje? | `maior_desafio_gerente` (+ `maior_desafio_gerente_outro`) | quatro opções + `Outro` (valores literais em `design/formulario-dois-caminhos.md`) | gerente |
+| O que você quer conquistar nos próximos 12 meses? | `objetivo_12m` (+ `objetivo_12m_outro`) | quatro opções + `Outro` | gerente |
+
+*   **`tamanho_equipe` (D1)**: as faixas do empresário passam a ser `Menos de 3 colaboradores` · `3 a 4 colaboradores` · `5 a 15 colaboradores` · `Mais de 15 colaboradores` (saem `Apenas eu` e `2 a 4 colaboradores`; os leads antigos mantêm o valor que gravaram).
+*   **Payload do empresário**: o de hoje mais `posicao`, sem nenhuma chave do gerente.
+*   **Payload do gerente**: `posicao` e as chaves do gerente; `modelo_negocio`, `modelo_negocio_outro`, `tamanho_equipe`, `faturamento_mensal`, `maior_problema_gestao` e `maior_problema_gestao_outro` vão vazios.
+*   **"Outro" do gerente**: `maior_desafio_gerente_outro` e `objetivo_12m_outro` só entram no payload com "Outro" marcado (a chave é omitida nos demais casos).
+*   **Ordem do contato (D4)**: empresário `nome_completo` → `whatsapp` → `email`; gerente `nome_completo` → `email` → `whatsapp`. As chaves não mudam.
+*   **CAPI (D6)**: `custom_data` ganha `lead_caminho` (`empresario` | `gerente` | vazio); vínculo, objetivo, desafio e pessoas lideradas não vão à Meta.
+
 > **`email` e `whatsapp` são chaves congeladas.** São as entradas de `sendToMetaCAPI()` (`em` / `ph`). Renomeá-las quebra o casamento de conversões — qualquer mudança futura nessas duas chaves exige atualização simultânea do `.gs`.
 
 > **`maior_problema_gestao` (Fase 4, 2026-09-16): pergunta reescrita e movida para a 1ª posição, ganhou opção "Outro".** A chave JSON e a coluna da planilha foram mantidas — só o texto da pergunta/opções mudou. `dependencia_operacional` (escala 0–10) foi removida nesta fase: pergunta, coluna da planilha, linha do e-mail de notificação e push do Meta CAPI (`lead_dependencia`) saíram do contrato.
@@ -96,6 +116,8 @@ Antes de escrever qualquer linha, o fluxo legado foi auditado. Os defeitos abaix
 
 `maior_problema_gestao` → `nome_completo` → `whatsapp` → `email` → `modelo_negocio` → `tamanho_equipe` → `faturamento_mensal`
 
+> **Dois caminhos (`design/formulario-dois-caminhos.md`):** o fluxo acima é o do empresário e ganhou uma 1ª etapa, `posicao`, que o deixa com 8 etapas; o gerente tem outras 8 (nome → e-mail → WhatsApp → vínculo → pessoas lideradas → maior desafio → objetivo). As duas sequências estão em `aplicacao-conversacional.md` §8.
+>
 > **Fase 5 (`design/formulario-fase5-rodape-consentimento.md`):** a 8ª etapa (checkbox de consentimento) foi removida. O consentimento é expresso por um aviso no rodapé — "Ao **responder**, você concorda…" (não "ao enviar": sustenta a pré-captura, `design/formulario-envio-parcial.md`). Ganho registrado: formulário mais ágil; a redação do aviso está na spec da Fase 5. A última etapa não avança sozinha: o envio exige o clique em "Enviar aplicação".
 
 ### 4.3 Regras de validação
@@ -123,6 +145,19 @@ Maior Desafio (Equipe) | Maior Desafio (Outro) | Consentimento |
 utm_source | utm_medium | utm_campaign | utm_content | utm_term |
 FBCLID | GCLID | FBC | FBP | Página | Referrer | IP | User Agent | Status CAPI
 ```
+
+**Emenda — dois caminhos (`design/formulario-dois-caminhos.md`).** As sete colunas do gerente entram **no fim** do cabeçalho de `Respostas`, depois de `Status CAPI`, e `Parciais` ganha `Posição` no fim:
+
+```
+Respostas  ... | User Agent | Status CAPI |
+           Posição | Vínculo | Pessoas Lideradas | Maior Desafio (Gerente) | Desafio Gerente (Outro) |
+           Objetivo 12 meses | Objetivo (Outro)
+
+Parciais   Data | Event ID | Nome Completo | E-mail | WhatsApp | Maior Desafio (Equipe) | Maior Desafio (Outro) |
+           utm_source | utm_medium | utm_campaign | Página | Referrer | Posição
+```
+
+Efeito conhecido: o primeiro `doPost` depois de publicar arquiva `Respostas` como `Respostas_legado_<timestamp>`, e o primeiro parcial arquiva `Parciais` do mesmo jeito (nada é apagado). O e-mail interno (`notifyNewLead`) mostra o caminho e, no gerente, os campos dele no lugar de modelo, tamanho e faturamento.
 
 > A ordem antiga (com Instagram/Site, Autonomia, Prioridade, Informações Adicionais) diverge deste cabeçalho, então no primeiro `doPost` após o deploy o `ensureSheet()` arquiva a aba `Respostas` como `Respostas_legado_<timestamp>` e cria a nova. Nenhum dado histórico é apagado.
 
