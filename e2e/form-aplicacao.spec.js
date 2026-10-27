@@ -527,7 +527,7 @@ test('critério 2: faixas novas de tamanho_equipe (D1)', async ({ page }) => {
 });
 
 // ---------------------------------------------------------------------------
-// Devolutivas e fechamento do gerente (RASCUNHO, aguarda revisão da Talita)
+// Devolutivas e fechamento do gerente (publicado em 27/10)
 // ---------------------------------------------------------------------------
 
 test('devolutivas do gerente aparecem na etapa seguinte à pergunta que as alimenta', async ({ page }) => {
@@ -630,7 +630,7 @@ test('critério 11: obrigada do gerente com fechamento acima da nota "em anális
 
   await expect(page.locator('#titulo')).toHaveText('Aplicação recebida, Gil.');
   await expect(page.locator('#fechamento')).toHaveText(
-    'Gil, liderar um time de 6 a 10 pessoas que te procura para quase tudo deixa o seu próprio trabalho para o fim do dia. Na sessão vamos definir o que o time pode decidir sem você. E vemos como fazer isso com menos desgaste para você e para o time.');
+    'Gil, liderar um time de 6 a 10 pessoas que te procura para quase tudo deixa o seu próprio trabalho para o fim do dia. Na sessão vamos definir o que o time pode decidir sem você. E vamos ver como fazer isso com menos desgaste para você e para o time.');
   await expect(page.locator('#nota-analise')).toBeVisible();
   await expect(page.locator('#agendamento')).toBeHidden(); // sem seletor de datas
   const antes = await page.evaluate(() => !!(document.getElementById('fechamento').compareDocumentPosition(document.getElementById('nota-analise')) & Node.DOCUMENT_POSITION_FOLLOWING));

@@ -1,7 +1,6 @@
 // Copy do diagnóstico conversacional (Fase 5) — docs/specs/pages/aplicacao-conversacional.md §2.1/§6.
 // Módulo de dados, sem lógica de UI. Compartilhado por formulario.html e obrigada.html.
-// RASCUNHO (docs/specs/design/formulario-dois-caminhos.md, D5): os textos do caminho do gerente e
-// da faixa "Menos de 3 colaboradores" aguardam a revisão da Talita antes de ir ao ar.
+// Textos do caminho do gerente e da faixa "Menos de 3 colaboradores": revisão gramatical em 27/10, publicados com o ok do Issei; a Talita valida no site.
 (function (global) {
   "use strict";
 
@@ -135,8 +134,8 @@
           text: "De 11 a 20 pessoas você precisa de gente que decida no seu lugar. Eu olho quem pode assumir parte das decisões e como você acompanha o que foi decidido.",
         },
         "Mais de 20": {
-          axis: "Liderar por meio de outros líderes",
-          text: "Acima de 20 pessoas você conduz o time por meio de outras pessoas. Eu olho como as informações e as decisões passam por essa camada até chegar a você.",
+          axis: "Coordenar sem centralizar",
+          text: "Com mais de 20 pessoas respondendo diretamente a você, não dá para acompanhar cada uma de perto. Eu olho quem pode coordenar parte do time e como as informações e as decisões chegam até você.",
         },
       },
     },
@@ -161,7 +160,7 @@
         },
         Outro: {
           axis: "Os pontos que travam o time",
-          text: "Na sua sessão eu percorro como você acompanha o time, como as decisões chegam até você e o que já custou caro, para localizar por onde começar.",
+          text: "Na sua sessão eu olho como você acompanha o time, como as decisões chegam até você e o que já custou caro, para definir por onde começar.",
         },
       },
     },
@@ -226,7 +225,7 @@
     outro_segmento_outro: "[Nome], com [Tamanho do Time] e faturamento de [Faturamento], cada empresa tem falhas específicas na operação. Na sessão vamos mapear a rotina do seu time e organizar as etapas.",
   };
 
-  // Caminho do gerente — fechamento da obrigada (RASCUNHO, aguarda a revisão da Talita).
+  // Caminho do gerente — fechamento da obrigada (publicado em 27/10; a Talita valida no site).
   // [Pessoas] ← pessoas_lideradas; o fechamento sai acima da nota "em análise" (D7).
   var PESSOAS_LIDERADAS_COM = {
     "3 a 5": "um time de 3 a 5 pessoas",
@@ -246,7 +245,7 @@
 
   var FECHAMENTO_GERENTE = {
     quase_tudo: "[Nome], liderar [Pessoas] que te procura para quase tudo deixa o seu próprio trabalho para o fim do dia. Na sessão vamos definir o que o time pode decidir sem você.",
-    pendencias: "[Nome], com [Pessoas], cobrar pendência por pendência ocupa o dia inteiro. Na sessão vamos montar uma rotina para você acompanhar as entregas sem perguntar uma a uma.",
+    pendencias: "[Nome], com [Pessoas], cobrar pendência por pendência ocupa o dia inteiro. Na sessão vamos montar uma rotina para você acompanhar as entregas sem perguntar uma por uma.",
     retorno: "[Nome], com [Pessoas], cobrar e dar retorno sem uma rotina vira conversa difícil. Na sessão vamos combinar quando e como o retorno acontece.",
     resultado: "[Nome], você responde pelo resultado de [Pessoas], mas o que o time entrega não aparece. Na sessão vamos organizar o registro das entregas para o resultado ficar visível.",
     outro: "[Nome], liderar [Pessoas] traz questões bem específicas. Na sessão vamos olhar como você conduz o time hoje e por onde começar a mudar.",
@@ -254,10 +253,10 @@
 
   // Frase final, por objetivo em 12 meses. "Outro" fica sem frase.
   var OBJETIVO_FRASE = {
-    "Ser reconhecido pelo resultado do time": "E deixamos claro como isso aparece para quem avalia o resultado do seu time.",
-    "Crescer de cargo": "E olhamos como essa mudança prepara você para o próximo cargo.",
-    "Ter tempo para o trabalho que só eu faço": "E vemos quanto tempo isso devolve para o trabalho que só você faz.",
-    "Liderar com menos desgaste": "E vemos como fazer isso com menos desgaste para você e para o time.",
+    "Ser reconhecido pelo resultado do time": "E vamos ver como o resultado do seu time aparece para quem avalia o seu trabalho.",
+    "Crescer de cargo": "E vamos ver como essa mudança prepara você para o próximo cargo.",
+    "Ter tempo para o trabalho que só eu faço": "E vamos ver quanto tempo isso devolve para o trabalho que só você faz.",
+    "Liderar com menos desgaste": "E vamos ver como fazer isso com menos desgaste para você e para o time.",
     Outro: "",
   };
 

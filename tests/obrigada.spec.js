@@ -272,7 +272,7 @@ test('Pixel: um Lead por eid, nenhum sem eid', async ({ page }) => {
 });
 
 // ---------------------------------------------------------------------------
-// Fechamento do gerente (RASCUNHO, aguarda revisão da Talita) — docs/specs/design/formulario-dois-caminhos.md
+// Fechamento do gerente (publicado em 27/10) — docs/specs/design/formulario-dois-caminhos.md
 // be_perfil é a conveniência de renderização que o formulário grava; aqui é gravado direto.
 // ---------------------------------------------------------------------------
 
@@ -287,7 +287,7 @@ const gerente = (extra) => ({ caminho: 'gerente', nome: 'Gil', pessoas: '3 a 5',
 test('gerente: um fechamento por maior desafio, com o time e o nome preenchidos', async ({ page }) => {
   const esperado = {
     'O time me procura para quase tudo': 'Gil, liderar um time de 3 a 5 pessoas que te procura para quase tudo deixa o seu próprio trabalho para o fim do dia. Na sessão vamos definir o que o time pode decidir sem você.',
-    'Preciso cobrar pendências uma por uma': 'Gil, com um time de 3 a 5 pessoas, cobrar pendência por pendência ocupa o dia inteiro. Na sessão vamos montar uma rotina para você acompanhar as entregas sem perguntar uma a uma.',
+    'Preciso cobrar pendências uma por uma': 'Gil, com um time de 3 a 5 pessoas, cobrar pendência por pendência ocupa o dia inteiro. Na sessão vamos montar uma rotina para você acompanhar as entregas sem perguntar uma por uma.',
     'Tenho dificuldade de cobrar e dar retorno sem desgastar a relação': 'Gil, com um time de 3 a 5 pessoas, cobrar e dar retorno sem uma rotina vira conversa difícil. Na sessão vamos combinar quando e como o retorno acontece.',
     'Sou cobrado pelo resultado, mas não consigo mostrar o que o time entrega': 'Gil, você responde pelo resultado de um time de 3 a 5 pessoas, mas o que o time entrega não aparece. Na sessão vamos organizar o registro das entregas para o resultado ficar visível.',
     Outro: 'Gil, liderar um time de 3 a 5 pessoas traz questões bem específicas. Na sessão vamos olhar como você conduz o time hoje e por onde começar a mudar.',
@@ -309,10 +309,10 @@ test('gerente: [Pessoas] muda com pessoas lideradas', async ({ page }) => {
 
 test('gerente: frase final por objetivo em 12 meses ("Outro" fica sem frase)', async ({ page }) => {
   const frases = {
-    'Ser reconhecido pelo resultado do time': 'E deixamos claro como isso aparece para quem avalia o resultado do seu time.',
-    'Crescer de cargo': 'E olhamos como essa mudança prepara você para o próximo cargo.',
-    'Ter tempo para o trabalho que só eu faço': 'E vemos quanto tempo isso devolve para o trabalho que só você faz.',
-    'Liderar com menos desgaste': 'E vemos como fazer isso com menos desgaste para você e para o time.',
+    'Ser reconhecido pelo resultado do time': 'E vamos ver como o resultado do seu time aparece para quem avalia o seu trabalho.',
+    'Crescer de cargo': 'E vamos ver como essa mudança prepara você para o próximo cargo.',
+    'Ter tempo para o trabalho que só eu faço': 'E vamos ver quanto tempo isso devolve para o trabalho que só você faz.',
+    'Liderar com menos desgaste': 'E vamos ver como fazer isso com menos desgaste para você e para o time.',
     Outro: '',
   };
   const base = 'Gil, liderar um time de 3 a 5 pessoas traz questões bem específicas. Na sessão vamos olhar como você conduz o time hoje e por onde começar a mudar.';
