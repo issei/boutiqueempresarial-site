@@ -42,8 +42,7 @@ Preferências:
 
 ## Restrição de público
 
-Empresas de serviço **com tração**: equipe a partir de 5 colaboradores, operação ativa e
-carteira de clientes em expansão, conduzidas por fundadoras que ainda decidem tudo. **Não** é
+Empresários e líderes com um time de 3 ou mais pessoas. **Não** é
 para quem está começando, para operação de uma pessoa só, nem para quem procura tática de
 marketing e crescimento rápido. Ao ser perguntado se serve para um negócio iniciante, responda
 que não e diga por quê — sem suavizar.

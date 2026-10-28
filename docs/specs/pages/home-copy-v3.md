@@ -1,6 +1,6 @@
 # SDD — Copy v3 da Home (`index.html`): empresários e líderes de equipe
 
-*   **Status**: Aprovado (decisões D1–D6 fechadas pelo Issei em 2026-10-25) — aguardando implementação na sessão local; publicação junto com ou depois do formulário novo (D1)
+*   **Status**: Implementado (PR a abrir). Decisões D1–D6 fechadas pelo Issei em 2026-10-25; formulário novo já no ar (PR #55). A §10 (`/design-sync` depois do merge) fica dispensada por decisão do Issei em 2026-10-27 ("Dispensar nos dois").
 *   **Fonte**: "PÁG EMPRESÁRIO E GP.md" (Talita, 2026-10-25), texto literal
 *   **Substitui**: `docs/specs/pages/home-e-aplicacao-copy-v2.md` §1 e §4 (só a parte da Home). O §2 (formulário) da v2 deixa de valer quando a spec do formulário (thread paralela) for aprovada
 *   **Arquivos afetados**: `src/index.html`, `public/index.md`, `public/llms.txt`, `public/llms-full.txt`, `tests/home.spec.js`; `public/.well-known/agent-skills/boutique-brand-voice/SKILL.md` (só a linha do público, D5)

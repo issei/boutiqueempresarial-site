@@ -1,5 +1,7 @@
 # Agenda do dia na home (copy v3) — Spec de design
 
+> **Exceção registrada (2026-10-27):** o Issei dispensou o `/design-sync` (regra 1 do `CLAUDE.md` do site) para esta home ("Dispensar nos dois"); a agenda foi implementada direto em HTML/CSS seguindo esta spec.
+
 *   **Status**: Draft, aguarda `/design-sync`. Não implementada.
 *   **Fonte**: [`../pages/home-copy-v3.md`](../pages/home-copy-v3.md) §3.2 (agenda do dia e caixa "Faça uma conta rápida"), §3.3 (`.achado-ganho`) e §6 (componentes novos). Esta spec só desenha o que lá está; o texto da tela é o literal de lá.
 *   **Arquivos**: `src/index.html` (HTML e CSS dos três componentes, sem JS), `tests/home.spec.js`.
