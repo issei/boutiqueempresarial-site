@@ -183,7 +183,7 @@ Cada caminho tem uma lista explícita de etapas (`SEQ` em `src/formulario.html`)
 
 ### 8.2 Onde aparece cada devolutiva
 
-O bloco de análise (§2.1) aparece na etapa **seguinte** à pergunta que o alimenta. Os textos do gerente e da faixa "Menos de 3 colaboradores" são rascunho até a revisão da Talita (D5) e ficam em `src/js/form-copy.js`.
+O bloco de análise (§2.1) aparece na etapa **seguinte** à pergunta que o alimenta. Os textos do gerente e da faixa "Menos de 3 colaboradores" foram revisados e publicados em 27/10 (PR #55); a Talita valida no site. Ficam em `src/js/form-copy.js`.
 
 | Bloco (`#an-<etapa>`) | Lê a resposta de | Título do bloco |
 | :-- | :-- | :-- |
