@@ -69,7 +69,7 @@ O protótipo foi desenhado sem o spec em mão e divergiu dele em três pontos. N
 | # | Pergunta | Campo | Tipo | Bloco de análise | Avanço |
 | :-- | :--- | :--- | :--- | :--- | :--- |
 | 1 | Qual é o maior desafio da sua operação hoje? | `maior_problema_gestao` (+`_outro`) | radio 4 + Outro | — | automático (manual se "Outro") |
-| 2 | Para começar, qual o seu nome? | `nome_completo` | text | ✅ de `maior_problema_gestao` | botão |
+| 2 | Qual o seu nome? | `nome_completo` | text | ✅ de `maior_problema_gestao` | botão |
 | 3 | Qual o seu WhatsApp com DDD? | `whatsapp` | tel | — | botão |
 | 4 | E-mail corporativo | `email` | email | — | botão |
 | 5 | Qual é o modelo de negócio da sua empresa? | `modelo_negocio` (+`_outro`) | radio 4 + Outro | — | automático (manual se "Outro") |
@@ -183,7 +183,7 @@ Cada caminho tem uma lista explícita de etapas (`SEQ` em `src/formulario.html`)
 
 ### 8.2 Onde aparece cada devolutiva
 
-O bloco de análise (§2.1) aparece na etapa **seguinte** à pergunta que o alimenta. Os textos do gerente e da faixa "Menos de 3 colaboradores" são rascunho até a revisão da Talita (D5) e ficam em `src/js/form-copy.js`.
+O bloco de análise (§2.1) aparece na etapa **seguinte** à pergunta que o alimenta. Os textos do gerente e da faixa "Menos de 3 colaboradores" foram revisados e publicados em 27/10 (PR #55); a Talita valida no site. Ficam em `src/js/form-copy.js`.
 
 | Bloco (`#an-<etapa>`) | Lê a resposta de | Título do bloco |
 | :-- | :-- | :-- |

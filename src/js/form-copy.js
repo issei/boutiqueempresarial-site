@@ -58,7 +58,7 @@
       by: {
         "Menos de 3 colaboradores": {
           axis: "Estrutura antes do time crescer",
-          text: "Com menos de 3 pessoas, o risco é você virar o gargalo de um negócio que ainda vai crescer. Eu olho o que precisa estar descrito antes das próximas contratações.",
+          text: "Com menos de 3 pessoas, o risco é que tudo continue dependendo só de você num negócio que ainda vai crescer. Eu olho o que precisa estar descrito antes das próximas contratações.",
         },
         "3 a 4 colaboradores": {
           axis: "A saída do combinado verbal",
@@ -159,7 +159,7 @@
           text: "Na sua sessão eu olho como o trabalho do time é registrado hoje, para você mostrar com números o que foi entregue.",
         },
         Outro: {
-          axis: "Os pontos que travam o time",
+          axis: "Os pontos mais frágeis do time",
           text: "Na sua sessão eu olho como você acompanha o time, como as decisões chegam até você e o que já custou caro, para definir por onde começar.",
         },
       },

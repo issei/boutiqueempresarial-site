@@ -53,14 +53,14 @@ da equipe → faturamento). Única mudança, as faixas de `tamanho_equipe` (D1):
 Sem caixa de seleção nos dois caminhos: o aviso do rodapé continua sendo o consentimento, e continua
 dizendo **"Ao responder"** (sustenta a pré-captura). Texto novo do rodapé:
 
-> Esta é uma aplicação e não garante o agendamento. Ao responder, você autoriza o uso dos seus dados apenas
+> Esta é uma aplicação e não garante o agendamento. As vagas são limitadas. Ao responder, você autoriza o uso dos seus dados apenas
 > para avaliação desta aplicação, conforme a nossa Política de Privacidade.
 
 ### Topo da página (os dois caminhos)
 
 | Elemento | Texto |
 | :-- | :-- |
-| Pré-headline | Para empresários e líderes com equipe a partir de 3 pessoas |
+| Pré-headline | Para empresários e líderes de equipe (ajuste da Talita, 29/10: igual ao da home) |
 | Headline | Quantas vezes o seu time te procurou hoje? |
 | Subheadline | E quantas dessas vezes precisavam mesmo de você? Em um diagnóstico de 45 minutos, eu te mostro por que o time depende tanto de você e o que mudar primeiro na forma de conduzir a equipe. |
 | Autoridade | Talita Issei · 15 anos em multinacionais como KPMG, Itaú, Vivo e Accenture |
@@ -68,7 +68,7 @@ dizendo **"Ao responder"** (sustenta a pré-captura). Texto novo do rodapé:
 | Item 1 | **Como você acompanha o time:** onde estão as pendências, as prioridades e os responsáveis |
 | Item 2 | **Como as decisões chegam até você:** quais precisam mesmo da sua autorização |
 | Item 3 | **O que já custou caro:** erros e retrabalhos recentes, com exemplos da sua realidade |
-| Acima do botão de envio | Leva cerca de 2 minutos. Depois do envio, eu mesma entro em contato. Deixe um número com WhatsApp. |
+| Acima do botão de envio | Leva cerca de 2 minutos. É uma análise individual, conduzida diretamente por mim — sem robô, sem automação. Depois do envio, eu mesma entro em contato. Deixe um número com WhatsApp. (ajuste da Talita, 29/10: "sem robô" volta; "As vagas são limitadas." entra no rodapé legal) |
 
 O bloco `.intro` passa a aparecer na etapa de posição (a nova primeira). `<meta description>`,
 `og:description` e o JSON-LD da página são revistos para não restringir o público a "empresas de serviço"

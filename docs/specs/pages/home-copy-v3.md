@@ -1,6 +1,6 @@
 # SDD — Copy v3 da Home (`index.html`): empresários e líderes de equipe
 
-*   **Status**: Aprovado (decisões D1–D6 fechadas pelo Issei em 2026-10-25) — aguardando implementação na sessão local; publicação junto com ou depois do formulário novo (D1)
+*   **Status**: Implementado (PR a abrir). Decisões D1–D6 fechadas pelo Issei em 2026-10-25; formulário novo já no ar (PR #55). A §10 (`/design-sync` depois do merge) fica dispensada por decisão do Issei em 2026-10-27 ("Dispensar nos dois").
 *   **Fonte**: "PÁG EMPRESÁRIO E GP.md" (Talita, 2026-10-25), texto literal
 *   **Substitui**: `docs/specs/pages/home-e-aplicacao-copy-v2.md` §1 e §4 (só a parte da Home). O §2 (formulário) da v2 deixa de valer quando a spec do formulário (thread paralela) for aprovada
 *   **Arquivos afetados**: `src/index.html`, `public/index.md`, `public/llms.txt`, `public/llms-full.txt`, `tests/home.spec.js`; `public/.well-known/agent-skills/boutique-brand-voice/SKILL.md` (só a linha do público, D5)
@@ -206,7 +206,7 @@ Ocorrências em `src/formulario.html`, `src/js/form-copy.js` e `e2e/form-aplicac
 ## 9. Decisões (todas fechadas)
 
 *   **D1 — Ordem de publicação com o formulário. DECIDIDO (Issei, 2026-10-25):** a home v3 só vai ao ar **junto com ou depois** do formulário novo. PR separado; merge em `main` só quando o formulário novo estiver no ar ou no mesmo dia.
-*   **D2 — Eyebrow. DECIDIDO (Issei, 2026-10-25):** manter o texto da home, `Para empresários e líderes de equipe`. O corte de 3 pessoas aparece só em §3.7. A diferença para o eyebrow do formulário é intencional.
+*   **D2 — Eyebrow. DECIDIDO (Issei, 2026-10-25):** manter o texto da home, `Para empresários e líderes de equipe`. O corte de 3 pessoas aparece só em §3.7. A diferença para o eyebrow do formulário é intencional. **Revisto em 2026-10-29:** a Talita disse que a diferença não era intencional e o formulário passou a usar o texto da home.
 *   **D3 — Credibilidade no hero. DECIDIDO (Issei, 2026-10-25):** tirar, como na copy nova. Remover `.hero-cred` (HTML e CSS); a autoridade fica só em §3.6.
 *   **D4 — Title, description e resumo AEO. DECIDIDO (Issei, 2026-10-25):** só frases literais da copy (§3.8 e §4). Contrato AEO e gate sem mudança.
 *   **D5 — `boutique-brand-voice/SKILL.md`. DECIDIDO (Issei, 2026-10-25):** atualizar no mesmo PR, só a linha do público, com o trecho literal `empresários e líderes com um time de 3 ou mais pessoas`.

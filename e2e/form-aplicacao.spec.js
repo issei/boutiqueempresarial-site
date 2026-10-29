@@ -499,7 +499,7 @@ test('critério 10: topo, texto acima do botão e rodapé com o texto literal da
   await page.goto('/formulario.html');
   // textContent: o CSS põe o eyebrow em caixa alta, e o texto literal da spec é o do HTML.
   const t = async (sel) => ((await page.locator(sel).first().textContent()) ?? '').replace(/\s+/g, ' ').trim();
-  expect(await t('.intro-eyebrow')).toBe('Para empresários e líderes com equipe a partir de 3 pessoas');
+  expect(await t('.intro-eyebrow')).toBe('Para empresários e líderes de equipe');
   expect(await t('.intro-headline')).toBe('Quantas vezes o seu time te procurou hoje?');
   expect(await t('.intro-subtitle')).toBe('E quantas dessas vezes precisavam mesmo de você? Em um diagnóstico de 45 minutos, eu te mostro por que o time depende tanto de você e o que mudar primeiro na forma de conduzir a equipe.');
   expect(await t('.intro-cred')).toBe('Talita Issei · 15 anos em multinacionais como KPMG, Itaú, Vivo e Accenture');
@@ -510,9 +510,9 @@ test('critério 10: topo, texto acima do botão e rodapé com o texto literal da
     'Como as decisões chegam até você: quais precisam mesmo da sua autorização',
     'O que já custou caro: erros e retrabalhos recentes, com exemplos da sua realidade',
   ]);
-  expect(await t('#prg-txt')).toBe('Leva cerca de 2 minutos. Depois do envio, eu mesma entro em contato. Deixe um número com WhatsApp.');
+  expect(await t('#prg-txt')).toBe('Leva cerca de 2 minutos. É uma análise individual, conduzida diretamente por mim — sem robô, sem automação. Depois do envio, eu mesma entro em contato. Deixe um número com WhatsApp.');
   const rodape = ((await page.locator('form > .leg:not(#l-msg)').textContent()) ?? '').replace(/\s+/g, ' ');
-  expect(rodape).toContain('Esta é uma aplicação e não garante o agendamento. Ao responder, você autoriza o uso dos seus dados apenas para avaliação desta aplicação, conforme a nossa Política de Privacidade.');
+  expect(rodape).toContain('Esta é uma aplicação e não garante o agendamento. As vagas são limitadas. Ao responder, você autoriza o uso dos seus dados apenas para avaliação desta aplicação, conforme a nossa Política de Privacidade.');
   // Sem caixa de consentimento (D3) e o bloco do topo só na etapa de posição.
   await expect(page.locator('input[type=checkbox]')).toHaveCount(0);
   await escolher(page, 'posicao', EMPRESARIO);
@@ -557,7 +557,7 @@ test('devolutivas do gerente aparecem na etapa seguinte à pergunta que as alime
   await escolher(page, 'maior_desafio_gerente', 'Outro');
   await page.fill('#maior_desafio_gerente_outro', 'qualquer coisa');
   await page.locator('#next').click();
-  await expect(page.locator('#an-objetivo_12m .cf-an-axis')).toHaveText('Os pontos que travam o time');
+  await expect(page.locator('#an-objetivo_12m .cf-an-axis')).toHaveText('Os pontos mais frágeis do time');
 });
 
 test('toda opção que alimenta uma devolutiva tem texto (nenhum bloco vazio)', async ({ page }) => {
@@ -593,7 +593,7 @@ test('empresário: "Menos de 3" e "3 a 4 colaboradores" têm devolutiva própria
   await escolher(page, 'tamanho_equipe', 'Menos de 3 colaboradores');
   await expect(page.locator('#q-faturamento_mensal')).toBeVisible({ timeout: 2000 });
   await expect(page.locator('#an-faturamento_mensal .cf-an-axis')).toHaveText('Estrutura antes do time crescer');
-  await expect(page.locator('#an-faturamento_mensal .cf-an-text')).toHaveText('Com menos de 3 pessoas, o risco é você virar o gargalo de um negócio que ainda vai crescer. Eu olho o que precisa estar descrito antes das próximas contratações.');
+  await expect(page.locator('#an-faturamento_mensal .cf-an-text')).toHaveText('Com menos de 3 pessoas, o risco é que tudo continue dependendo só de você num negócio que ainda vai crescer. Eu olho o que precisa estar descrito antes das próximas contratações.');
 
   await page.locator('#prev').click();
   await escolher(page, 'tamanho_equipe', '3 a 4 colaboradores');

@@ -1,21 +1,18 @@
 # Boutique Empresarial — conteúdo integral
 
-> Arquitetura de Negócios que estrutura operações de empresas de serviço para que funcionem
-> com estabilidade e autonomia, sem depender da fundadora no centro das decisões.
+> Arquitetura de Negócios que estrutura operações para que funcionem com estabilidade e
+> autonomia, sem depender do empresário no centro das decisões.
 
 **URL:** https://boutiqueempresarial.com.br/
-**Atualizado:** 2026-10-21
+**Atualizado:** 2026-10-27
 **Índice curado:** https://boutiqueempresarial.com.br/llms.txt
 
 ---
 
 ## Resumo
 
-O Diagnóstico Gratuito é uma sessão individual de 45 minutos, conduzida por Talita Issei, para
-donos e sócios de empresas de serviço com equipe a partir de 5 colaboradores. A sessão analisa
-quais decisões ainda dependem do dono, em que etapa da entrega acontecem os erros e o
-retrabalho, e como a informação circula pelo WhatsApp e pelos canais internos. Ao final, você
-sai sabendo o que trava a sua operação e o que corrigir primeiro.
+Em um diagnóstico de 45 minutos, eu te mostro por que o time depende tanto de você e o que mudar
+primeiro na forma de conduzir a equipe.
 
 ---
 
@@ -24,60 +21,81 @@ sai sabendo o que trava a sua operação e o que corrigir primeiro.
 A home (`/`) é a landing page do **Diagnóstico Gratuito** — uma sessão individual de 45
 minutos, sem custo, porta de entrada do programa. Não é o programa em si; é onde ele começa.
 
-### Você se reconhece em alguma destas situações?
+### Quantas vezes o seu time te procurou hoje?
 
-- Orçamentos, prazos e respostas para clientes só saem depois que você aprova
-- Você revisa tarefas que já pagou alguém para fazer
-- Para saber como está cada entrega, você precisa perguntar para a equipe
-- Mesmo de férias, você continua respondendo mensagens de trabalho
+Para empresários e líderes de equipe. E quantas dessas vezes precisavam mesmo de você? Em um
+diagnóstico de 45 minutos, eu te mostro por que o time depende tanto de você e o que mudar
+primeiro na forma de conduzir a equipe.
 
-Na maioria das vezes, isso tem uma raiz comum: a operação ainda não tem processos, papéis e
-indicadores bem definidos.
+Diagnóstico gratuito. Você preenche em 2 minutos e eu entro em contato.
 
-### O que a sessão examina
+### Veja se o seu dia se parece com este.
 
-1. **Decisões que dependem de você** — Mapeio quais decisões do dia a dia hoje precisam da sua
-   aprovação e quais a equipe já pode assumir.
-2. **Falhas na entrega** — Identifico em qual etapa do serviço acontecem os erros e o
-   retrabalho, e o que precisa mudar para que eles não se repitam.
-3. **Fluxo de informação** — Avalio como as demandas circulam pelo WhatsApp e pelos canais
-   internos, e mostro como organizar isso para você acompanhar as entregas sem precisar
-   perguntar o status.
+- 8h10 Alguém te faz uma pergunta que poderia ter resolvido sozinho.
+- 9h30 Chega um problema sem nenhuma ideia de solução, e quem resolve é você.
+- 11h Você manda mensagem para cada pessoa para saber como está cada entrega.
+- 14h A pessoa que entrou há um mês pergunta, pela terceira vez, algo que você já explicou.
+- 16h Um cliente pede uma resposta, e ninguém do time se sente seguro para dar sem falar com você.
+- 17h30 Você queria dar um retorno para alguém sobre a semana, mas não sobrou tempo.
+- 18h O seu próprio trabalho ainda não começou.
 
-Ao final, você sai com clareza sobre o que trava a sua operação e o que corrigir primeiro. Se
-fizer sentido para o seu momento, Talita apresenta como fazer essa reestruturação com a
-Boutique Empresarial.
+E quando uma entrega atrasa, é você quem explica, para o cliente ou para quem cobra resultado de
+você. Muitas vezes, você foi o último a saber do atraso.
 
-### O que muda quando a equipe ganha autonomia
+#### Faça uma conta rápida.
 
-- Você ganha mais tempo na agenda, porque deixa de aprovar e revisar tarefas que a equipe já
-  consegue resolver
-- A operação fica mais previsível: rotina, metas e indicadores mostram o que cada pessoa está
-  entregando
-- Você decide com mais segurança, porque passa a ter dados para saber quem está entregando,
-  quando contratar e quando desligar
+Pense no dia de ontem. Quantas vezes alguém do time te procurou? Agora separe essas vezes em dois
+grupos: as que precisavam de uma autorização sua e as que a pessoa poderia ter resolvido sozinha
+se soubesse que podia.
+
+Se o segundo grupo for o maior, já dá para ver de onde vem a falta de tempo. O próximo passo é
+descobrir o que o seu time pode decidir sem você.
+
+### O que olhamos juntos nos 45 minutos
+
+1. **Como você acompanha o time** — Se existe um momento fixo na semana para olhar pendências,
+   prioridades e quem é responsável por cada coisa. E onde essas informações ficam: em um lugar só
+   ou espalhadas no WhatsApp, na memória das pessoas e em várias ferramentas. Você descobre por
+   que precisa perguntar o status de tudo.
+2. **Como as decisões chegam até você** — Quantas vezes por dia o time te procura, para decisões
+   simples ou para decisões que precisam mesmo da sua autorização. E se você decide com números
+   sobre o time ou pela sensação do momento. Você descobre o que pode parar de chegar até você.
+3. **O que já custou caro** — Dois ou três erros ou retrabalhos dos últimos meses e quanto eles
+   custaram em tempo ou dinheiro. Você vê, com os seus próprios exemplos, o preço de deixar como
+   está.
+
+**Antes de qualquer proposta, falamos sobre o seu momento:** quanto tempo você tem e quem do time
+pode participar da mudança. Se não for a hora, eu te digo com franqueza.
+
+### O que muda quando o time sabe o que pode decidir sem você
+
+- Quem traz um problema já chega com uma proposta, e você aprova ou ajusta.
+- Na segunda-feira, você já sabe o que cada pessoa vai entregar na semana.
+- Você tem horários do dia sem interrupção para fazer o seu trabalho.
+- Quem entra no time aprende sem depender de você repetir tudo.
+- Sobra tempo para dar retorno ao time, e o mesmo erro deixa de se repetir.
+- Você consegue tirar uns dias sem levar o notebook.
 
 ### O que acontece se nada mudar
 
-- Você continua pagando a equipe e gastando o seu tempo para revisar e refazer o trabalho
-- Sem dados sobre quem realmente entrega, a decisão de contratar ou demitir continua no
-  feeling — e o risco de contratar errado cresce junto com a equipe
+- Cada pessoa nova que entra traz mais perguntas para você.
+- Você continua cobrando pendências uma por uma, todos os dias.
+- Sem tempo para dar retorno, o time repete os mesmos erros e você continua corrigindo.
 
-### Quem conduz
+### Quem vai conversar com você
 
-**Talita Issei** já acompanhou empresários que não saem de férias sem o celular, que aprovam
-orçamento dentro do carro e que só descobrem que um prazo atrasou quando o cliente liga
-reclamando. Antes de trabalhar com esse problema, passou 15 anos em multinacionais como KPMG,
-Itaú, Vivo e Accenture, 4 deles à frente de gestão de equipes e projetos. Há 5 anos leva essa
-experiência para pequenas e médias empresas, ajudando donos e sócios a formar equipes que
-decidem sem precisar deles o tempo todo.
+Eu sou a Talita Issei. Passei 15 anos em multinacionais como KPMG, Itaú, Vivo e Accenture. Em 4
+deles, estive à frente da gestão de equipes e projetos, conduzindo times no dia a dia: definindo
+prioridades, acompanhando entregas e respondendo pelo resultado.
+
+Há 5 anos, levo essa experiência para pequenas e médias empresas, trabalhando com empresários e
+líderes na forma como eles conduzem o próprio time.
 
 ### Como funciona
 
-1. Você preenche o formulário, que leva cerca de 2 minutos
-2. Talita entra em contato por telefone para entender o momento da sua empresa
-3. Se fizer sentido, vocês marcam a sessão de 45 minutos, com você e com quem decide junto com
-   você
+1. Você preenche o formulário em 2 minutos.
+2. Eu entro em contato para entender o momento do seu time.
+3. Marcamos os 45 minutos no horário que for melhor para você.
 
 ---
 
@@ -98,42 +116,44 @@ Ele se organiza em três pilares:
 
 ---
 
-## Para quem é
+## Para quem é e para quem não é
 
-- Donos e sócios de empresas de serviço com 5 ou mais colaboradores
-- Empresas com operação ativa e carteira de clientes em crescimento
-- Empresários que decidiram sair do operacional para cuidar da gestão e do crescimento
-
-**Para quem não é:** negócios em fase inicial, quem trabalha sozinho ou quem procura
-estratégias de marketing.
+Ela não serve para quem trabalha sozinho, para quem ainda não tem equipe nem para quem procura
+estratégia de marketing ou vendas. Ela é para empresários e líderes com um time de 3 ou mais
+pessoas que sentem que tudo passa por eles e querem mudar isso agora.
 
 ---
 
 ## Perguntas frequentes
 
-### A sessão tem custo?
+### Quanto custa?
 
-Não, a sessão é gratuita e dura 45 minutos.
+Nada. O diagnóstico é gratuito.
 
-### No final, vou receber uma proposta de venda?
+### Preciso mudar a empresa inteira para isso funcionar?
 
-O foco da conversa é entender o que trava a sua operação hoje. Se ao final fizer sentido para o
-seu momento, mostro como a reestruturação pode ser feita com a Boutique Empresarial.
+Não. As mudanças acontecem na forma como você conduz o seu time: como ele traz os problemas, como
+você acompanha as entregas e quando você está disponível.
 
-### Para quem é a sessão?
+### Já faço reunião com o time e nada mudou. Serve para mim?
 
-Para donos e sócios de empresas de serviço com equipe a partir de 5 colaboradores, com operação
-ativa e que querem sair do operacional.
+Serve. Na conversa, eu olho como as suas reuniões acontecem hoje: o que se decide nelas, quem sai
+com o quê e como isso é acompanhado durante a semana.
 
-### Como funciona?
+### Estou sem tempo nenhum. Faz sentido agendar?
 
-Você preenche o formulário, eu entro em contato por telefone para entender o seu momento e, se
-fizer sentido, marcamos a sessão.
+Faz, se você quer entender de onde vem a falta de tempo. No final, conversamos sobre o seu
+momento. Se não for a hora de mudar, eu te digo.
 
-### Para quem a sessão não é?
+### Vou receber uma proposta no final?
 
-Para negócios em fase inicial, para quem trabalha sozinho ou para quem procura estratégias de
-marketing.
+Se fizer sentido para o seu momento, sim. A decisão é sua, e o que você descobriu fica com você de
+qualquer forma.
+
+### Preciso preparar alguma coisa?
+
+Não é obrigatório. Mas ajuda lembrar de dois ou três erros ou retrabalhos dos últimos meses. São
+eles que mostram, com a sua realidade, o que precisa mudar.
 
 ---
 
@@ -142,7 +162,7 @@ marketing.
 - **Home** — https://boutiqueempresarial.com.br/ (indexável; companion em `/index.md`; LP do
   Diagnóstico Gratuito)
 - **Aplicação** — https://boutiqueempresarial.com.br/formulario.html (`noindex`; preenchido
-  por humano, com consentimento LGPD explícito; não submeter por agente; o agente do visitante só preenche via WebMCP, o envio é humano)
+  por humano, com consentimento LGPD explícito; não submeter por agente; o agente do visitante só preenche via WebMCP, o envio é humano. A primeira pergunta é "Qual é a sua posição na empresa?" (Sou dono ou sócio; Lidero um time na empresa (gerente, coordenador, supervisor)) e define o caminho: empresário (quantidade de pessoas no time: Menos de 3 colaboradores, 3 a 4 colaboradores, 5 a 15 colaboradores ou Mais de 15 colaboradores) ou gerente (vínculo, pessoas lideradas, maior desafio com o time e objetivo nos próximos 12 meses))
 - **Política de Privacidade** — https://boutiqueempresarial.com.br/privacidade.html
   (`noindex`; governança de dados, LGPD, Meta Ads/Pixel, Data Deletion Callback)
 - **Termos de Uso** — https://boutiqueempresarial.com.br/termos.html (`noindex`; limites da
