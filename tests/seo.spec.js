@@ -99,7 +99,7 @@ for (const { slug, url } of pages) {
 // critério 10). A home é outro arquivo e outra spec.
 test('formulario: description, OG, Twitter e JSON-LD com a copy da spec', async ({ page }) => {
   await page.goto('/formulario.html');
-  const esperado = 'Para empresários e líderes com equipe a partir de 3 pessoas. Quantas vezes o seu time te procurou hoje? E quantas dessas vezes precisavam mesmo de você?';
+  const esperado = 'Para empresários e líderes de equipe. Quantas vezes o seu time te procurou hoje? E quantas dessas vezes precisavam mesmo de você?';
   const desc = await attr(page, 'meta[name="description"]');
   expect(desc).toBe(esperado);
   expect(await attr(page, 'meta[property="og:description"]')).toBe(esperado);
