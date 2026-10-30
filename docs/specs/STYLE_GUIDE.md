@@ -18,7 +18,9 @@ O design deve transmitir autoridade sem gritar.
 | **Background Principal** | `--bg-color` | `bg-offwhite-50` ou `bg-[#f5f2eb]` | `#f5f2eb` | Fundo geral, reduz cansaço visual. |
 | **Texto Primário** | `--text-primary` | `text-gray-900` ou `text-[#1f1f1f]` | `#1f1f1f` | Títulos e texto principal. |
 | **Texto Secundário** | `--text-secondary` | `text-gray-600` ou `text-[#555555]` | `#555555` | Descrições e notas. |
-| **Destaque (Accent)** | `--accent-color` | `bg-[#B84A22]` | `#B84A22` | Só botões (laranja queimado, texto branco ≥ 5:1). `adr-botao-laranja.md`. |
+| **Destaque (Accent)** | `--accent-color` | `bg-[#c14f1b]` | `#c14f1b` | Botões (texto branco 4,8:1), barra de progresso, palavra em itálico de títulos grandes. Revisa `adr-botao-laranja.md`: `adr-paleta-v4.md`. |
+| **Laranja para texto** | `--accent-text` | `text-[#a8420f]` | `#a8420f` | Eyebrows e numerais pequenos sobre creme ou bege (≥ 4,5:1). |
+| **Laranja sobre escuro** | `--accent-light` | `text-[#e8743b]` | `#e8743b` | Eyebrows e números das opções sobre `#131210` (6,2:1). |
 | **Ouro Sutil (Detalhe)** | `--gold-subtle` | `text-gold-400` ou `text-[#C5A059]` | `#C5A059` | Filetes, bordas, o ponto do wordmark. **Não** para texto — 2.20:1 sobre o creme. |
 | **Ouro para texto** | `--gold-text` | `text-[#886829]` | `#886829` | O único ouro que pode carregar uma palavra (≥ 4.5:1). `HARNESS_AEO.md` §B5. |
 | **Borda** | `--border-color` | `border-gray-200` ou `border-[#E5E5E5]` | `#E5E5E5` | Divisórias sutis. |
