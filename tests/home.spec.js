@@ -1,29 +1,34 @@
 import { test, expect } from '@playwright/test';
 
-// O rótulo do CTA é afirmado literalmente porque é a única coisa que liga a página ao funil:
-// se alguém reescrever o botão sem reescrever o destino, ou o contrário, é aqui que aparece.
-// Texto de docs/specs/pages/home-copy-v3.md §3.
-const CTA = 'Quero entender por que o meu time me procura tanto';
+// Textos de docs/specs/design/home-copy-v4.md. O rótulo do CTA é afirmado literalmente porque é a
+// única coisa que liga a página ao funil: se alguém reescrever o botão sem reescrever o destino,
+// ou o contrário, é aqui que aparece.
+const CTA = 'Quero entender por que os erros continuam';
+const H1 = 'Você revisa tudo o que o seu time entrega. E os erros continuam aparecendo.';
+const SUB = 'Em um diagnóstico individual de 45 minutos, eu te mostro por que os erros se repetem no seu time e você sai com os três primeiros ajustes por escrito.';
 
 const H2 = [
-    'Veja se o seu dia se parece com este.',
+    'Veja se isto acontece com você',
+    'Faça uma conta rápida',
+    'Por que revisar tudo não diminui os erros',
+    'Implantar as três partes juntas, nesta ordem.',
     'O que olhamos juntos nos 45 minutos',
-    'O que muda quando o time sabe o que pode decidir sem você',
-    'O que acontece se nada mudar',
-    'Quem vai conversar com você',
-    'Talvez esta conversa não seja para você',
-    'Perguntas frequentes',
+    'Dois caminhos para o seu próximo ano',
+    'Eu sou a Talita Issei.',
+    'Para quem é esta conversa',
     'Como funciona',
+    'Perguntas frequentes',
+    'Descubra em 45 minutos por que os erros continuam chegando até você e o que mudar primeiro.',
 ];
 
-const AGENDA = [
-    ['8h10', 'Alguém te faz uma pergunta que poderia ter resolvido sozinho.'],
-    ['9h30', 'Chega um problema sem nenhuma ideia de solução, e quem resolve é você.'],
-    ['11h', 'Você manda mensagem para cada pessoa para saber como está cada entrega.'],
-    ['14h', 'A pessoa que entrou há um mês pergunta, pela terceira vez, algo que você já explicou.'],
-    ['16h', 'Um cliente pede uma resposta, e ninguém do time se sente seguro para dar sem falar com você.'],
-    ['17h30', 'Você queria dar um retorno para alguém sobre a semana, mas não sobrou tempo.'],
-    ['18h', 'O seu próprio trabalho ainda não começou.'],
+const SINAIS = [
+    'A entrega chega e você precisa conferir antes de mandar para o cliente.',
+    'Você encontra o mesmo erro que já tinha corrigido no mês passado.',
+    'Você devolve, explica de novo, e a pessoa ajusta só aquele ponto.',
+    'Quando você está sem tempo para revisar, o trabalho fica parado esperando você.',
+    'Quem entrou há pouco tempo erra o que os mais antigos já sabem, e é você quem percebe.',
+    'Quando um erro chega ao cliente, é você quem pede desculpas e explica o que aconteceu.',
+    'Você sabe que tem gente que entrega bem e gente que dá mais trabalho, mas não tem como mostrar isso com números.',
 ];
 
 // textContent, não innerText: o eyebrow e outros rótulos aplicam text-transform.
@@ -35,66 +40,120 @@ test.describe('home', () => {
 
         await expect(page).toHaveTitle('Diagnóstico Gratuito | Boutique Empresarial');
         await expect(page.locator('header')).toBeVisible();
-        await expect(page.locator('h1')).toHaveText('Quantas vezes o seu time te procurou hoje?');
+        expect(await texto(page, 'h1')).toBe(H1);
+        await expect(page.locator('h1 em')).toHaveText('E os erros continuam aparecendo.');
     });
 
-    test('os h2 seguem a ordem da copy v3', async ({ page }) => {
+    test('a fonte não mudou: Playfair nos títulos e Inter no corpo', async ({ page }) => {
         await page.goto('/');
-        const h2 = await page.locator('main h2').evaluateAll((els) => els.map((e) => e.textContent.trim()));
+        const fonte = (sel) => page.locator(sel).first().evaluate((e) => getComputedStyle(e).fontFamily);
+        expect(await fonte('h1')).toContain('Playfair Display');
+        expect(await fonte('main p')).toContain('Inter');
+    });
+
+    test('os h2 seguem a ordem da copy v4', async ({ page }) => {
+        await page.goto('/');
+        const h2 = await page.locator('main h2').evaluateAll((els) => els.map((e) => e.textContent.replace(/\s+/g, ' ').trim()));
         expect(h2).toEqual(H2);
     });
 
     test('hero e fechamento trazem o texto literal da spec', async ({ page }) => {
         await page.goto('/');
-        expect(await texto(page, '.eyebrow')).toBe('Para empresários e líderes de equipe');
-        expect(await texto(page, '.hero .lead')).toBe(
-            'E quantas dessas vezes precisavam mesmo de você? Em um diagnóstico de 45 minutos, eu te mostro por que o time depende tanto de você e o que mudar primeiro na forma de conduzir a equipe.',
-        );
+        expect(await texto(page, '.hero .eyebrow')).toBe('Para empresários e líderes de equipe');
+        expect(await texto(page, '.hero .lead')).toBe(SUB);
+        await expect(page.locator('.hero .lead strong')).toHaveText('três primeiros ajustes por escrito.');
         expect(await texto(page, '.hero-nota')).toBe('Diagnóstico gratuito. Você preenche em 2 minutos e eu entro em contato.');
-        expect(await texto(page, '.fechamento-frase')).toBe(
-            'Descubra em 45 minutos quais decisões o seu time pode tomar sem você.',
-        );
-        await expect(page.locator('.hero-cred'), 'a linha de credencial saiu do hero').toHaveCount(0);
+        expect(await page.locator('.selos li').allTextContents()).toEqual(['45 minutos', 'Individual', '3 ajustes por escrito', 'Gratuito']);
+        expect(await texto(page, '.agora .micro')).toBe('Diagnóstico gratuito · 45 minutos · Individual');
     });
 
-    test('a agenda do dia tem 7 horários, na ordem, e fecha em 18h', async ({ page }) => {
+    test('os sete sinais são caixas de marcar e o contador acompanha', async ({ page }) => {
         await page.goto('/');
-        const itens = page.locator('.agenda li');
-        await expect(itens).toHaveCount(7);
+        const rotulos = page.locator('.sinal');
+        await expect(rotulos).toHaveCount(7);
+        expect(await rotulos.allTextContents()).toEqual(SINAIS);
+        await expect(page.locator('.contador')).toContainText('0 de 7');
 
-        const lidos = await itens.evaluateAll((els) =>
-            els.map((e) => {
-                const t = e.querySelector('time');
-                return [t.textContent.trim(), e.textContent.replace(t.textContent, '').replace(/\s+/g, ' ').trim()];
-            }),
-        );
-        expect(lidos).toEqual(AGENDA);
-
-        const conta = page.locator('.conta-rapida');
-        await expect(conta.locator('h3')).toHaveText('Faça uma conta rápida.');
-        await expect(conta.locator('p')).toHaveCount(2);
+        await rotulos.nth(0).click();
+        await rotulos.nth(3).click();
+        await expect(page.locator('#sinais-n')).toHaveText('2');
+        await rotulos.nth(0).click();
+        await expect(page.locator('#sinais-n')).toHaveText('1');
     });
 
-    test('os três achados trazem a linha de resultado', async ({ page }) => {
+    test('a calculadora começa em 20 / 8 / 6 = 75% e respeita os limites', async ({ page }) => {
+        await page.goto('/');
+        await expect(page.locator('#v-rev')).toHaveText('20');
+        await expect(page.locator('#v-err')).toHaveText('8');
+        await expect(page.locator('#v-rep')).toHaveText('6');
+        await expect(page.locator('#r-pct')).toHaveText('75%');
+        await expect(page.locator('#r-b')).toBeVisible();
+
+        // 3/8 = 38%: abaixo de 50% só o percentual, sem a frase.
+        for (let i = 0; i < 3; i++) await page.locator('button[data-k="rep"][data-d="-1"]').click();
+        await expect(page.locator('#r-pct')).toHaveText('38%');
+        await expect(page.locator('#r-b')).toBeHidden();
+
+        // Os erros repetidos nunca passam dos erros encontrados.
+        for (let i = 0; i < 12; i++) await page.locator('button[data-k="rep"][data-d="1"]').click();
+        await expect(page.locator('#v-rep')).toHaveText('8');
+        await expect(page.locator('#r-pct')).toHaveText('100%');
+
+        // Baixar as entregas puxa os erros junto.
+        for (let i = 0; i < 20; i++) await page.locator('button[data-k="rev"][data-d="-1"]').click();
+        await expect(page.locator('#v-rev')).toHaveText('0');
+        await expect(page.locator('#v-err')).toHaveText('0');
+        await expect(page.locator('#r-pct')).toHaveText('0%');
+    });
+
+    test('sem JavaScript a página continua legível', async ({ browser }) => {
+        const ctx = await browser.newContext({ javaScriptEnabled: false });
+        const page = await ctx.newPage();
+        await page.goto('/');
+        await expect(page.locator('.contador')).toContainText('0 de 7');
+        await expect(page.locator('#r-pct')).toHaveText('75%');
+        await expect(page.locator('.aeo-faq details')).toHaveCount(7);
+        await ctx.close();
+    });
+
+    test('as três partes vêm na ordem Indicadores, Processos, Gestão de pessoas', async ({ page }) => {
+        await page.goto('/');
+        expect(await page.locator('.parte h3').allTextContents()).toEqual(['Indicadores', 'Processos', 'Gestão de pessoas']);
+        expect(await page.locator('.parte-ordem').allTextContents()).toEqual(['Primeiro', 'Depois', 'Por fim']);
+        expect(await texto(page, '.nota')).toBe('Quase todo mundo começa pela ferramenta. Ela só funciona depois que essas três partes estão definidas.');
+    });
+
+    test('os quatro achados trazem a linha de resultado', async ({ page }) => {
         await page.goto('/');
         expect(await page.locator('.achado h3').allTextContents()).toEqual([
+            'Como o trabalho chega até você',
             'Como você acompanha o time',
-            'Como as decisões chegam até você',
+            'Como as responsabilidades estão divididas',
             'O que já custou caro',
         ]);
         expect(await page.locator('.achado-ganho').allTextContents()).toEqual([
-            'Você descobre por que precisa perguntar o status de tudo.',
-            'Você descobre o que pode parar de chegar até você.',
+            'Você descobre por que as entregas chegam com erro.',
+            'Você descobre o que precisa acompanhar para não ter que revisar tudo.',
+            'Você descobre o que pode deixar de passar pela sua revisão.',
             'Você vê, com os seus próprios exemplos, o preço de deixar como está.',
         ]);
     });
 
-    test('o texto antigo da v2 não volta', async ({ page }) => {
+    test('os dois caminhos: três perdas e seis ganhos', async ({ page }) => {
+        await page.goto('/');
+        await expect(page.locator('.caminho:not(.dark) li')).toHaveCount(3);
+        await expect(page.locator('.caminho.dark li')).toHaveCount(6);
+    });
+
+    test('o texto antigo da v3 não volta', async ({ page }) => {
         await page.goto('/');
         const corpo = await page.locator('body').evaluate((e) => e.textContent);
         for (const antigo of [
+            'Quantas vezes o seu time te procurou',
+            'me procura tanto',
+            'depende tanto de você',
             'Quero agendar meu diagnóstico',
-            'a sua equipe ainda depende',
+            'Talvez esta conversa não seja para você',
             'empresas de serviço',
             'a partir de 5',
         ]) {
@@ -105,15 +164,14 @@ test.describe('home', () => {
     test('todo CTA aponta para o mesmo formulário', async ({ page }) => {
         await page.goto('/');
 
-        // Três CTAs: hero, fechamento e a barra fixa do mobile — duas em fluxo (copy v3 §5).
-        // Contar antes de afirmar o href impede que a suíte passe caso um deles suma silenciosamente.
+        // Cinco CTAs: hero, cartão escuro do diagnóstico, "dois caminhos", "por que agora" e a
+        // barra fixa do mobile. Contar antes de afirmar o href impede que a suíte passe caso um
+        // deles suma silenciosamente.
         //
-        // Seletor de CSS, não `getByRole`: a barra fixa é `display:none` fora do
-        // mobile, e `getByRole` só enxerga a árvore de acessibilidade — no desktop
-        // ela contaria 2 e o teste reprovaria por motivo errado. Aqui o alvo é o
-        // destino de todo CTA que existe no DOM, em qualquer viewport.
+        // Seletor de CSS, não `getByRole`: a barra fixa é `display:none` fora do mobile, e
+        // `getByRole` só enxerga a árvore de acessibilidade.
         const ctas = page.locator('a.btn');
-        await expect(ctas).toHaveCount(3);
+        await expect(ctas).toHaveCount(5);
 
         for (const cta of await ctas.evaluateAll((els) =>
             els.map((e) => ({ href: e.getAttribute('href'), texto: e.textContent.trim() })),
@@ -121,6 +179,7 @@ test.describe('home', () => {
             expect(cta.href, `CTA "${cta.texto}" com destino divergente`).toBe('/formulario.html');
             expect(cta.texto, 'rótulo de CTA divergente').toBe(CTA);
         }
+        await expect(page.locator('.apply-link')).toHaveAttribute('href', '/formulario.html');
     });
 
     test('"Como funciona" não traz botão', async ({ page }) => {
@@ -134,7 +193,7 @@ test.describe('home', () => {
         await page.goto('/');
         await expect(page.locator('.cta-fixa'), 'barra fixa ausente no mobile').toBeVisible();
 
-        // No desktop ela sobraria: a página já tem dois CTAs em fluxo.
+        // No desktop ela sobraria: a página já tem CTAs em fluxo.
         await page.setViewportSize({ width: 1280, height: 900 });
         await expect(page.locator('.cta-fixa'), 'barra fixa vazando para o desktop').toBeHidden();
     });

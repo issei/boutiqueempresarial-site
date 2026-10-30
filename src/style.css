@@ -23,7 +23,7 @@
   --font-playfair: 'Playfair Display', serif;
   --font-inter: 'Inter', sans-serif;
   
-  --color-brand-bg: #f5f2eb;
+  --color-brand-bg: #f6f2e9;
   --color-brand-gold: #C5A059;
   --color-brand-black: #1f1f1f;
   
@@ -34,10 +34,17 @@
 
 :root {
     /* Paleta "Silêncio e Elegância" - Fonte da Verdade */
-    --bg-color: #f5f2eb;
+    --bg-color: #f6f2e9;
     --text-primary: #1f1f1f;
     --text-secondary: #555555;
-    --accent-color: #B84A22;
+    /* Paleta v4 — docs/specs/adr-paleta-v4.md */
+    --accent-color: #c14f1b;
+    --accent-text: #a8420f;
+    --accent-light: #e8743b;
+    --ink: #131210;
+    --sand: #ebe2d1;
+    --card: #ffffff;
+    --card-2: #fbf8f3;
     --border-color: #E5E5E5;
     --gold-subtle: #C5A059;
     /* Ouro para TEXTO: #C5A059 nao passa 4.5:1 sobre o creme (2.20).
