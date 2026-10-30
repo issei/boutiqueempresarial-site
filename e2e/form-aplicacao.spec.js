@@ -500,15 +500,16 @@ test('critério 10: topo, texto acima do botão e rodapé com o texto literal da
   // textContent: o CSS põe o eyebrow em caixa alta, e o texto literal da spec é o do HTML.
   const t = async (sel) => ((await page.locator(sel).first().textContent()) ?? '').replace(/\s+/g, ' ').trim();
   expect(await t('.intro-eyebrow')).toBe('Para empresários e líderes de equipe');
-  expect(await t('.intro-headline')).toBe('Quantas vezes o seu time te procurou hoje?');
-  expect(await t('.intro-subtitle')).toBe('E quantas dessas vezes precisavam mesmo de você? Em um diagnóstico de 45 minutos, eu te mostro por que o time depende tanto de você e o que mudar primeiro na forma de conduzir a equipe.');
+  expect(await t('.intro-headline')).toBe('Você revisa tudo o que o seu time entrega. E os erros continuam aparecendo.');
+  expect(await t('.intro-subtitle')).toBe('Em um diagnóstico individual de 45 minutos, eu te mostro por que os erros se repetem no seu time e você sai com os três primeiros ajustes por escrito.');
   expect(await t('.intro-cred')).toBe('Talita Issei · 15 anos em multinacionais como KPMG, Itaú, Vivo e Accenture');
   expect(await t('.intro-details summary')).toBe('O que olhamos juntos');
   const itens = (await page.locator('.intro-details li').allTextContents()).map(x => x.replace(/\s+/g, ' ').trim());
   expect(itens).toEqual([
-    'Como você acompanha o time: onde estão as pendências, as prioridades e os responsáveis',
-    'Como as decisões chegam até você: quais precisam mesmo da sua autorização',
-    'O que já custou caro: erros e retrabalhos recentes, com exemplos da sua realidade',
+    'Como o trabalho chega até você Se existe um passo a passo claro para as entregas, onde ele fica e se alguém confere antes de você.',
+    'Como você acompanha o time Se você sabe com números onde os erros acontecem e quem entrega bem, ou se decide pela impressão do momento.',
+    'Como as responsabilidades estão divididas Quem faz o quê, o que cada pessoa pode decidir sem você e o que acontece quando um erro aparece.',
+    'O que já custou caro Dois ou três erros ou retrabalhos dos últimos meses e quanto eles custaram em tempo ou dinheiro.',
   ]);
   expect(await t('#prg-txt')).toBe('Leva cerca de 2 minutos. É uma análise individual, conduzida diretamente por mim — sem robô, sem automação. Depois do envio, eu mesma entro em contato. Deixe um número com WhatsApp.');
   const rodape = ((await page.locator('form > .leg:not(#l-msg)').textContent()) ?? '').replace(/\s+/g, ' ');

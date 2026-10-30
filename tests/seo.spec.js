@@ -99,7 +99,7 @@ for (const { slug, url } of pages) {
 // critério 10). A home é outro arquivo e outra spec.
 test('formulario: description, OG, Twitter e JSON-LD com a copy da spec', async ({ page }) => {
   await page.goto('/formulario.html');
-  const esperado = 'Para empresários e líderes de equipe. Quantas vezes o seu time te procurou hoje? E quantas dessas vezes precisavam mesmo de você?';
+  const esperado = 'Para empresários e líderes de equipe. Você revisa tudo o que o seu time entrega. E os erros continuam aparecendo.';
   const desc = await attr(page, 'meta[name="description"]');
   expect(desc).toBe(esperado);
   expect(await attr(page, 'meta[property="og:description"]')).toBe(esperado);
@@ -112,5 +112,5 @@ test('formulario: description, OG, Twitter e JSON-LD com a copy da spec', async 
   }
   const grafo = JSON.parse(jsonld);
   const servico = grafo['@graph'].find((n) => n['@type'] === 'ProfessionalService');
-  expect(servico.description).toBe('Em um diagnóstico de 45 minutos, eu te mostro por que o time depende tanto de você e o que mudar primeiro na forma de conduzir a equipe.');
+  expect(servico.description).toBe('Em um diagnóstico individual de 45 minutos, eu te mostro por que os erros se repetem no seu time e você sai com os três primeiros ajustes por escrito.');
 });
