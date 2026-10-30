@@ -15,7 +15,10 @@ O design deve transmitir autoridade sem gritar.
 
 | Cor | Variável CSS (Atual) | Tailwind Class (Sugerida) | Hex | Uso |
 | :--- | :--- | :--- | :--- | :--- |
-| **Background Principal** | `--bg-color` | `bg-offwhite-50` ou `bg-[#f5f2eb]` | `#f5f2eb` | Fundo geral, reduz cansaço visual. |
+| **Background Principal** | `--bg-color` | `bg-[#f6f2e9]` | `#f6f2e9` | Creme: fundo geral, reduz cansaço visual. `adr-paleta-v4.md`. |
+| **Faixa bege** | `--sand` | `bg-[#ebe2d1]` | `#ebe2d1` | Seções alternadas, FAQ, "Quem vai conversar". |
+| **Fundo escuro** | `--ink` | `bg-[#131210]` | `#131210` | Topo, hero, "O ponto cego", "Por que agora", rodapé. |
+| **Cartões** | `--card` / `--card-2` | `bg-white` / `bg-[#fbf8f3]` | `#ffffff` / `#fbf8f3` | Cartões sobre creme ou bege. |
 | **Texto Primário** | `--text-primary` | `text-gray-900` ou `text-[#1f1f1f]` | `#1f1f1f` | Títulos e texto principal. |
 | **Texto Secundário** | `--text-secondary` | `text-gray-600` ou `text-[#555555]` | `#555555` | Descrições e notas. |
 | **Destaque (Accent)** | `--accent-color` | `bg-[#c14f1b]` | `#c14f1b` | Botões (texto branco 4,8:1), barra de progresso, palavra em itálico de títulos grandes. Revisa `adr-botao-laranja.md`: `adr-paleta-v4.md`. |
