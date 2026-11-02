@@ -1,6 +1,6 @@
 # Formulário com dois caminhos: empresário e gerente
 
-**Status**: Draft — decisões D1 a D7 aprovadas pelo Issei em 2026-10-25; textos do gerente aguardam revisão da Talita
+**Status**: Draft — decisões D1 a D7 aprovadas pelo Issei em 2026-10-25; textos do gerente aguardam revisão da Talita. Emenda 1 (faturamento do gerente, D8 e D9) aprovada em 2026-11-02, aguarda implementação
 **Fonte**: "Formulário de Diagnóstico — Especificação para o editor" (Talita, 2026-10-23)
 **Emenda**: `docs/specs/pages/formulario.md` §3 (contrato de dados) e §5.1 (colunas da planilha); `docs/specs/pages/aplicacao-conversacional.md` (fluxo e devolutivas); `docs/specs/design/formulario-tracking-funil.md` (parâmetro `path`)
 **CRM**: Spec 030 do `boutiqueempresarial-crm` (`specs/030-caminho-do-gerente-no-lead.md`) — **publicar o CRM antes deste site**
@@ -108,6 +108,26 @@ Todo gerente passa por análise: a rota `link` do CRM devolve `em_analise: true`
 - Aba `Parciais` ganha a coluna `Posição` no fim. Efeito conhecido: o primeiro parcial após publicar arquiva a aba `Parciais`, como acontece com a `Respostas` (nada é apagado).
 - E-mail interno (`notifyNewLead`) mostra o caminho e os campos dele.
 - Repasse ao CRM inalterado (manda o JSON inteiro).
+
+## Emenda 1 (2026-11-02): faturamento do gerente
+
+**Pedido:** Issei, 2026-11-02. **CRM:** Spec 030 §11 (`boutiqueempresarial-crm`), publicar antes.
+
+Nova última etapa do caminho gerente, depois de `objetivo_12m` (o gerente passa a ter 9 etapas contando a posição):
+
+| # | Pergunta | Chave | Opções |
+| :-- | :-- | :-- | :-- |
+| 8 | Faturamento médio mensal | `faturamento_gerente` | Até R$ 3 mil · R$ 3 a 5 mil · R$ 5 a 8 mil · R$ 8 a 12 mil · R$ 12 a 20 mil · Acima de R$ 20 mil |
+
+- Escolha única, obrigatória, mesmo padrão `cf-opts`/`radiogroup` das outras etapas; texto literal do pedido, sem devolutiva nova (regra de copy literal).
+- `faturamento_gerente` vai vazio no empresário; trocar a posição limpa a resposta como os demais campos do gerente. `faturamento_mensal` continua vazio no gerente.
+- **D8 (Issei 2026-11-02):** no CRM a faixa fica em coluna própria, separada do faturamento da empresa.
+- **CAPI (D9, Issei 2026-11-02):** a faixa **não** vai à Meta; `lead_faturamento` segue vazio no gerente.
+- GA4: `step_name` cobre a etapa nova; nenhum evento leva a faixa.
+- **Apps Script:** coluna `Faturamento (Gerente)` no fim do cabeçalho (mesmo efeito conhecido: o primeiro `doPost` arquiva a aba `Respostas` como `Respostas_legado_<timestamp>`); `notifyNewLead` mostra a faixa no gerente. Publicar como nova versão da mesma implantação (mesma URL).
+- Critérios: o gerente não avança sem resposta; contador e barra mostram 9 no gerente; payload do gerente com `faturamento_gerente`, do empresário sem; axe e 360 px como antes; `npm run gate` verde. Testes: `e2e/form-aplicacao.spec.js`, `tests/formulario-webmcp.spec.js`.
+- Arquivos: `src/formulario.html`, `apps_script_atualizado.gs`, os testes acima e esta spec.
+- Ordem: CRM (Spec 030 §11) → Apps Script → site.
 
 ## Textos do gerente (rascunho, aguarda revisão da Talita, D5)
 
