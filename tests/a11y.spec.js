@@ -63,10 +63,11 @@ const RESPOSTAS = {
   pessoas_lideradas: '6 a 10',
   maior_desafio_gerente: 'Sou cobrado pelo resultado, mas não consigo mostrar o que o time entrega', // a mais longa (72)
   objetivo_12m: 'Ser reconhecido pelo resultado do time',
+  faturamento_gerente: 'Acima de R$ 20 mil',
 };
 const CAMINHOS = [
   ['empresário', 'Sou dono ou sócio', 8],
-  ['gerente', 'Lidero um time na empresa (gerente, coordenador, supervisor)', 8],
+  ['gerente', 'Lidero um time na empresa (gerente, coordenador, supervisor)', 9], // Emenda 1: + faturamento
 ];
 
 for (const [nome, posicao, total] of CAMINHOS) {
@@ -108,7 +109,7 @@ for (const [nome, posicao, total] of CAMINHOS) {
       await expect(page.locator('.step.a')).not.toHaveAttribute('data-id', id);
     }
     expect(vistas).toEqual(nome === 'gerente'
-      ? ['posicao', 'nome_completo', 'email', 'whatsapp', 'vinculo', 'pessoas_lideradas', 'maior_desafio_gerente', 'objetivo_12m']
+      ? ['posicao', 'nome_completo', 'email', 'whatsapp', 'vinculo', 'pessoas_lideradas', 'maior_desafio_gerente', 'objetivo_12m', 'faturamento_gerente']
       : ['posicao', 'maior_problema_gestao', 'nome_completo', 'whatsapp', 'email', 'modelo_negocio', 'tamanho_equipe', 'faturamento_mensal']);
   });
 }

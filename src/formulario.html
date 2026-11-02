@@ -1052,7 +1052,7 @@
                 <p class="err" id="err-faturamento_mensal" aria-live="polite">Selecione uma opção.</p>
             </div>
 
-            <!-- Caminho do gerente: vínculo, pessoas lideradas, maior desafio, objetivo (nome, e-mail e WhatsApp são as etapas de contato, compartilhadas) -->
+            <!-- Caminho do gerente: vínculo, pessoas lideradas, maior desafio, objetivo, faturamento (nome, e-mail e WhatsApp são as etapas de contato, compartilhadas) -->
             <div class="step" data-id="vinculo" data-path="gerente">
                 <fieldset>
                     <legend id="q-vinculo">Qual é o seu vínculo com a empresa?</legend>
@@ -1114,6 +1114,23 @@
                 <p class="err" id="err-objetivo_12m" aria-live="polite">Selecione uma opção.</p>
             </div>
 
+            <!-- Emenda 1 (formulario-dois-caminhos.md): última etapa do gerente; a faixa não vai à Meta nem ao GA4 (D9). -->
+            <div class="step" data-id="faturamento_gerente" data-path="gerente">
+                <div class="cf-an" id="an-faturamento_gerente" aria-live="off" hidden></div>
+                <fieldset>
+                    <legend id="q-faturamento_gerente">Faturamento médio mensal</legend>
+                    <div class="cf-opts" role="radiogroup" aria-labelledby="q-faturamento_gerente">
+                        <label class="cf-opt"><input type="radio" name="faturamento_gerente" value="Até R$ 3 mil"><span class="cf-opt-n" aria-hidden="true">01</span><span>Até R$ 3 mil</span></label>
+                        <label class="cf-opt"><input type="radio" name="faturamento_gerente" value="R$ 3 a 5 mil"><span class="cf-opt-n" aria-hidden="true">02</span><span>R$ 3 a 5 mil</span></label>
+                        <label class="cf-opt"><input type="radio" name="faturamento_gerente" value="R$ 5 a 8 mil"><span class="cf-opt-n" aria-hidden="true">03</span><span>R$ 5 a 8 mil</span></label>
+                        <label class="cf-opt"><input type="radio" name="faturamento_gerente" value="R$ 8 a 12 mil"><span class="cf-opt-n" aria-hidden="true">04</span><span>R$ 8 a 12 mil</span></label>
+                        <label class="cf-opt"><input type="radio" name="faturamento_gerente" value="R$ 12 a 20 mil"><span class="cf-opt-n" aria-hidden="true">05</span><span>R$ 12 a 20 mil</span></label>
+                        <label class="cf-opt"><input type="radio" name="faturamento_gerente" value="Acima de R$ 20 mil"><span class="cf-opt-n" aria-hidden="true">06</span><span>Acima de R$ 20 mil</span></label>
+                    </div>
+                </fieldset>
+                <p class="err" id="err-faturamento_gerente" aria-live="polite">Selecione uma opção.</p>
+            </div>
+
             <div class="btns">
                 <button type="button" id="prev" class="btn b-bk h" onclick="nav(-1)">Voltar</button>
                 <button type="button" id="next" class="btn" onclick="nav(1)">Próximo</button>
@@ -1148,11 +1165,11 @@
 
             /* Sequência de etapas de cada caminho (docs/specs/design/formulario-dois-caminhos.md).
              * As etapas de contato são as mesmas nos dois; só a ordem muda (D4). Antes de a posição
-             * ser escolhida vale a do empresário, que tem o mesmo total (8). nav(), o contador e a
+             * ser escolhida vale a do empresário (8 etapas; o gerente tem 9, Emenda 1). nav(), o contador e a
              * barra derivam da sequência ativa. */
             var SEQ = {
                 empresario: ["posicao", "maior_problema_gestao", "nome_completo", "whatsapp", "email", "modelo_negocio", "tamanho_equipe", "faturamento_mensal"],
-                gerente: ["posicao", "nome_completo", "email", "whatsapp", "vinculo", "pessoas_lideradas", "maior_desafio_gerente", "objetivo_12m"]
+                gerente: ["posicao", "nome_completo", "email", "whatsapp", "vinculo", "pessoas_lideradas", "maior_desafio_gerente", "objetivo_12m", "faturamento_gerente"]
             };
             var POSICAO = {
                 "Sou dono ou sócio": "empresario",
@@ -1182,7 +1199,8 @@
             var ANALYSIS_SOURCE = {
                 nome_completo: "maior_problema_gestao", tamanho_equipe: "modelo_negocio", faturamento_mensal: "tamanho_equipe",
                 // Caminho do gerente: cada bloco lê a resposta da etapa anterior.
-                pessoas_lideradas: "vinculo", maior_desafio_gerente: "pessoas_lideradas", objetivo_12m: "maior_desafio_gerente"
+                pessoas_lideradas: "vinculo", maior_desafio_gerente: "pessoas_lideradas", objetivo_12m: "maior_desafio_gerente",
+                faturamento_gerente: "objetivo_12m"
             };
 
             function fieldValue(name) {
@@ -1521,7 +1539,8 @@
                 clearError(step);
                 if (step !== cur()) return;
                 if (e.target.name === "posicao") setPath(e.target.value);
-                if (e.target.type === "radio") track("form_answer", { step_name: e.target.name, answer: e.target.value });
+                // A faixa de faturamento do gerente não vai a nenhum evento (Emenda 1, D9): só a etapa.
+                if (e.target.type === "radio") track("form_answer", e.target.name === "faturamento_gerente" ? { step_name: e.target.name } : { step_name: e.target.name, answer: e.target.value });
                 updateNextVisibility();
                 renderAck();
                 if (e.target.type === "radio" && isChoice()) {
