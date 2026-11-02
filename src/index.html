@@ -427,15 +427,17 @@
         .passos li::before { content: counter(passo, decimal-leading-zero); display: block; font-family: var(--font-playfair); font-size: 2rem; color: var(--accent-text); margin-bottom: 8px; }
 
         /* ── FAQ ──────────────────────────────────────────────────────────────── */
+        /* `.aeo` na frente: o `.aeo-faq details` do style.css tem a mesma especificidade e, no bundle,
+           vem depois deste bloco (o padding 20px 0 dele deixava o texto colado na borda do cartão). */
         .aeo { border-top: 0; }
-        .aeo-tldr { margin-bottom: 24px; }
-        .aeo-tldr::after { display: none; }
-        .aeo-faq { max-width: 820px; }
-        .aeo-faq details { background: var(--card); border: 1px solid #ddd3bf; border-radius: 14px; padding: 4px 22px; margin-bottom: 10px; }
-        .aeo-faq summary { padding: 16px 0; font-weight: 500; color: var(--text-primary); }
-        .aeo-faq summary::after { content: "+"; color: var(--accent-text); font-size: 1.5rem; line-height: 1; }
-        .aeo-faq details[open] summary::after { content: "−"; }
-        .aeo-faq details p { margin: 0 0 18px; }
+        .aeo .aeo-tldr { margin-bottom: 24px; }
+        .aeo .aeo-tldr::after { display: none; }
+        .aeo .aeo-faq { max-width: 820px; }
+        .aeo .aeo-faq details { background: var(--card); border: 1px solid #ddd3bf; border-radius: 14px; padding: 0; margin-bottom: 12px; }
+        .aeo .aeo-faq summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; font-weight: 500; line-height: 1.4; color: var(--text-primary); }
+        .aeo .aeo-faq summary::after { content: "+"; float: none; flex: none; color: var(--accent-text); font-size: 1.5rem; line-height: 1; }
+        .aeo .aeo-faq details[open] summary::after { content: "−"; }
+        .aeo .aeo-faq details p { margin: 0; padding: 0 24px 20px; max-width: 62ch; }
 
         /* ── Por que agora ────────────────────────────────────────────────────── */
         .agora h2 { font-size: clamp(1.9rem, 3.6vw, 3rem); max-width: 22ch; margin-top: 8px; }
