@@ -112,7 +112,8 @@ const HEADERS = [
   // Caminho do gerente (docs/specs/design/formulario-dois-caminhos.md): sempre no fim.
   'Posição', 'Vínculo', 'Pessoas Lideradas',
   'Maior Desafio (Gerente)', 'Desafio Gerente (Outro)',
-  'Objetivo 12 meses', 'Objetivo (Outro)'
+  'Objetivo 12 meses', 'Objetivo (Outro)',
+  'Faturamento (Gerente)' // Emenda 1: sempre no fim
 ];
 
 /* ========================================================================== */
@@ -481,7 +482,8 @@ function saveToSheet(data, capiStatus) {
     sanitizeInput(data.maior_desafio_gerente),
     sanitizeInput(data.maior_desafio_gerente_outro),
     sanitizeInput(data.objetivo_12m),
-    sanitizeInput(data.objetivo_12m_outro)
+    sanitizeInput(data.objetivo_12m_outro),
+    sanitizeInput(data.faturamento_gerente)
   ]);
 }
 
@@ -561,7 +563,8 @@ function buildLeadEmail(data, capiStatus) {
     'Vínculo: ' + plainText(data.vinculo),
     'Pessoas lideradas: ' + plainText(data.pessoas_lideradas),
     'Maior desafio: ' + withOther(data.maior_desafio_gerente, data.maior_desafio_gerente_outro),
-    'Objetivo em 12 meses: ' + withOther(data.objetivo_12m, data.objetivo_12m_outro)
+    'Objetivo em 12 meses: ' + withOther(data.objetivo_12m, data.objetivo_12m_outro),
+    'Faturamento médio mensal: ' + plainText(data.faturamento_gerente)
   ] : [
     'Modelo de negócio: ' + withOther(data.modelo_negocio, data.modelo_negocio_outro),
     'Tamanho da equipe: ' + plainText(data.tamanho_equipe),

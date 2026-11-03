@@ -77,7 +77,7 @@ test('critério 8: no empresário, campos do gerente estão fora do alcance das 
   expect(st.etapa_atual).toBe(2);
   expect(st.total_etapas).toBe(8);
   expect(st.campos.map((c) => c.name)).toEqual(['maior_problema_gestao']);
-  for (const campo of ['vinculo', 'pessoas_lideradas', 'maior_desafio_gerente', 'objetivo_12m']) {
+  for (const campo of ['vinculo', 'pessoas_lideradas', 'maior_desafio_gerente', 'objetivo_12m', 'faturamento_gerente']) {
     await expect(call(page, 'answer_field', { campo, valor: 'CLT' })).rejects.toThrow(/fora da etapa atual/);
   }
 });
@@ -85,7 +85,7 @@ test('critério 8: no empresário, campos do gerente estão fora do alcance das 
 test('critério 8: no gerente, as tools percorrem só as etapas dele, na ordem da Talita', async ({ page }) => {
   let st = await call(page, 'get_form_state');
   st = await call(page, 'answer_field', { campo: 'posicao', valor: GERENTE });
-  expect(st.total_etapas).toBe(8);
+  expect(st.total_etapas).toBe(9); // Emenda 1
 
   const vistos = [];
   for (let i = 1; i < st.total_etapas; i++) {
@@ -101,7 +101,7 @@ test('critério 8: no gerente, as tools percorrem só as etapas dele, na ordem d
     if (i < st.total_etapas - 1 && st.etapa_atual === i + 1) st = await call(page, 'next_step');
   }
   expect(vistos).toEqual([
-    ['nome_completo'], ['email'], ['whatsapp'], ['vinculo'], ['pessoas_lideradas'], ['maior_desafio_gerente'], ['objetivo_12m'],
+    ['nome_completo'], ['email'], ['whatsapp'], ['vinculo'], ['pessoas_lideradas'], ['maior_desafio_gerente'], ['objetivo_12m'], ['faturamento_gerente'],
   ]);
   expect(st.etapa_atual).toBe(st.total_etapas);
   const fim = await call(page, 'next_step');

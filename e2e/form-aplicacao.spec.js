@@ -130,7 +130,7 @@ test('fluxo completo captura payload e fechamento personalizado (Fase 5)', async
 
   // Critério 2: payload de hoje + posicao, sem nenhuma chave do gerente.
   expect(d.posicao).toBe('Sou dono ou sócio');
-  for (const k of ['vinculo', 'pessoas_lideradas', 'maior_desafio_gerente', 'maior_desafio_gerente_outro', 'objetivo_12m', 'objetivo_12m_outro']) {
+  for (const k of ['vinculo', 'pessoas_lideradas', 'maior_desafio_gerente', 'maior_desafio_gerente_outro', 'objetivo_12m', 'objetivo_12m_outro', 'faturamento_gerente']) {
     expect(d[k], k).toBeUndefined();
   }
 
@@ -335,7 +335,7 @@ test('critério 1: sem resposta na posição o formulário não avança', async 
   await expect(page.locator('.step.a')).toHaveCount(1);
 });
 
-test('critérios 3 e 6: caminho do gerente, ordem da Talita, 8 etapas e payload', async ({ page }) => {
+test('critérios 3 e 6: caminho do gerente, ordem da Talita, 9 etapas e payload', async ({ page }) => {
   const posts = await capturarPosts(page);
   await page.goto(URL);
   const next = page.locator('#next');
@@ -343,7 +343,7 @@ test('critérios 3 e 6: caminho do gerente, ordem da Talita, 8 etapas e payload'
 
   await escolher(page, 'posicao', GERENTE);
   await expect(page.locator('.step.a .transicao')).toHaveText('Agora me conta um pouco sobre o time que você lidera.');
-  await expect(page.locator('#dots .dot')).toHaveCount(8);
+  await expect(page.locator('#dots .dot')).toHaveCount(9); // Emenda 1: 9 etapas no gerente
   await contatoDoGerente(page);
 
   // A pré-captura sai quando nome + e-mail + WhatsApp validam, uma vez só, com a posição.
@@ -366,7 +366,20 @@ test('critérios 3 e 6: caminho do gerente, ordem da Talita, 8 etapas e payload'
   await next.click();
   await expect(page.locator('#q-objetivo_12m')).toBeVisible();
   await escolher(page, 'objetivo_12m', 'Crescer de cargo');
+  // Emenda 1: última etapa, faturamento médio mensal; não avança sem resposta.
+  await expect(page.locator('#q-faturamento_gerente')).toBeVisible({ timeout: 2000 });
+  await expect(page.locator('#q-faturamento_gerente')).toHaveText('Faturamento médio mensal');
+  expect(await page.locator('input[name=faturamento_gerente]').evaluateAll(l => l.map(i => i.value))).toEqual(
+    ['Até R$ 3 mil', 'R$ 3 a 5 mil', 'R$ 5 a 8 mil', 'R$ 8 a 12 mil', 'R$ 12 a 20 mil', 'Acima de R$ 20 mil']);
+  expect(await page.locator('#dots .dot').evaluateAll(d => d.findIndex(x => x.classList.contains('act')))).toBe(8); // 9ª de 9
   await expect(next).toHaveText('Enviar aplicação');
+  await next.click();
+  await expect(page.locator('#err-faturamento_gerente')).toBeVisible();
+  expect(posts.length).toBe(1);
+  await escolher(page, 'faturamento_gerente', 'R$ 8 a 12 mil');
+  // D9: a faixa não vai a nenhum evento do GA4 nem do Pixel.
+  const eventos = await page.evaluate(() => JSON.stringify([(window.dataLayer || []).map(a => Array.from(a)), ((window.fbq && window.fbq.queue) || []).map(a => Array.from(a))]));
+  expect(eventos).not.toContain('R$ 8 a 12 mil');
   await next.click();
   await page.waitForURL(/obrigada\.html/, { timeout: 8000 });
 
@@ -377,7 +390,7 @@ test('critérios 3 e 6: caminho do gerente, ordem da Talita, 8 etapas e payload'
   expect(d).toMatchObject({
     posicao: GERENTE, vinculo: 'CLT', pessoas_lideradas: '6 a 10',
     maior_desafio_gerente: 'Outro', maior_desafio_gerente_outro: 'Cobrança entre áreas',
-    objetivo_12m: 'Crescer de cargo',
+    objetivo_12m: 'Crescer de cargo', faturamento_gerente: 'R$ 8 a 12 mil',
     nome_completo: 'Gil Gerente', email: 'gil@exemplo.com', whatsapp: '(11) 98888-7777', consentimento: true,
   });
   // Critério 3: sem modelo, tamanho, faturamento e maior problema (vazios, para o backend alinhar colunas).
@@ -404,6 +417,9 @@ test('critério 4: "Outro" do gerente só vai no payload com "Outro" marcado', a
   await escolher(page, 'objetivo_12m', 'Outro');
   await expect(page.locator('#objetivo_12m_outro')).toBeVisible();
   await page.fill('#objetivo_12m_outro', 'Abrir o meu negócio');
+  await page.locator('#next').click();
+  await expect(page.locator('#q-faturamento_gerente')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'faturamento_gerente', 'Até R$ 3 mil');
   await page.locator('#next').click();
   await page.waitForURL(/obrigada\.html/, { timeout: 8000 });
 
@@ -435,10 +451,10 @@ test('critério 5: trocar a posição limpa o outro caminho; contador e barra se
   await escolher(page, 'posicao', GERENTE);
   await expect(page.locator('#q-nome_completo')).toBeVisible({ timeout: 2000 });
 
-  // As respostas do empresário foram apagadas e a barra tem o total do gerente (8) na etapa 2.
+  // As respostas do empresário foram apagadas e a barra tem o total do gerente (9) na etapa 2.
   await expect(page.locator('input[name=maior_problema_gestao]:checked')).toHaveCount(0);
   await expect(page.locator('#maior_problema_gestao_outro')).toHaveValue('');
-  await expect(page.locator('#dots .dot')).toHaveCount(8);
+  await expect(page.locator('#dots .dot')).toHaveCount(9);
   expect(await page.locator('#dots .dot').evaluateAll(d => d.findIndex(x => x.classList.contains('act')))).toBe(1);
 
   await contatoDoGerente(page);
@@ -449,6 +465,8 @@ test('critério 5: trocar a posição limpa o outro caminho; contador e barra se
   await escolher(page, 'maior_desafio_gerente', 'O time me procura para quase tudo');
   await expect(page.locator('#q-objetivo_12m')).toBeVisible({ timeout: 2000 });
   await escolher(page, 'objetivo_12m', 'Liderar com menos desgaste');
+  await expect(page.locator('#q-faturamento_gerente')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'faturamento_gerente', 'R$ 5 a 8 mil');
   await page.locator('#next').click();
   await page.waitForURL(/obrigada\.html/, { timeout: 8000 });
 
@@ -619,6 +637,8 @@ test('critério 11: obrigada do gerente com fechamento acima da nota "em anális
   await escolher(page, 'maior_desafio_gerente', 'O time me procura para quase tudo');
   await expect(page.locator('#q-objetivo_12m')).toBeVisible({ timeout: 2000 });
   await escolher(page, 'objetivo_12m', 'Liderar com menos desgaste');
+  await expect(page.locator('#q-faturamento_gerente')).toBeVisible({ timeout: 2000 });
+  await escolher(page, 'faturamento_gerente', 'R$ 5 a 8 mil');
   await page.locator('#next').click();
   await page.waitForURL(/obrigada\.html/, { timeout: 8000 });
 
