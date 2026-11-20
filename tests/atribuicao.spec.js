@@ -45,13 +45,20 @@ async function fillContact(page) {
   return posts[0];
 }
 
-test('anúncio na home: UTMs chegam ao formulário pelo CTA', async ({ page }) => {
+test('anúncio na home: UTMs chegam ao formulário embutido pelo CTA', async ({ page }) => {
   await page.goto('/?utm_source=meta&utm_medium=paid_social&utm_campaign=c1&utm_content=a');
   await page.locator('.hero-cta a').click();
-  await page.waitForURL(/\/formulario/);
-  expect(new URL(page.url()).search).toBe('');
+  await expect(page.locator('#f-nome')).toBeInViewport();
 
-  const d = await fillContact(page);
+  // Formulário da home (docs/specs/design/home-analise-operacao.md): envio único, sem pré-captura.
+  await page.fill('#f-nome', 'maria silva');
+  await page.fill('#f-whats', '11987654321');
+  await page.locator('input[name=faturamento_mensal]').first().check({ force: true });
+  await page.locator('input[name=tamanho_equipe]').nth(1).check({ force: true });
+  await page.fill('#f-desafio', 'teste');
+  await page.locator('#f-enviar').click();
+  await expect.poll(() => posts.length).toBeGreaterThan(0);
+  const d = posts[0];
   expect(d.utm_source).toBe('meta');
   expect(d.utm_campaign).toBe('c1');
   expect(d.utm_content).toBe('a');
