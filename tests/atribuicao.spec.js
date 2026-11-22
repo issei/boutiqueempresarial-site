@@ -45,21 +45,13 @@ async function fillContact(page) {
   return posts[0];
 }
 
-test('anúncio na home: UTMs chegam ao formulário embutido pelo CTA', async ({ page }) => {
+test('anúncio na home: UTMs chegam ao formulário pelo CTA', async ({ page }) => {
   await page.goto('/?utm_source=meta&utm_medium=paid_social&utm_campaign=c1&utm_content=a');
   await page.locator('.hero-cta a').click();
-  await expect(page.locator('#f-nome')).toBeInViewport();
+  await page.waitForURL(/\/formulario/);
+  expect(new URL(page.url()).search).toBe('');
 
-  // Formulário da home (docs/specs/design/home-analise-operacao.md): envio único, sem pré-captura.
-  await page.fill('#f-nome', 'maria silva');
-  await page.fill('#f-whats', '11987654321');
-  await page.fill('#f-email', 'maria@exemplo.com');
-  await page.locator('input[name=faturamento_mensal]').first().check({ force: true });
-  await page.locator('input[name=tamanho_equipe]').nth(1).check({ force: true });
-  await page.fill('#f-desafio', 'teste');
-  await page.locator('#f-enviar').click();
-  await expect.poll(() => posts.length).toBeGreaterThan(0);
-  const d = posts[0];
+  const d = await fillContact(page);
   expect(d.utm_source).toBe('meta');
   expect(d.utm_campaign).toBe('c1');
   expect(d.utm_content).toBe('a');
@@ -103,4 +95,24 @@ test('visita sem UTM não cria cookie; cookie corrompido não quebra a página',
   await page.goto('/formulario.html?utm_source=x');
   expect(await page.evaluate(() => window.BE_ATTR.last.utm_source)).toBe('x');
   expect(erros).toEqual([]);
+});
+
+// Página /analise (docs/specs/design/pagina-analise-operacao.md): formulário embutido, envio único.
+test('anúncio em /analise: UTMs chegam ao formulário embutido, marcado como analise', async ({ page }) => {
+  await page.goto('/analise?utm_source=meta&utm_medium=paid_social&utm_campaign=c2&utm_content=b');
+  await page.locator('.hero-cta a').click();
+  await expect(page.locator('#f-nome')).toBeInViewport();
+  await page.fill('#f-nome', 'maria silva');
+  await page.fill('#f-whats', '11987654321');
+  await page.fill('#f-email', 'maria@exemplo.com');
+  await page.locator('input[name=faturamento_mensal]').first().check({ force: true });
+  await page.locator('input[name=tamanho_equipe]').nth(1).check({ force: true });
+  await page.fill('#f-desafio', 'teste');
+  await page.locator('#f-enviar').click();
+  await expect.poll(() => posts.length).toBeGreaterThan(0);
+  const d = posts[0];
+  expect(d.formulario).toBe('analise');
+  expect(d.utm_campaign).toBe('c2');
+  expect(d.first_utm_content).toBe('b');
+  expect(d.landing_page).toBe('/analise');
 });

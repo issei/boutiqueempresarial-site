@@ -1,72 +1,47 @@
 import { test, expect } from '@playwright/test';
 
-// Textos de docs/specs/design/home-analise-operacao.md (Análise de Operação e Equipe). O rótulo do
-// CTA e o destino são afirmados literalmente: são o que liga a página à aplicação.
-const CTA = 'Quero a análise da minha operação';
-const H1 = 'Em 45 minutos, eu te mostro como a sua empresa pode faturar mais com a equipe que você já tem, sem você precisar trabalhar mais.';
-const SUB = 'Uma sessão individual e gratuita. Você sai com o plano de 30 dias com os pontos que mais travam o seu faturamento e o que fazer primeiro na próxima semana.';
+// Textos de docs/specs/design/home-copy-v4.md. O rótulo do CTA é afirmado literalmente porque é a
+// única coisa que liga a página ao funil: se alguém reescrever o botão sem reescrever o destino,
+// ou o contrário, é aqui que aparece.
+const CTA = 'Quero entender por que os erros continuam';
+const H1 = 'Você revisa tudo o que o seu time entrega. E os erros continuam aparecendo.';
+const SUB = 'Em um diagnóstico individual de 45 minutos, eu te mostro por que os erros se repetem no seu time e você sai com os três primeiros ajustes por escrito.';
 
 const H2 = [
-    'Veja se isto acontece na sua empresa',
-    'Por que contratar mais gente não aumenta o faturamento na mesma proporção',
-    'O que você leva dos 45 minutos',
+    'Veja se isto acontece com você',
+    'Faça uma conta rápida',
+    'Por que revisar tudo não diminui os erros',
+    'Implantar as três partes juntas, nesta ordem.',
+    'O que olhamos juntos nos 45 minutos',
     'Dois caminhos para o seu próximo ano',
     'Eu sou a Talita Issei.',
-    'Para quem é esta análise',
-    'Quero a análise da minha operação',
+    'Para quem é esta conversa',
+    'Como funciona',
     'Perguntas frequentes',
-    'Em 45 minutos, veja onde a sua operação trava o faturamento e o que fazer primeiro.',
+    'Descubra em 45 minutos por que os erros continuam chegando até você e o que mudar primeiro.',
 ];
 
 const SINAIS = [
     'A entrega chega e você precisa conferir antes de mandar para o cliente.',
-    'A entrega volta para ajuste, e o time faz de novo um trabalho que já estava pago.',
     'Você encontra o mesmo erro que já tinha corrigido no mês passado.',
-    'Você contratou mais gente, a folha subiu, e o seu trabalho subiu junto.',
-    'Você paga uma ferramenta, e os pedidos continuam chegando pelo WhatsApp.',
-    'Quem entrou há pouco tempo erra o que o funcionário mais antigo já sabe, e quem ensina é você.',
-    'Quando você passa um dia fora, o trabalho fica parado esperando a sua resposta.',
-    'Você adia um cliente novo porque não sabe quem vai conseguir entregar.',
+    'Você devolve, explica de novo, e a pessoa ajusta só aquele ponto.',
+    'Quando você está sem tempo para revisar, o trabalho fica parado esperando você.',
+    'Quem entrou há pouco tempo erra o que os mais antigos já sabem, e é você quem percebe.',
+    'Quando um erro chega ao cliente, é você quem pede desculpas e explica o que aconteceu.',
+    'Você sabe que tem gente que entrega bem e gente que dá mais trabalho, mas não tem como mostrar isso com números.',
 ];
 
 // textContent, não innerText: o eyebrow e outros rótulos aplicam text-transform.
 const texto = (page, seletor) => page.locator(seletor).first().evaluate((e) => e.textContent.replace(/\s+/g, ' ').trim());
 
-let posts;
-
-test.beforeEach(async ({ context }) => {
-    posts = [];
-    // Nenhum envio chega à produção (docs/specs/adr-e2e-nao-enviar-formulario-para-producao.md).
-    await context.route('**/script.google.com/**', (r) => {
-        posts.push(JSON.parse(r.request().postData()));
-        r.fulfill({ status: 200, contentType: 'application/json', body: '{"result":"success"}' });
-    });
-    await context.route('**/api.boutiqueempresarial.com.br/**', (r) => r.fulfill({ status: 503, body: '{}' }));
-    await context.route('**/api.ipify.org/**', (r) => r.abort());
-    await context.route('**://connect.facebook.net/**', (r) => r.abort());
-    await context.route('**://www.googletagmanager.com/**', (r) => r.abort());
-    // Sem o banner de cookies cobrindo o formulário (o banner tem suíte própria).
-    await context.addInitScript(() => {
-        localStorage.setItem('be_consent', JSON.stringify({ v: 1, ts: '2026-01-01T00:00:00.000Z', cat: { analytics: true, marketing: true } }));
-    });
-});
-
-async function preencher(page) {
-    await page.fill('#f-nome', 'Maria Teste');
-    await page.fill('#f-whats', '11987654321');
-    await page.fill('#f-email', 'Maria@Exemplo.com');
-    await page.locator('input[name=faturamento_mensal][value="R$ 100 mil a R$ 300 mil/mês"]').check({ force: true });
-    await page.locator('input[name=tamanho_equipe][value="5 a 15 colaboradores"]').check({ force: true });
-    await page.fill('#f-desafio', 'As entregas voltam para ajuste.');
-}
-
 test.describe('home', () => {
     test('carrega os elementos principais', async ({ page }) => {
         await page.goto('/');
-        await expect(page).toHaveTitle('Análise de Operação e Equipe | Boutique Empresarial');
+
+        await expect(page).toHaveTitle('Diagnóstico Gratuito | Boutique Empresarial');
         await expect(page.locator('header')).toBeVisible();
         expect(await texto(page, 'h1')).toBe(H1);
-        await expect(page.locator('h1 em')).toHaveText('faturar mais com a equipe que você já tem');
+        await expect(page.locator('h1 em')).toHaveText('E os erros continuam aparecendo.');
     });
 
     test('a fonte não mudou: Playfair nos títulos e Inter no corpo', async ({ page }) => {
@@ -76,14 +51,7 @@ test.describe('home', () => {
         expect(await fonte('main p')).toContain('Inter');
     });
 
-    test('o H1 tem teto de 3rem', async ({ page }) => {
-        await page.setViewportSize({ width: 1600, height: 900 });
-        await page.goto('/');
-        const px = await page.locator('h1').evaluate((e) => parseFloat(getComputedStyle(e).fontSize));
-        expect(px).toBeLessThanOrEqual(48);
-    });
-
-    test('os h2 seguem a ordem da spec', async ({ page }) => {
+    test('os h2 seguem a ordem da copy v4', async ({ page }) => {
         await page.goto('/');
         const h2 = await page.locator('main h2').evaluateAll((els) => els.map((e) => e.textContent.replace(/\s+/g, ' ').trim()));
         expect(h2).toEqual(H2);
@@ -91,21 +59,20 @@ test.describe('home', () => {
 
     test('hero e fechamento trazem o texto literal da spec', async ({ page }) => {
         await page.goto('/');
-        expect(await texto(page, '.hero .eyebrow')).toBe('Análise de Operação e Equipe · para empresários com equipe');
+        expect(await texto(page, '.hero .eyebrow')).toBe('Para empresários e líderes de equipe');
         expect(await texto(page, '.hero .lead')).toBe(SUB);
-        await expect(page.locator('.hero .lead strong')).toHaveText('plano de 30 dias');
-        expect(await texto(page, '.hero-nota')).toBe('Você responde 6 perguntas em 2 minutos, aqui mesmo na página. Se a sua aplicação for aprovada, eu entro em contato para marcar.');
-        expect(await page.locator('.selos li').allTextContents()).toEqual(['45 minutos', 'Individual', 'Plano de 30 dias', 'Gratuita']);
-        expect(await texto(page, '.faixa')).toBe('Operação ✦ Equipe ✦ Faturamento');
-        expect(await texto(page, '.agora .micro')).toBe('Análise gratuita · 45 minutos · Individual');
+        await expect(page.locator('.hero .lead strong')).toHaveText('três primeiros ajustes por escrito.');
+        expect(await texto(page, '.hero-nota')).toBe('Diagnóstico gratuito. Você preenche em 2 minutos e eu entro em contato.');
+        expect(await page.locator('.selos li').allTextContents()).toEqual(['45 minutos', 'Individual', '3 ajustes por escrito', 'Gratuito']);
+        expect(await texto(page, '.agora .micro')).toBe('Diagnóstico gratuito · 45 minutos · Individual');
     });
 
-    test('os oito sinais são caixas de marcar e o contador acompanha', async ({ page }) => {
+    test('os sete sinais são caixas de marcar e o contador acompanha', async ({ page }) => {
         await page.goto('/');
         const rotulos = page.locator('.sinal');
-        await expect(rotulos).toHaveCount(8);
+        await expect(rotulos).toHaveCount(7);
         expect(await rotulos.allTextContents()).toEqual(SINAIS);
-        await expect(page.locator('.contador')).toContainText('0 de 8');
+        await expect(page.locator('.contador')).toContainText('0 de 7');
 
         await rotulos.nth(0).click();
         await rotulos.nth(3).click();
@@ -114,26 +81,61 @@ test.describe('home', () => {
         await expect(page.locator('#sinais-n')).toHaveText('1');
     });
 
+    test('a calculadora começa em 20 / 8 / 6 = 75% e respeita os limites', async ({ page }) => {
+        await page.goto('/');
+        await expect(page.locator('#v-rev')).toHaveText('20');
+        await expect(page.locator('#v-err')).toHaveText('8');
+        await expect(page.locator('#v-rep')).toHaveText('6');
+        await expect(page.locator('#r-pct')).toHaveText('75%');
+        await expect(page.locator('#r-b')).toBeVisible();
+
+        // 3/8 = 38%: abaixo de 50% só o percentual, sem a frase.
+        for (let i = 0; i < 3; i++) await page.locator('button[data-k="rep"][data-d="-1"]').click();
+        await expect(page.locator('#r-pct')).toHaveText('38%');
+        await expect(page.locator('#r-b')).toBeHidden();
+
+        // Os erros repetidos nunca passam dos erros encontrados.
+        for (let i = 0; i < 12; i++) await page.locator('button[data-k="rep"][data-d="1"]').click();
+        await expect(page.locator('#v-rep')).toHaveText('8');
+        await expect(page.locator('#r-pct')).toHaveText('100%');
+
+        // Baixar as entregas puxa os erros junto.
+        for (let i = 0; i < 20; i++) await page.locator('button[data-k="rev"][data-d="-1"]').click();
+        await expect(page.locator('#v-rev')).toHaveText('0');
+        await expect(page.locator('#v-err')).toHaveText('0');
+        await expect(page.locator('#r-pct')).toHaveText('0%');
+    });
+
     test('sem JavaScript a página continua legível', async ({ browser }) => {
         const ctx = await browser.newContext({ javaScriptEnabled: false });
         const page = await ctx.newPage();
         await page.goto('/');
-        await expect(page.locator('.contador')).toContainText('0 de 8');
-        await expect(page.locator('#form-aplicar')).toBeVisible();
+        await expect(page.locator('.contador')).toContainText('0 de 7');
+        await expect(page.locator('#r-pct')).toHaveText('75%');
         await expect(page.locator('.aeo-faq details')).toHaveCount(7);
         await ctx.close();
     });
 
-    test('o ciclo do ponto cego e os quatro itens da análise', async ({ page }) => {
+    test('as três partes vêm na ordem Indicadores, Processos, Gestão de pessoas', async ({ page }) => {
         await page.goto('/');
-        expect(await page.locator('.ciclo li').allTextContents()).toEqual([
-            'Entra alguém novo', 'Aprende perguntando para você', 'Erra no que não está escrito', 'Você confere e corrige',
-        ]);
+        expect(await page.locator('.parte h3').allTextContents()).toEqual(['Indicadores', 'Processos', 'Gestão de pessoas']);
+        expect(await page.locator('.parte-ordem').allTextContents()).toEqual(['Primeiro', 'Depois', 'Por fim']);
+        expect(await texto(page, '.nota')).toBe('Quase todo mundo começa pela ferramenta. Ela só funciona depois que essas três partes estão definidas.');
+    });
+
+    test('os quatro achados trazem a linha de resultado', async ({ page }) => {
+        await page.goto('/');
         expect(await page.locator('.achado h3').allTextContents()).toEqual([
-            'Se você paga duas vezes pelo mesmo trabalho',
-            'O que fazer antes de contratar',
-            'Por que o time não segue o processo',
-            'O plano de 30 dias',
+            'Como o trabalho chega até você',
+            'Como você acompanha o time',
+            'Como as responsabilidades estão divididas',
+            'O que já custou caro',
+        ]);
+        expect(await page.locator('.achado-ganho').allTextContents()).toEqual([
+            'Você descobre por que as entregas chegam com erro.',
+            'Você descobre o que precisa acompanhar para não ter que revisar tudo.',
+            'Você descobre o que pode deixar de passar pela sua revisão.',
+            'Você vê, com os seus próprios exemplos, o preço de deixar como está.',
         ]);
     });
 
@@ -143,100 +145,51 @@ test.describe('home', () => {
         await expect(page.locator('.caminho.dark li')).toHaveCount(6);
     });
 
-    test('as fotos da Talita continuam as atuais', async ({ page }) => {
+    test('o texto antigo da v3 não volta', async ({ page }) => {
         await page.goto('/');
-        const srcs = await page.locator('main img').evaluateAll((els) => els.map((e) => e.getAttribute('src')));
-        expect(srcs).toEqual(['/fotos/talita-issei.webp', '/fotos/talita-issei.webp']);
-    });
-
-    test('regras de texto: sem "dono", sem preço, sem "Diagnóstico Gratuito", sem resultados', async ({ page }) => {
-        await page.goto('/');
-        const corpo = await page.evaluate(() => {
-            const c = document.body.cloneNode(true);
-            c.querySelectorAll('script, noscript').forEach((s) => s.remove());
-            return c.textContent;
-        });
-        expect(corpo, '"dono" na home').not.toMatch(/\bdon[oa]s?\b/i);
-        expect(corpo, '"Diagnóstico Gratuito" na home').not.toMatch(/diagn[oó]stico gratuito/i);
-        // "não garante o agendamento" do texto legal é a exceção literal da spec.
-        const limpo = corpo.replace('não garante o agendamento', '');
-        for (const termo of ['Resultados', 'depoimento', 'Empresas com quem', 'garante', 'elimina', 'assegura']) {
-            expect(limpo, `"${termo}" na home`).not.toContain(termo);
+        const corpo = await page.locator('body').evaluate((e) => e.textContent);
+        for (const antigo of [
+            'Quantas vezes o seu time te procurou',
+            'me procura tanto',
+            'depende tanto de você',
+            'Quero agendar meu diagnóstico',
+            'Talvez esta conversa não seja para você',
+            'empresas de serviço',
+            'a partir de 5',
+        ]) {
+            expect(corpo, `"${antigo}" voltou à home`).not.toContain(antigo);
         }
-        // Valor em reais só nas faixas de faturamento do formulário (spec §3).
-        const foraDoForm = await page.evaluate(() => {
-            const c = document.body.cloneNode(true);
-            c.querySelectorAll('#form-aplicar, script, noscript').forEach((s) => s.remove());
-            return c.textContent;
-        });
-        expect(foraDoForm, 'preço fora do formulário').not.toContain('R$');
-        // A calculadora saiu.
-        await expect(page.locator('#calc')).toHaveCount(0);
     });
 
-    test('todo CTA leva a #aplicar', async ({ page }) => {
+    test('todo CTA aponta para o mesmo formulário', async ({ page }) => {
         await page.goto('/');
-        // Cinco CTAs: hero, cartão escuro da análise, "dois caminhos", "por que agora" e a barra
-        // fixa do mobile. Contar antes impede que a suíte passe caso um deles suma.
+
+        // Cinco CTAs: hero, cartão escuro do diagnóstico, "dois caminhos", "por que agora" e a
+        // barra fixa do mobile. Contar antes de afirmar o href impede que a suíte passe caso um
+        // deles suma silenciosamente.
+        //
+        // Seletor de CSS, não `getByRole`: a barra fixa é `display:none` fora do mobile, e
+        // `getByRole` só enxerga a árvore de acessibilidade.
         const ctas = page.locator('a.btn');
         await expect(ctas).toHaveCount(5);
-        for (const cta of await ctas.evaluateAll((els) => els.map((e) => ({ href: e.getAttribute('href'), texto: e.textContent.trim() })))) {
-            expect(cta.href, `CTA "${cta.texto}" com destino divergente`).toBe('#aplicar');
+
+        for (const cta of await ctas.evaluateAll((els) =>
+            els.map((e) => ({ href: e.getAttribute('href'), texto: e.textContent.trim() })),
+        )) {
+            expect(cta.href, `CTA "${cta.texto}" com destino divergente`).toBe('/formulario.html');
             expect(cta.texto, 'rótulo de CTA divergente').toBe(CTA);
         }
-        await expect(page.locator('.apply-link')).toHaveAttribute('href', '#aplicar');
-        await expect(page.locator('.apply-link')).toHaveText('Quero a análise');
-        // Nenhum link da página aponta mais para o formulário antigo.
-        await expect(page.locator('a[href*="formulario"]')).toHaveCount(0);
-        await expect(page.locator('section#aplicar form#form-aplicar')).toHaveCount(1);
+        await expect(page.locator('.apply-link')).toHaveAttribute('href', '/formulario.html');
     });
 
-    test('formulário: campo vazio mostra erro no próprio campo e nada é enviado', async ({ page }) => {
-        let dialogo = false;
-        page.on('dialog', (d) => { dialogo = true; d.dismiss(); });
+    test('"Como funciona" não traz botão', async ({ page }) => {
         await page.goto('/');
-        await page.locator('#f-enviar').click();
-        for (const id of ['nome_completo', 'whatsapp', 'email', 'faturamento_mensal', 'tamanho_equipe', 'desafio']) {
-            await expect(page.locator(`#err-${id}`), `sem erro em ${id}`).toBeVisible();
-        }
-        await expect(page.locator('#f-nome')).toHaveAttribute('aria-invalid', 'true');
-        await expect(page.locator('#f-nome')).toBeFocused();
-        expect(dialogo, 'alerta do navegador').toBe(false);
-        expect(posts).toHaveLength(0);
-
-        // Corrigir apaga o erro daquele campo.
-        await page.fill('#f-nome', 'Maria');
-        await expect(page.locator('#err-nome_completo')).toBeHidden();
-    });
-
-    test('formulário: envia os 6 campos com UTM para o Apps Script e leva à obrigada', async ({ page }) => {
-        await page.goto('/?utm_source=meta&utm_medium=paid_social&utm_campaign=c1');
-        await preencher(page);
-        await page.locator('#f-enviar').click();
-        await page.waitForURL(/\/obrigada\.html\?.*eid=/);
-
-        expect(posts).toHaveLength(1);
-        const d = posts[0];
-        expect(d.nome_completo).toBe('Maria Teste');
-        expect(d.whatsapp).toBe('(11) 98765-4321');
-        expect(d.email).toBe('maria@exemplo.com');
-        // Mesmos valores gravados pelo formulario.html (comparáveis com os antigos).
-        expect(d.faturamento_mensal).toBe('R$ 100 mil a R$ 300 mil/mês');
-        expect(d.tamanho_equipe).toBe('5 a 15 colaboradores');
-        expect(d.maior_problema_gestao).toBe('Outro');
-        expect(d.maior_problema_gestao_outro).toBe('As entregas voltam para ajuste.');
-        expect(d.utm_source).toBe('meta');
-        expect(d.utm_campaign).toBe('c1');
-        expect(d.first_utm_source).toBe('meta');
-        expect(d.landing_page).toBe('/');
-        expect(d.consentimento).toBe(true);
-        expect(d.parcial).toBeUndefined();
-        expect(d.event_id).toMatch(/^[0-9a-f-]{36}$/);
-        expect(new URL(page.url()).searchParams.get('eid')).toBe(d.event_id);
+        await expect(page.locator('.selecao a.btn')).toHaveCount(0);
+        await expect(page.locator('.passos li')).toHaveCount(3);
     });
 
     test('a barra de CTA fixa é só do mobile', async ({ page }) => {
-        await page.setViewportSize({ width: 390, height: 844 });
+        await page.setViewportSize({ width: 375, height: 812 });
         await page.goto('/');
         await expect(page.locator('.cta-fixa'), 'barra fixa ausente no mobile').toBeVisible();
 
@@ -245,19 +198,14 @@ test.describe('home', () => {
         await expect(page.locator('.cta-fixa'), 'barra fixa vazando para o desktop').toBeHidden();
     });
 
-    test('390 px: sem scroll horizontal, a barra some sobre o formulário e o rodapé fica acima dela', async ({ page }) => {
-        await page.setViewportSize({ width: 390, height: 844 });
+    test('375 px: sem scroll horizontal e a última linha do rodapé fica acima da barra fixa', async ({ page }) => {
+        await page.setViewportSize({ width: 375, height: 812 });
         await page.goto('/');
 
         const largura = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-        expect(largura, 'scroll horizontal em 390 px').toBeLessThanOrEqual(0);
-
-        await page.locator('.hero-cta a').click();
-        await expect(page.locator('#f-nome')).toBeInViewport();
-        await expect(page.locator('.cta-fixa'), 'barra fixa cobrindo o formulário').toBeHidden();
+        expect(largura, 'scroll horizontal em 375 px').toBeLessThanOrEqual(0);
 
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-        await expect(page.locator('.cta-fixa')).toBeVisible();
         const barra = await page.locator('.cta-fixa').boundingBox();
         const rodape = await page.locator('footer').last().boundingBox();
         expect(rodape.y + rodape.height, 'rodapé coberto pela barra fixa').toBeLessThanOrEqual(barra.y + 1);
