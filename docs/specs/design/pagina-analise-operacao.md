@@ -1,6 +1,6 @@
 # Página de entrada da Análise de Operação e Equipe (`/analise`)
 
-**Status:** Draft para aprovação do Issei (2026-11-22)
+**Status:** Aprovada pelo Issei em 2026-11-22; implementada (branch `feat/home-analise-operacao`)
 **Substitui:** a troca da home pedida em 20/11. A home volta ao que está em produção, e a página nova vira uma segunda entrada, para um público separado.
 **Texto e visual:** `home-analise-operacao.md` (metaprompt da Talita de 20/11, com o e-mail decidido em 21/11). Nada do texto muda aqui.
 **CRM:** Spec 032 (`specs/032-pagina-de-entrada-analise.md` no repositório do CRM). É ela que define como os dois formulários entram no mesmo CRM.
@@ -34,7 +34,7 @@
    - Logo do topo leva a `/`, que é a home.
 3. **`obrigada.html`:** a troca do nome na nota "em análise" (D4), coberta por teste.
 4. **`public/llms.txt` e `llms-full.txt`:** uma linha em "Estrutura do Site" para `/analise` ("noindex; página de entrada da Análise de Operação e Equipe, com formulário próprio"), como já é feito para o `formulario.html`.
-5. **`apps_script_atualizado.gs`:** a coluna "Formulário" no fim de `HEADERS`, `saveToSheet` gravando `data.formulario`, a linha no aviso por e-mail e `custom_data.lead_formulario` no CAPI (Spec 032 §9). Quem republica o Web App é o Issei.
+5. **`apps_script_atualizado.gs`:** a coluna "Formulário" no fim de `HEADERS`, `saveToSheet` gravando `data.formulario`, a linha no aviso por e-mail e `custom_data.lead_formulario` no CAPI (Spec 032 §9). Quem republica o Web App é o Issei. Efeito já conhecido (formulario-dois-caminhos.md): com o cabeçalho novo, o primeiro `doPost` arquiva a aba `Respostas` como `Respostas_legado_<timestamp>` e começa uma nova; nada é apagado. Enquanto não for republicado, o CRM já recebe `formulario` (o `sendToCrm` repassa o JSON como veio); só a planilha, o aviso e o CAPI ficam sem o campo.
 6. **Testes:**
    - `tests/analise.spec.js`: os testes que hoje estão em `tests/home.spec.js` da branch, apontando para `/analise`. Eles cobrem o texto, os 8 sinais, os CTAs para `#aplicar`, os erros nos campos, o payload com `formulario: "analise"` e as UTMs, o envio interceptado (ADR e2e) e os 390 px.
    - `tests/atribuicao.spec.js`: o da `main`, mais um caso "anúncio em `/analise`: UTMs chegam ao formulário embutido".
