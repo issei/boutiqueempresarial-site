@@ -11,7 +11,7 @@ A Boutique Empresarial não é uma consultoria tradicional. Somos arquitetos de 
 ## Estrutura do Site
 
 - [Página Inicial](https://boutiqueempresarial.com.br/)
-  - **Propósito**: Apresentar a Análise de Operação e Equipe e receber a aplicação no formulário da própria página (`#aplicar`, 5 perguntas: nome, WhatsApp, faturamento médio mensal, pessoas no time e maior desafio com o time). Texto da home: "Em 45 minutos, eu te mostro como a sua empresa pode faturar mais com a equipe que você já tem, sem você precisar trabalhar mais."
+  - **Propósito**: Apresentar a Análise de Operação e Equipe e receber a aplicação no formulário da própria página (`#aplicar`, 6 perguntas: nome, WhatsApp, e-mail, faturamento médio mensal, pessoas no time e maior desafio com o time). Texto da home: "Em 45 minutos, eu te mostro como a sua empresa pode faturar mais com a equipe que você já tem, sem você precisar trabalhar mais."
   - **Conceitos Chave**: Análise de Operação e Equipe, 45 minutos, plano de 30 dias, retrabalho, contratação, o que o funcionário mais antigo sabe.
   - **Público-Alvo**: Empresários com 3 ou mais pessoas na equipe.
 

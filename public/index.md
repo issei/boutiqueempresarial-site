@@ -13,7 +13,7 @@ Na Análise de Operação e Equipe, em 45 minutos, eu te mostro como a sua empre
 
 Análise de Operação e Equipe, para empresários com equipe. Uma sessão individual e gratuita. Você sai com o plano de 30 dias com os pontos que mais travam o seu faturamento e o que fazer primeiro na próxima semana.
 
-Você responde 5 perguntas em 2 minutos, aqui mesmo na página. Se a sua aplicação for aprovada, eu entro em contato para marcar.
+Você responde 6 perguntas em 2 minutos, aqui mesmo na página. Se a sua aplicação for aprovada, eu entro em contato para marcar.
 
 ## Veja se isto acontece na sua empresa
 
@@ -75,9 +75,9 @@ Há 5 anos, levo essa experiência para pequenas e médias empresas, como escrit
 
 ## Como aplicar
 
-São 5 perguntas e leva 2 minutos, no formulário da própria página: seu nome, WhatsApp com DDD, faturamento médio mensal, quantas pessoas tem no seu time e o seu maior desafio com o time hoje.
+São 6 perguntas e leva 2 minutos, no formulário da própria página: seu nome, WhatsApp com DDD, e-mail, faturamento médio mensal, quantas pessoas tem no seu time e o seu maior desafio com o time hoje.
 
-1. Você responde as 5 perguntas do formulário.
+1. Você responde as 6 perguntas do formulário.
 2. Eu leio as suas respostas. Se a sua aplicação for aprovada, eu entro em contato pelo WhatsApp para marcar.
 3. Fazemos os 45 minutos por vídeo, no horário que for melhor para você.
 

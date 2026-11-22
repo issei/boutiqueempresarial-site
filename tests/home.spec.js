@@ -54,6 +54,7 @@ test.beforeEach(async ({ context }) => {
 async function preencher(page) {
     await page.fill('#f-nome', 'Maria Teste');
     await page.fill('#f-whats', '11987654321');
+    await page.fill('#f-email', 'Maria@Exemplo.com');
     await page.locator('input[name=faturamento_mensal][value="R$ 100 mil a R$ 300 mil/mês"]').check({ force: true });
     await page.locator('input[name=tamanho_equipe][value="5 a 15 colaboradores"]').check({ force: true });
     await page.fill('#f-desafio', 'As entregas voltam para ajuste.');
@@ -93,7 +94,7 @@ test.describe('home', () => {
         expect(await texto(page, '.hero .eyebrow')).toBe('Análise de Operação e Equipe · para empresários com equipe');
         expect(await texto(page, '.hero .lead')).toBe(SUB);
         await expect(page.locator('.hero .lead strong')).toHaveText('plano de 30 dias');
-        expect(await texto(page, '.hero-nota')).toBe('Você responde 5 perguntas em 2 minutos, aqui mesmo na página. Se a sua aplicação for aprovada, eu entro em contato para marcar.');
+        expect(await texto(page, '.hero-nota')).toBe('Você responde 6 perguntas em 2 minutos, aqui mesmo na página. Se a sua aplicação for aprovada, eu entro em contato para marcar.');
         expect(await page.locator('.selos li').allTextContents()).toEqual(['45 minutos', 'Individual', 'Plano de 30 dias', 'Gratuita']);
         expect(await texto(page, '.faixa')).toBe('Operação ✦ Equipe ✦ Faturamento');
         expect(await texto(page, '.agora .micro')).toBe('Análise gratuita · 45 minutos · Individual');
@@ -195,7 +196,7 @@ test.describe('home', () => {
         page.on('dialog', (d) => { dialogo = true; d.dismiss(); });
         await page.goto('/');
         await page.locator('#f-enviar').click();
-        for (const id of ['nome_completo', 'whatsapp', 'faturamento_mensal', 'tamanho_equipe', 'desafio']) {
+        for (const id of ['nome_completo', 'whatsapp', 'email', 'faturamento_mensal', 'tamanho_equipe', 'desafio']) {
             await expect(page.locator(`#err-${id}`), `sem erro em ${id}`).toBeVisible();
         }
         await expect(page.locator('#f-nome')).toHaveAttribute('aria-invalid', 'true');
@@ -208,7 +209,7 @@ test.describe('home', () => {
         await expect(page.locator('#err-nome_completo')).toBeHidden();
     });
 
-    test('formulário: envia os 5 campos com UTM para o Apps Script e leva à obrigada', async ({ page }) => {
+    test('formulário: envia os 6 campos com UTM para o Apps Script e leva à obrigada', async ({ page }) => {
         await page.goto('/?utm_source=meta&utm_medium=paid_social&utm_campaign=c1');
         await preencher(page);
         await page.locator('#f-enviar').click();
@@ -218,6 +219,7 @@ test.describe('home', () => {
         const d = posts[0];
         expect(d.nome_completo).toBe('Maria Teste');
         expect(d.whatsapp).toBe('(11) 98765-4321');
+        expect(d.email).toBe('maria@exemplo.com');
         // Mesmos valores gravados pelo formulario.html (comparáveis com os antigos).
         expect(d.faturamento_mensal).toBe('R$ 100 mil a R$ 300 mil/mês');
         expect(d.tamanho_equipe).toBe('5 a 15 colaboradores');

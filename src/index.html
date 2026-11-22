@@ -383,7 +383,7 @@
         .campo { display: grid; gap: 8px; border: 0; margin: 0; padding: 0; min-width: 0; }
         .campo > label, .campo > legend { font-size: 1rem; font-weight: 500; color: var(--text-primary); line-height: 1.4; padding: 0; }
         .campo legend { margin-bottom: 8px; }
-        .campo input[type=text], .campo input[type=tel], .campo textarea {
+        .campo input[type=text], .campo input[type=tel], .campo input[type=email], .campo textarea {
             width: 100%;
             font: inherit;
             font-weight: 400;
@@ -404,7 +404,7 @@
         .opcao input:checked { border: 5px solid var(--accent-color); }
         .opcao:has(input:checked) { border-color: var(--accent-color); background: #fff; }
         .opcao:has(input:focus-visible) { outline: 3px solid var(--accent-light); outline-offset: 1px; }
-        .campo.erro input[type=text], .campo.erro input[type=tel], .campo.erro textarea, .campo.erro .opcao { border-color: #b3261e; }
+        .campo.erro input[type=text], .campo.erro input[type=tel], .campo.erro input[type=email], .campo.erro textarea, .campo.erro .opcao { border-color: #b3261e; }
         .campo-erro { margin: 0; font-size: 0.875rem; font-weight: 500; color: #b3261e; max-width: none; }
         .btn-form { width: 100%; }
         .form-card .leg { font-size: 0.8125rem; line-height: 1.5; color: var(--text-secondary); margin: 0; max-width: none; }
@@ -508,7 +508,7 @@
                     <h1>Em 45 minutos, eu te mostro como a sua empresa pode <em>faturar mais com a equipe que você já tem</em>, sem você precisar trabalhar mais.</h1>
                     <p class="lead">Uma sessão individual e gratuita. Você sai com o <strong>plano de 30 dias</strong> com os pontos que mais travam o seu faturamento e o que fazer primeiro na próxima semana.</p>
                     <p class="hero-cta"><a href="#aplicar" class="btn">Quero a análise da minha operação</a></p>
-                    <p class="hero-nota">Você responde 5 perguntas em 2 minutos, aqui mesmo na página. Se a sua aplicação for aprovada, eu entro em contato para marcar.</p>
+                    <p class="hero-nota">Você responde 6 perguntas em 2 minutos, aqui mesmo na página. Se a sua aplicação for aprovada, eu entro em contato para marcar.</p>
                     <ul class="selos">
                         <li>45 minutos</li>
                         <li>Individual</li>
@@ -676,9 +676,9 @@
                 <div>
                     <p class="eyebrow">Aplicação</p>
                     <h2>Quero a análise da <em>minha operação</em></h2>
-                    <p>São 5 perguntas e leva 2 minutos.</p>
+                    <p>São 6 perguntas e leva 2 minutos.</p>
                     <ol class="passos-v">
-                        <li><span><b>Você responde</b> as 5 perguntas do formulário.</span></li>
+                        <li><span><b>Você responde</b> as 6 perguntas do formulário.</span></li>
                         <li><span><b>Eu leio as suas respostas.</b> Se a sua aplicação for aprovada, eu entro em contato pelo WhatsApp para marcar.</span></li>
                         <li><span><b>Fazemos os 45 minutos</b> por vídeo, no horário que for melhor para você.</span></li>
                     </ol>
@@ -693,6 +693,11 @@
                         <label for="f-whats">WhatsApp com DDD</label>
                         <input id="f-whats" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 90000-0000" required aria-describedby="err-whatsapp">
                         <p class="campo-erro" id="err-whatsapp" hidden></p>
+                    </div>
+                    <div class="campo">
+                        <label for="f-email">Seu e-mail</label>
+                        <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" required aria-describedby="err-email">
+                        <p class="campo-erro" id="err-email" hidden></p>
                     </div>
                     <fieldset class="campo" aria-describedby="err-faturamento_mensal">
                         <legend>Faturamento médio mensal</legend>
@@ -911,6 +916,9 @@
                     nome_completo: value("nome_completo") ? "" : "Informe o seu nome.",
                     whatsapp: !value("whatsapp") ? "Informe o seu WhatsApp com DDD."
                         : (localDigits(value("whatsapp")).length < 10 ? "Informe um WhatsApp válido com DDD." : ""),
+                    // O CRM recusa lead sem e-mail válido (Spec 006); a mesma regra do formulario.html.
+                    email: !value("email") ? "Informe o seu e-mail."
+                        : (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value("email")) ? "" : "Informe um e-mail válido."),
                     faturamento_mensal: value("faturamento_mensal") ? "" : "Selecione uma opção.",
                     tamanho_equipe: value("tamanho_equipe") ? "" : "Selecione uma opção.",
                     desafio: value("desafio") ? "" : "Conte o seu maior desafio com o time."
@@ -943,12 +951,13 @@
 
             /* O payload segue o contrato do formulario.html (Spec 006 do CRM): o desafio, que aqui é
              * texto livre, vai como maior_problema_gestao "Outro" com o texto em _outro, valor que o
-             * catálogo do CRM e a planilha já aceitam. A página não pergunta a posição: vai vazia. */
+             * catálogo do CRM e a planilha já aceitam. A página não pergunta a posição: vai vazia.
+             * Nunca nome, WhatsApp, e-mail nem o texto livre em evento de GA4/Meta. */
             function collect() {
                 var d = {
                     nome_completo: value("nome_completo"),
                     whatsapp: value("whatsapp"),
-                    email: "",
+                    email: value("email").toLowerCase(),
                     posicao: "",
                     modelo_negocio: "",
                     modelo_negocio_outro: "",

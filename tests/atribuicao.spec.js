@@ -53,6 +53,7 @@ test('anúncio na home: UTMs chegam ao formulário embutido pelo CTA', async ({ 
   // Formulário da home (docs/specs/design/home-analise-operacao.md): envio único, sem pré-captura.
   await page.fill('#f-nome', 'maria silva');
   await page.fill('#f-whats', '11987654321');
+  await page.fill('#f-email', 'maria@exemplo.com');
   await page.locator('input[name=faturamento_mensal]').first().check({ force: true });
   await page.locator('input[name=tamanho_equipe]').nth(1).check({ force: true });
   await page.fill('#f-desafio', 'teste');

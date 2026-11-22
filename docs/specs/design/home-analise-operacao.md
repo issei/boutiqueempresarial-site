@@ -1,4 +1,4 @@
-> **Status:** implementada na branch `feat/home-analise-operacao` (2026-11-20). Fonte: metaprompt da Talita de 20/11, copiado abaixo sem alteração. Divergência registrada: o formulário não pede e-mail, e o CRM hoje recusa lead sem e-mail (ver PR).
+> **Status:** implementada na branch `feat/home-analise-operacao` (2026-11-20). Fonte: metaprompt da Talita de 20/11, copiado abaixo sem alteração. Divergência decidida pelo Issei em 21/11: o formulário ganhou o campo "Seu e-mail" (o CRM recusa lead sem e-mail), e o texto passou de "5 perguntas" para "6 perguntas".
 
 # Metaprompt: nova página da bio (Análise de Operação e Equipe)
 
