@@ -343,3 +343,15 @@ test('empresário: o fechamento de sempre continua, com as faixas novas de equip
     await expect(page.locator('#fechamento'), time).toHaveText(`Eva, tocar uma agência com ${forma} e faturamento de até R$ 30 mil/mês aprovando cada entrega final limita a capacidade da empresa. Na sessão vamos alinhar onde e como passar autonomia para o time.`);
   }
 });
+
+// Página /analise (docs/specs/design/pagina-analise-operacao.md, D4): mesma nota "em análise",
+// só o nome do produto muda. Quem decide mostrar a nota continua sendo o CRM (rota link).
+test('em análise vindo de /analise: a nota fala da Análise de Operação e Equipe', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('be_perfil', JSON.stringify({ formulario: 'analise' })));
+  await simularApi(page, { link: ok(LINK.emAnalise) });
+  await page.goto(URL_OBRIGADA);
+
+  await expect(analise(page)).toBeVisible();
+  await expect(analise(page)).toContainText('combinar o agendamento da sua Análise de Operação e Equipe.');
+  await expect(analise(page)).not.toContainText('Diagnóstico Operacional');
+});

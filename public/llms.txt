@@ -26,6 +26,9 @@ A Boutique Empresarial não é uma consultoria tradicional. Somos arquitetos de 
 - [Termos de Uso](https://boutiqueempresarial.com.br/termos.html)
   - **Propósito**: Estabelecer os limites legais da prestação de serviço e o uso de canais oficiais (WhatsApp API).
 
+- [Análise de Operação e Equipe](https://boutiqueempresarial.com.br/analise)
+  - **Propósito**: Página de entrada (`noindex`) para um público direcionado, com o formulário de aplicação na própria página (6 perguntas: nome, WhatsApp, e-mail, faturamento médio mensal, pessoas no time e maior desafio com o time). A aplicação é analisada antes do agendamento.
+
 - [Formulário de Contato](https://boutiqueempresarial.com.br/formulario.html)
   - **Propósito**: Aplicação ao Diagnóstico Gratuito, em dois caminhos definidos pela primeira pergunta.
   - **Campos principais**: primeira pergunta, "Qual é a sua posição na empresa?" (Sou dono ou sócio; Lidero um time na empresa (gerente, coordenador, supervisor)); nome, WhatsApp e e-mail corporativo nos dois caminhos; consentimento explícito para tratamento de dados (LGPD).

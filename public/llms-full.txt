@@ -146,6 +146,9 @@ Não é obrigatório. Mas ajuda lembrar de dois ou três erros ou retrabalhos do
 
 - **Home** — https://boutiqueempresarial.com.br/ (indexável; companion em `/index.md`; LP do
   Diagnóstico Gratuito)
+- **Análise de Operação e Equipe** — https://boutiqueempresarial.com.br/analise (`noindex`; página
+  de entrada para um público direcionado, com o formulário de aplicação na própria página,
+  preenchido por humano com consentimento LGPD; a aplicação é analisada antes do agendamento)
 - **Aplicação** — https://boutiqueempresarial.com.br/formulario.html (`noindex`; preenchido
   por humano, com consentimento LGPD explícito; não submeter por agente; o agente do visitante só preenche via WebMCP, o envio é humano. A primeira pergunta é "Qual é a sua posição na empresa?" (Sou dono ou sócio; Lidero um time na empresa (gerente, coordenador, supervisor)) e define o caminho: empresário (quantidade de pessoas no time: Menos de 3 colaboradores, 3 a 4 colaboradores, 5 a 15 colaboradores ou Mais de 15 colaboradores) ou gerente (vínculo, pessoas lideradas, maior desafio com o time e objetivo nos próximos 12 meses))
 - **Política de Privacidade** — https://boutiqueempresarial.com.br/privacidade.html

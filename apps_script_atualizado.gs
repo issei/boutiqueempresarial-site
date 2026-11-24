@@ -113,7 +113,8 @@ const HEADERS = [
   'Posição', 'Vínculo', 'Pessoas Lideradas',
   'Maior Desafio (Gerente)', 'Desafio Gerente (Outro)',
   'Objetivo 12 meses', 'Objetivo (Outro)',
-  'Faturamento (Gerente)' // Emenda 1: sempre no fim
+  'Faturamento (Gerente)', // Emenda 1
+  'Formulário' // Spec 032 do CRM: "analise" = página /analise; vazio = formulário antigo. Sempre no fim
 ];
 
 /* ========================================================================== */
@@ -483,7 +484,8 @@ function saveToSheet(data, capiStatus) {
     sanitizeInput(data.maior_desafio_gerente_outro),
     sanitizeInput(data.objetivo_12m),
     sanitizeInput(data.objetivo_12m_outro),
-    sanitizeInput(data.faturamento_gerente)
+    sanitizeInput(data.faturamento_gerente),
+    sanitizeInput(data.formulario)
   ]);
 }
 
@@ -559,6 +561,8 @@ function buildLeadEmail(data, capiStatus) {
     // Caminho (formulario-dois-caminhos): gerente mostra os campos dele no lugar dos de empresário;
     // sem posição reconhecida (site antigo), o aviso fica como era.
     caminho === 'gerente' ? 'Caminho: Gerente' : (caminho === 'empresario' ? 'Caminho: Empresário' : null),
+    // Página /analise (Spec 032 do CRM): o lead passa por análise antes de agendar.
+    data.formulario === 'analise' ? 'Formulário: Análise de Operação e Equipe (analisar antes de agendar)' : null,
   ].concat(caminho === 'gerente' ? [
     'Vínculo: ' + plainText(data.vinculo),
     'Pessoas lideradas: ' + plainText(data.pessoas_lideradas),
@@ -707,7 +711,9 @@ function sendToMetaCAPI(data) {
         lead_faturamento: data.faturamento_mensal || '',
         lead_equipe: data.tamanho_equipe || '',
         // D6: só o caminho vai à Meta. Vínculo, objetivo, desafio e pessoas lideradas ficam fora.
-        lead_caminho: leadCaminho(data)
+        lead_caminho: leadCaminho(data),
+        // Spec 032 do CRM: separa os públicos das duas páginas de entrada. Não é dado pessoal.
+        lead_formulario: data.formulario === 'analise' ? 'analise' : 'aplicacao'
       }
     }]
   };

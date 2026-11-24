@@ -273,7 +273,7 @@
              O módulo esconde esta nota enquanto prepara o cartão e a reexibe se o cartão não vier. -->
         <p class="nota" id="nota-legado">Suas informações são confidenciais. Retornaremos em até 48h úteis via WhatsApp/E-mail caso sua aplicação seja aprovada.</p>
         <!-- Perfil indefinido (CRM, Spec 023: "Outro" nos dois campos de perfil): sem seletor; a equipe analisa e entra em contato. -->
-        <p class="nota" id="nota-analise" hidden>Suas informações são confidenciais. Vamos analisar a sua aplicação. Depois da análise, entramos em contato para combinar o agendamento do seu Diagnóstico Operacional.<span id="nota-analise-email" hidden> Enviamos a confirmação do cadastro para o e-mail informado.</span></p>
+        <p class="nota" id="nota-analise" hidden>Suas informações são confidenciais. Vamos analisar a sua aplicação. Depois da análise, entramos em contato para combinar o agendamento <span id="nota-analise-produto">do seu Diagnóstico Operacional</span>.<span id="nota-analise-email" hidden> Enviamos a confirmação do cadastro para o e-mail informado.</span></p>
         <p class="nota" id="nota-cartao" hidden>Suas informações são confidenciais.<span id="nota-email" hidden> O e-mail de agendamento vai para o endereço informado na aplicação.</span></p>
     </main>
 
@@ -290,6 +290,13 @@
                 if (!raw) return;
                 var p = JSON.parse(raw);
                 var FC = window.FormCopy;
+
+                // Página /analise (docs/specs/design/pagina-analise-operacao.md, D4): só o nome do produto
+                // muda na nota "em análise"; quem decide mostrar a nota é o CRM (rota link).
+                if (p && p.formulario === "analise") {
+                    document.getElementById("nota-analise-produto").textContent = "da sua Análise de Operação e Equipe";
+                    return;
+                }
 
                 // Caminho do gerente (docs/specs/design/formulario-dois-caminhos.md, D7): o fechamento
                 // fica acima da nota "em análise", que o obrigada-agendar.js mostra para todo gerente.
