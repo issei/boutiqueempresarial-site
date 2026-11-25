@@ -1,6 +1,6 @@
 # Alterações de 24/11 na página `/analise`: revisão e plano
 
-**Status:** Draft para aprovação do Issei (2026-11-24). Nada implementado.
+**Status:** Aprovada pelo Issei em 2026-11-25 (branch `feat/analise-alteracoes-24-11`). Decisões: R1 seguir o resumo e o PDF; R2 manter o e-mail, 6 perguntas; R3 ordem do resumo; R4 não mexer na moldura; R5 imagem só da `/analise` (`og-analise.jpg`); corrigir a CI do site.
 **Fontes:** resumo `alteracoes-24-11-para-dev.md` e PDF da página, enviados em 24/11; base comparada: `origin/main` (`e6ca596`, PR #61), `src/analise.html`.
 **Relaciona-se com:** `home-analise-operacao.md` (texto de 20/11), `pagina-analise-operacao.md` (página de entrada), Spec 032 do CRM.
 
@@ -68,7 +68,7 @@ Fora de `analise.html`:
 
 - **Uma PR só, do site** (branch a partir da `main`). Sem mudança no CRM, no Apps Script, na planilha ou na home.
 - **Rascunho até o ok do Issei.** Push, PR e deploy só com a decisão dele.
-- **Bloqueio conhecido:** a CI de PR do site travou duas vezes instalando os navegadores do Playwright (limite de 60 min, nenhum teste rodou). Corrigir antes, ou a PR não terá o gate da CI.
+- **CI do site:** `lts/*` passou para o Node 26, e o instalador do Playwright 1.58 trava depois do download (último sucesso com Node 24; todas as execuções desde 02/11 canceladas no limite). O `playwright.yml` passa a usar o Node 20, o mesmo do `deploy.yml`, e o passo falha em 15 min.
 
 ## 4. Critérios de aceite
 
@@ -81,5 +81,5 @@ Fora de `analise.html`:
 
 ## Allowlist de implementação
 
-- Paths: `src/analise.html`, `tests/analise.spec.js`, `docs/specs/design/`
+- Paths: `src/analise.html`, `tests/analise.spec.js`, `docs/specs/design/`, `public/og-analise.jpg`, `scripts/gen-og.mjs`, `.github/workflows/playwright.yml`
 - Efeitos proibidos: push, PR e deploy sem decisão do Issei; envio real de formulário em teste.

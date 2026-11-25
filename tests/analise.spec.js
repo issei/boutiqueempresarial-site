@@ -5,10 +5,12 @@ import { test, expect } from '@playwright/test';
 // docs/specs/design/pagina-analise-operacao.md. O rótulo do
 // CTA e o destino são afirmados literalmente: são o que liga a página à aplicação.
 const CTA = 'Quero a análise da minha operação';
-const H1 = 'Em 45 minutos, eu te mostro como a sua empresa pode faturar mais com a equipe que você já tem, sem você precisar trabalhar mais.';
-const SUB = 'Uma sessão individual e gratuita. Você sai com o plano de 30 dias com os pontos que mais travam o seu faturamento e o que fazer primeiro na próxima semana.';
+const H1 = 'O plano para aumentar o faturamento da sua empresa nos próximos 30 dias, com a equipe que você já tem.';
+const SUB = 'Se a sua operação cresceu, os custos subiram e o lucro não acompanhou na mesma proporção, você está pagando caro por horas da equipe que não viram faturamento: retrabalho, falhas na execução e um time totalmente dependente de você para resolver problemas básicos.';
+const DESC = 'Em 45 minutos, mapeamos o que reduz o faturamento da sua empresa e você sai com um plano de ação de 30 dias para faturar mais com a equipe que já tem.';
 
 const H2 = [
+    'Em 45 minutos, mapeamos os pontos da sua operação e da sua equipe que hoje reduzem o seu faturamento, e o que resolver primeiro.',
     'Veja se isto acontece na sua empresa',
     'Por que contratar mais gente não aumenta o faturamento na mesma proporção',
     'O que você leva dos 45 minutos',
@@ -17,17 +19,17 @@ const H2 = [
     'Para quem é esta análise',
     'Quero a análise da minha operação',
     'Perguntas frequentes',
-    'Em 45 minutos, veja onde a sua operação trava o faturamento e o que fazer primeiro.',
+    'Em 45 minutos, veja o que reduz o seu faturamento hoje e o que resolver primeiro.',
 ];
 
 const SINAIS = [
     'A entrega chega e você precisa conferir antes de mandar para o cliente.',
-    'A entrega volta para ajuste, e o time faz de novo um trabalho que já estava pago.',
+    'A entrega volta, e o time refaz um trabalho que já estava pago.',
     'Você encontra o mesmo erro que já tinha corrigido no mês passado.',
     'Você contratou mais gente, a folha subiu, e o seu trabalho subiu junto.',
     'Você paga uma ferramenta, e os pedidos continuam chegando pelo WhatsApp.',
-    'Quem entrou há pouco tempo erra o que o funcionário mais antigo já sabe, e quem ensina é você.',
-    'Quando você passa um dia fora, o trabalho fica parado esperando a sua resposta.',
+    'Quem entra demora meses para trabalhar sozinho, e quem treina é você.',
+    'Quando você passa um dia fora, a equipe não consegue decidir e o trabalho para.',
     'Você adia um cliente novo porque não sabe quem vai conseguir entregar.',
 ];
 
@@ -68,7 +70,7 @@ test.describe('analise', () => {
         await expect(page).toHaveTitle('Análise de Operação e Equipe | Boutique Empresarial');
         await expect(page.locator('header')).toBeVisible();
         expect(await texto(page, 'h1')).toBe(H1);
-        await expect(page.locator('h1 em')).toHaveText('faturar mais com a equipe que você já tem');
+        await expect(page.locator('h1 em')).toHaveText('com a equipe que você já tem.');
     });
 
     test('a fonte não mudou: Playfair nos títulos e Inter no corpo', async ({ page }) => {
@@ -93,13 +95,12 @@ test.describe('analise', () => {
 
     test('hero e fechamento trazem o texto literal da spec', async ({ page }) => {
         await page.goto('/analise');
-        expect(await texto(page, '.hero .eyebrow')).toBe('Análise de Operação e Equipe · para empresários com equipe');
+        expect(await texto(page, '.hero .eyebrow')).toBe('Para empresários com equipe');
         expect(await texto(page, '.hero .lead')).toBe(SUB);
-        await expect(page.locator('.hero .lead strong')).toHaveText('plano de 30 dias');
-        expect(await texto(page, '.hero-nota')).toBe('Você responde 6 perguntas em 2 minutos, aqui mesmo na página. Se a sua aplicação for aprovada, eu entro em contato para marcar.');
-        expect(await page.locator('.selos li').allTextContents()).toEqual(['45 minutos', 'Individual', 'Plano de 30 dias', 'Gratuita']);
+        expect(await texto(page, '.hero-nota')).toBe('Você responde 6 perguntas em 2 minutos.');
+        await expect(page.locator('.selos')).toHaveCount(0);
         expect(await texto(page, '.faixa')).toBe('Operação ✦ Equipe ✦ Faturamento');
-        expect(await texto(page, '.agora .micro')).toBe('Análise gratuita · 45 minutos · Individual');
+        expect(await texto(page, '.agora .micro')).toBe('45 minutos · 1:1 com a Talita · Sem custo para empresas aprovadas');
     });
 
     test('os oito sinais são caixas de marcar e o contador acompanha', async ({ page }) => {
@@ -129,20 +130,25 @@ test.describe('analise', () => {
     test('o ciclo do ponto cego e os quatro itens da análise', async ({ page }) => {
         await page.goto('/analise');
         expect(await page.locator('.ciclo li').allTextContents()).toEqual([
-            'Entra alguém novo', 'Aprende perguntando para você', 'Erra no que não está escrito', 'Você confere e corrige',
+            'Entra alguém novo', 'Cada um faz do seu jeito', 'O erro volta como retrabalho', 'A correção sobe para você',
         ]);
         expect(await page.locator('.achado h3').allTextContents()).toEqual([
-            'Se você paga duas vezes pelo mesmo trabalho',
+            'Quanto do trabalho pago vira retrabalho',
             'O que fazer antes de contratar',
             'Por que o time não segue o processo',
             'O plano de 30 dias',
         ]);
     });
 
-    test('os dois caminhos: três perdas e seis ganhos', async ({ page }) => {
+    test('os dois caminhos: três perdas e quatro ganhos, na ordem do resumo de 24/11', async ({ page }) => {
         await page.goto('/analise');
         await expect(page.locator('.caminho:not(.dark) li')).toHaveCount(3);
-        await expect(page.locator('.caminho.dark li')).toHaveCount(6);
+        expect(await page.locator('.caminho.dark li').allTextContents()).toEqual([
+            'Menos retrabalho, e as horas do time vão para atender mais clientes.',
+            'Quem entra aprende o padrão e passa a produzir mais rápido.',
+            'A equipe resolve o dia a dia, e você consegue passar uns dias fora.',
+            'Sobra tempo para vender e para pensar no crescimento da empresa.',
+        ]);
     });
 
     test('as fotos da Talita continuam as atuais', async ({ page }) => {
@@ -176,12 +182,73 @@ test.describe('analise', () => {
         await expect(page.locator('#calc')).toHaveCount(0);
     });
 
+    // Regra de 24/11: em nenhum texto, atributo ou metadado servido.
+    test('sem "grátis" nem "gratuita" em toda a página', async ({ page }) => {
+        const html = await (await page.request.get('/analise')).text();
+        expect(html).not.toMatch(/gr[aá]tis|gratuit/i);
+    });
+
+    test('metadados e imagem de prévia próprios de /analise', async ({ page, request }) => {
+        await page.goto('/analise');
+        for (const sel of ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]']) {
+            await expect(page.locator(sel)).toHaveAttribute('content', DESC);
+        }
+        for (const sel of ['meta[property="og:image"]', 'meta[name="twitter:image"]']) {
+            await expect(page.locator(sel)).toHaveAttribute('content', 'https://boutiqueempresarial.com.br/og-analise.jpg');
+        }
+        expect((await request.get('/og-analise.jpg')).status()).toBe(200);
+    });
+
+    test('textos de 24/11: quadro, contador, ponto cego, cartões, formulário e FAQ', async ({ page }) => {
+        await page.goto('/analise');
+        expect(await page.locator('.dados dd').allTextContents()).toEqual(['45', '1:1', 'Sem custo']);
+        expect(await page.locator('.dados dt').allTextContents()).toEqual(['minutos', 'com a Talita Issei', 'para empresas aprovadas']);
+        const corpo = await texto(page, 'main');
+        for (const t of [
+            'Você sai com um plano de ação de 30 dias e as prioridades exatas da sua próxima semana.',
+            'Toque nas frases ao lado. Cada uma é um sinal de que parte do que você paga ao time não está virando faturamento.',
+            'Cada pessoa nova aumenta a folha no primeiro dia. Sem um padrão claro de execução, ela também aumenta o tempo que você passa treinando, conferindo e corrigindo.',
+            'E o ciclo recomeça na próxima contratação.',
+            'Quando a empresa tem um método claro de execução, a equipe para de depender de você para resolver o básico e as horas pagas passam a virar faturamento.',
+            'É isso que mapeamos na sua Análise de Operação e Equipe.',
+            'Onde a sua empresa paga duas vezes pela mesma entrega: uma para o time fazer e outra para refazer.',
+            'Se a próxima contratação vai aumentar o faturamento ou só a folha, e o que resolver antes de contratar.',
+            'O plano de 30 dias com os pontos que mais reduzem o seu faturamento, e o que fazer primeiro na próxima semana.',
+            'Para atender mais clientes, você precisa contratar mais.',
+            'Se você tem 3 ou mais pessoas na equipe e quer faturar mais sem contratar no mesmo ritmo.',
+            'São 6 perguntas e leva 2 minutos.',
+            'A análise acontece por vídeo, em 45 minutos.',
+            'Na Análise de Operação e Equipe, em 45 minutos, mapeamos os pontos da sua operação e da sua equipe que hoje reduzem o seu faturamento. Você sai com um plano de ação de 30 dias.',
+            'Não, para empresas aprovadas. A análise é feita por mim, individualmente, por isso passa por aplicação.',
+            'Não. Eu faço as perguntas e você responde com o que sabe da sua semana.',
+            'Pela entrega que mais gera retrabalho ou que mais passa pela sua mão.',
+        ]) expect(corpo).toContain(t);
+        await expect(page.locator('#f-desafio')).toHaveAttribute('placeholder', 'Ex.: muito retrabalho, tudo passa por mim, quem entra demora para aprender.');
+        for (const antigo of ['Isso acontece com times bons', 'uma ferramenta nova, a IA', 'deixe aberta a ferramenta', 'Quanto custa?']) expect(corpo).not.toContain(antigo);
+    });
+
+    test('quadro e ponto cego: lado a lado no desktop, empilhados a 390 px', async ({ page }) => {
+        const caixas = (sel) => page.locator(sel).evaluateAll((els) => els.map((e) => { const b = e.getBoundingClientRect(); return { x: Math.round(b.x), y: Math.round(b.y) }; }));
+        await page.setViewportSize({ width: 1280, height: 900 });
+        await page.goto('/analise');
+        for (const sel of ['.dados > div', '.ponto-grid > div']) {
+            const c = await caixas(sel);
+            expect(new Set(c.map((b) => b.x)).size, `${sel} no desktop`).toBe(c.length);
+        }
+        await page.setViewportSize({ width: 390, height: 844 });
+        for (const sel of ['.dados > div', '.ponto-grid > div']) {
+            const c = await caixas(sel);
+            expect(new Set(c.map((b) => b.x)).size, `${sel} a 390 px`).toBe(1);
+            expect(c.every((b, i) => i === 0 || b.y > c[i - 1].y)).toBe(true);
+        }
+    });
+
     test('todo CTA leva a #aplicar', async ({ page }) => {
         await page.goto('/analise');
-        // Cinco CTAs: hero, cartão escuro da análise, "dois caminhos", "por que agora" e a barra
+        // Seis CTAs: hero, ponto cego, cartão escuro da análise, "dois caminhos", "por que agora" e a barra
         // fixa do mobile. Contar antes impede que a suíte passe caso um deles suma.
         const ctas = page.locator('a.btn');
-        await expect(ctas).toHaveCount(5);
+        await expect(ctas).toHaveCount(6);
         for (const cta of await ctas.evaluateAll((els) => els.map((e) => ({ href: e.getAttribute('href'), texto: e.textContent.trim() })))) {
             expect(cta.href, `CTA "${cta.texto}" com destino divergente`).toBe('#aplicar');
             expect(cta.texto, 'rótulo de CTA divergente').toBe(CTA);

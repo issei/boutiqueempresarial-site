@@ -86,7 +86,7 @@
     <title>Análise de Operação e Equipe | Boutique Empresarial</title>
 
     <meta name="description"
-        content="Em 45 minutos, eu te mostro como a sua empresa pode faturar mais com a equipe que você já tem, sem você precisar trabalhar mais.">
+        content="Em 45 minutos, mapeamos o que reduz o faturamento da sua empresa e você sai com um plano de ação de 30 dias para faturar mais com a equipe que já tem.">
     <meta name="robots" content="noindex, follow">
 
     <meta property="og:url" content="https://boutiqueempresarial.com.br/analise" />
@@ -95,16 +95,16 @@
     <meta property="og:locale" content="pt_BR">
     <meta property="og:title" content="Análise de Operação e Equipe | Boutique Empresarial">
     <meta property="og:description"
-        content="Em 45 minutos, eu te mostro como a sua empresa pode faturar mais com a equipe que você já tem, sem você precisar trabalhar mais.">
-    <meta property="og:image" content="https://boutiqueempresarial.com.br/og-image.jpg">
+        content="Em 45 minutos, mapeamos o que reduz o faturamento da sua empresa e você sai com um plano de ação de 30 dias para faturar mais com a equipe que já tem.">
+    <meta property="og:image" content="https://boutiqueempresarial.com.br/og-analise.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Análise de Operação e Equipe | Boutique Empresarial">
     <meta name="twitter:description"
-        content="Em 45 minutos, eu te mostro como a sua empresa pode faturar mais com a equipe que você já tem, sem você precisar trabalhar mais.">
-    <meta name="twitter:image" content="https://boutiqueempresarial.com.br/og-image.jpg">
+        content="Em 45 minutos, mapeamos o que reduz o faturamento da sua empresa e você sai com um plano de ação de 30 dias para faturar mais com a equipe que já tem.">
+    <meta name="twitter:image" content="https://boutiqueempresarial.com.br/og-analise.jpg">
 
     <link rel="stylesheet" href="/style.css">
 
@@ -126,7 +126,7 @@
         main .faixa { padding: 0; }
 
         h1, h2, h3, .achado-numero, .passos-v li::before { letter-spacing: -0.02em; font-variant-numeric: lining-nums; }
-        /* O H1 da análise é mais longo que o da v4: teto de 3rem (spec §5.2). */
+        /* Teto de 3rem (home-analise-operacao.md §5.2). */
         main h1 {
             font-size: clamp(2rem, 3.6vw, 3rem);
             line-height: 1.12;
@@ -221,18 +221,8 @@
         /* ── Hero ─────────────────────────────────────────────────────────────── */
         .hero-grid { display: grid; gap: 40px; align-items: center; }
         .hero .lead { font-size: 1.1875rem; line-height: 1.65; max-width: 52ch; }
-        .hero .lead strong { color: var(--bg-color); font-weight: 600; }
         .hero-cta { margin-top: 32px; }
         .hero-nota { font-size: 0.95rem; margin: 16px 0 0; }
-        .selos { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 28px; }
-        .selos li {
-            font-size: 0.8125rem;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: #d3cdbf;
-        }
-        .selos li + li::before { content: "·"; margin-right: 20px; color: var(--accent-light); }
         .hero-foto { position: relative; margin: 0; max-width: 420px; justify-self: center; width: 100%; }
         .hero-foto img {
             display: block;
@@ -271,6 +261,21 @@
             text-align: center;
         }
         .faixa span { margin: 0 14px; }
+
+        /* ── Quadro da sessão ─────────────────────────────────────────────────── */
+        main .quadro { padding-bottom: 0; }
+        .sessao { padding: clamp(24px, 4vw, 44px); background: var(--card); border: 1px solid #e3dccc; border-radius: 20px; }
+        main .sessao h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); line-height: 1.25; margin-bottom: 14px; }
+        .dados { display: grid; margin-top: 28px; padding-top: 8px; border-top: 1px solid #ddd3bf; }
+        .dados div { display: flex; flex-direction: column-reverse; justify-content: flex-end; padding: 16px 0; }
+        .dados dd { margin: 0; font-family: var(--font-playfair); font-size: 2rem; line-height: 1.2; color: var(--accent-color); font-variant-numeric: lining-nums; }
+        .dados dt { font-size: 0.75rem; font-weight: 500; line-height: 1.5; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); }
+        @media (min-width: 600px) {
+            .dados { grid-template-columns: repeat(3, 1fr); padding-top: 24px; }
+            .dados div { padding: 0 24px; }
+            .dados div:first-child { padding-left: 0; }
+            .dados div + div { border-left: 1px solid #ddd3bf; }
+        }
 
         /* ── Sinais ───────────────────────────────────────────────────────────── */
         .sinais-grid { display: grid; gap: 28px; margin-top: 36px; align-items: start; }
@@ -314,18 +319,33 @@
         .contador p { color: #d3cdbf; font-weight: 400; font-size: 1rem; }
 
         /* ── Ponto cego ───────────────────────────────────────────────────────── */
-        .ciclo { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 32px 0; }
+        .ponto-grid { display: grid; gap: 40px; align-items: center; }
+        /* A linha lateral (4 → 1) e as setas são decorativas: a ordem já está na lista numerada. */
+        .ciclo { list-style: none; position: relative; display: grid; gap: 32px; padding-left: 36px; counter-reset: passo; }
         .ciclo li {
-            padding: 10px 18px;
+            counter-increment: passo;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            min-height: 64px;
+            padding: 12px 20px;
             border: 1px solid #5a5347;
-            border-radius: 999px;
-            font-size: 0.9375rem;
+            border-radius: 12px;
+            font-size: 1rem;
             font-weight: 500;
+            line-height: 1.4;
             color: var(--bg-color);
         }
-        .ciclo li + li::before { content: "→"; margin-right: 10px; color: var(--accent-light); }
-        .ciclo li:last-child::after { content: " ↺"; color: var(--accent-light); }
-        .caixa-borda { padding: 24px 28px; border: 1px solid #5a5347; border-radius: 16px; max-width: 68ch; }
+        .ciclo li::before { content: counter(passo); flex: none; font-family: var(--font-playfair); font-size: 1.375rem; line-height: 1; color: var(--accent-light); font-variant-numeric: lining-nums; }
+        .ciclo li + li::after { content: "↓"; position: absolute; left: 50%; top: -29px; line-height: 1.6; color: var(--accent-light); }
+        .ciclo li:last-child { border-color: var(--accent-light); }
+        .ciclo::before { content: ""; position: absolute; left: 4px; top: 32px; bottom: 32px; width: 26px; border: 1px solid var(--accent-light); border-right: 0; border-radius: 14px 0 0 14px; }
+        .ciclo::after { content: ""; position: absolute; left: 26px; top: 27px; border: 6px solid transparent; border-left: 8px solid var(--accent-light); border-right: 0; }
+        .dark .ciclo-nota { margin-top: 16px; font-size: 0.875rem; }
+        .ponto-cta { margin: 40px 0; max-width: none; }
+        .metodo { padding: 28px 32px; background: #1d1b18; border-left: 3px solid var(--accent-light); border-radius: 0 12px 12px 0; }
+        .metodo p { max-width: none; }
 
         /* ── O que você leva ──────────────────────────────────────────────────── */
         .achados-grid { display: grid; gap: 20px; margin: 36px 0 20px; }
@@ -466,6 +486,7 @@
         @media (min-width: 900px) {
             .hero-grid { grid-template-columns: 1.15fr 0.85fr; gap: 64px; }
             .sinais-grid { grid-template-columns: 1.5fr 1fr; gap: 40px; }
+            .ponto-grid { grid-template-columns: 1fr 1fr; gap: 64px; }
             .contador { position: sticky; top: 24px; }
             .achados-grid { grid-template-columns: repeat(2, 1fr); }
             .caminhos { grid-template-columns: repeat(2, 1fr); }
@@ -500,17 +521,11 @@
         <section class="hero dark">
             <div class="container container--wide hero-grid">
                 <div>
-                    <p class="eyebrow">Análise de Operação e Equipe · para empresários com equipe</p>
-                    <h1>Em 45 minutos, eu te mostro como a sua empresa pode <em>faturar mais com a equipe que você já tem</em>, sem você precisar trabalhar mais.</h1>
-                    <p class="lead">Uma sessão individual e gratuita. Você sai com o <strong>plano de 30 dias</strong> com os pontos que mais travam o seu faturamento e o que fazer primeiro na próxima semana.</p>
+                    <p class="eyebrow">Para empresários com equipe</p>
+                    <h1>O plano para aumentar o faturamento da sua empresa nos próximos 30 dias, <em>com a equipe que você já tem.</em></h1>
+                    <p class="lead">Se a sua operação cresceu, os custos subiram e o lucro não acompanhou na mesma proporção, você está pagando caro por horas da equipe que não viram faturamento: retrabalho, falhas na execução e um time totalmente dependente de você para resolver problemas básicos.</p>
                     <p class="hero-cta"><a href="#aplicar" class="btn">Quero a análise da minha operação</a></p>
-                    <p class="hero-nota">Você responde 6 perguntas em 2 minutos, aqui mesmo na página. Se a sua aplicação for aprovada, eu entro em contato para marcar.</p>
-                    <ul class="selos">
-                        <li>45 minutos</li>
-                        <li>Individual</li>
-                        <li>Plano de 30 dias</li>
-                        <li>Gratuita</li>
-                    </ul>
+                    <p class="hero-nota">Você responde 6 perguntas em 2 minutos.</p>
                 </div>
                 <figure class="hero-foto">
                     <img src="/fotos/talita-issei.webp" width="800" height="1000"
@@ -526,6 +541,21 @@
             </div>
         </section>
 
+        <section class="quadro">
+            <div class="container container--wide">
+                <div class="sessao">
+                    <p class="eyebrow">Análise de Operação e Equipe</p>
+                    <h2>Em 45 minutos, mapeamos os pontos da sua operação e da sua equipe que hoje reduzem o seu faturamento, e o que resolver primeiro.</h2>
+                    <p>Você sai com um <strong>plano de ação de 30 dias</strong> e as prioridades exatas da sua próxima semana.</p>
+                    <dl class="dados">
+                        <div><dt>minutos</dt><dd>45</dd></div>
+                        <div><dt>com a Talita Issei</dt><dd>1:1</dd></div>
+                        <div><dt>para empresas aprovadas</dt><dd>Sem custo</dd></div>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
         <section>
             <div class="container container--wide">
                 <p class="eyebrow">Antes de tudo</p>
@@ -534,17 +564,17 @@
                 <div class="sinais-grid">
                     <ul class="sinais">
                         <li><label class="sinal"><input type="checkbox"><span>A entrega chega e você precisa conferir antes de mandar para o cliente.</span></label></li>
-                        <li><label class="sinal"><input type="checkbox"><span>A entrega volta para ajuste, e o time faz de novo um trabalho que já estava pago.</span></label></li>
+                        <li><label class="sinal"><input type="checkbox"><span>A entrega volta, e o time refaz um trabalho que já estava pago.</span></label></li>
                         <li><label class="sinal"><input type="checkbox"><span>Você encontra o mesmo erro que já tinha corrigido no mês passado.</span></label></li>
                         <li><label class="sinal"><input type="checkbox"><span>Você contratou mais gente, a folha subiu, e o seu trabalho subiu junto.</span></label></li>
                         <li><label class="sinal"><input type="checkbox"><span>Você paga uma ferramenta, e os pedidos continuam chegando pelo WhatsApp.</span></label></li>
-                        <li><label class="sinal"><input type="checkbox"><span>Quem entrou há pouco tempo erra o que o funcionário mais antigo já sabe, e quem ensina é você.</span></label></li>
-                        <li><label class="sinal"><input type="checkbox"><span>Quando você passa um dia fora, o trabalho fica parado esperando a sua resposta.</span></label></li>
+                        <li><label class="sinal"><input type="checkbox"><span>Quem entra demora meses para trabalhar sozinho, e quem treina é você.</span></label></li>
+                        <li><label class="sinal"><input type="checkbox"><span>Quando você passa um dia fora, a equipe não consegue decidir e o trabalho para.</span></label></li>
                         <li><label class="sinal"><input type="checkbox"><span>Você adia um cliente novo porque não sabe quem vai conseguir entregar.</span></label></li>
                     </ul>
                     <div class="contador" aria-live="polite">
                         <p class="contador-n"><b id="sinais-n">0</b> de 8</p>
-                        <p>Toque nas frases ao lado. Cada uma é um sinal de que parte do que você paga ao time vai para refazer trabalho e para esperar por você.</p>
+                        <p>Toque nas frases ao lado. Cada uma é um sinal de que parte do que você paga ao time não está virando faturamento.</p>
                     </div>
                 </div>
             </div>
@@ -552,18 +582,26 @@
 
         <section class="dark">
             <div class="container container--wide">
-                <p class="eyebrow">O ponto cego</p>
-                <h2>Por que contratar mais gente <em>não aumenta</em> o faturamento na mesma proporção</h2>
-                <p>Quando o jeito certo de fazer cada entrega está só na sua cabeça e na do funcionário mais antigo, cada pessoa nova aprende perguntando. A folha sobe, e a parte da sua semana que vai para ensinar e conferir sobe junto.</p>
-                <ol class="ciclo">
-                    <li>Entra alguém novo</li>
-                    <li>Aprende perguntando para você</li>
-                    <li>Erra no que não está escrito</li>
-                    <li>Você confere e corrige</li>
-                </ol>
-                <div class="caixa-borda">
-                    <p>Isso acontece com times bons e com empresários cuidadosos. Quem entra erra exatamente no que não está escrito. Se você trocar a pessoa, a próxima erra no mesmo ponto. A empresa cresce quando o que o funcionário mais antigo sabe passa a valer para quem entra.</p>
-                    <p>Por isso, uma ferramenta nova, a IA ou mais uma contratação costumam acelerar o que já existe na operação, inclusive o retrabalho.</p>
+                <div class="ponto-grid">
+                    <div>
+                        <p class="eyebrow">O ponto cego</p>
+                        <h2>Por que contratar mais gente <em>não aumenta</em> o faturamento na mesma proporção</h2>
+                        <p>Cada pessoa nova aumenta a folha no primeiro dia. Sem um padrão claro de execução, ela também aumenta o tempo que você passa treinando, conferindo e corrigindo.</p>
+                    </div>
+                    <div>
+                        <ol class="ciclo">
+                            <li>Entra alguém novo</li>
+                            <li>Cada um faz do seu jeito</li>
+                            <li>O erro volta como retrabalho</li>
+                            <li>A correção sobe para você</li>
+                        </ol>
+                        <p class="ciclo-nota">E o ciclo recomeça na próxima contratação.</p>
+                    </div>
+                </div>
+                <p class="ponto-cta"><a href="#aplicar" class="btn">Quero a análise da minha operação</a></p>
+                <div class="metodo">
+                    <p>Quando a empresa tem um método claro de execução, a equipe para de depender de você para resolver o básico e as horas pagas passam a virar faturamento.</p>
+                    <p><strong>É isso que mapeamos na sua Análise de Operação e Equipe.</strong></p>
                 </div>
             </div>
         </section>
@@ -575,13 +613,13 @@
                 <div class="achados-grid">
                     <article class="achado">
                         <span class="achado-numero">01</span>
-                        <h3>Se você paga duas vezes pelo mesmo trabalho</h3>
-                        <p>Se você está pagando duas vezes pelo mesmo trabalho: uma para o time fazer e outra para refazer, porque a entrega não saiu certa da primeira vez.</p>
+                        <h3>Quanto do trabalho pago vira retrabalho</h3>
+                        <p>Onde a sua empresa paga duas vezes pela mesma entrega: uma para o time fazer e outra para refazer.</p>
                     </article>
                     <article class="achado">
                         <span class="achado-numero">02</span>
                         <h3>O que fazer antes de contratar</h3>
-                        <p>Por que contratar mais gente aumenta a folha e o seu trabalho, mas não aumenta o faturamento na mesma proporção, e o que fazer antes da próxima contratação.</p>
+                        <p>Se a próxima contratação vai aumentar o faturamento ou só a folha, e o que resolver antes de contratar.</p>
                     </article>
                     <article class="achado">
                         <span class="achado-numero">03</span>
@@ -591,7 +629,7 @@
                     <article class="achado">
                         <span class="achado-numero">04</span>
                         <h3>O plano de 30 dias</h3>
-                        <p>O plano de 30 dias com os pontos que mais travam o seu faturamento, e o que fazer primeiro na próxima semana.</p>
+                        <p>O plano de 30 dias com os pontos que mais reduzem o seu faturamento, e o que fazer primeiro na próxima semana.</p>
                     </article>
                 </div>
                 <div class="final-card dark">
@@ -612,19 +650,17 @@
                         <ul>
                             <li>Cada pessoa nova aumenta a folha e o que você precisa ensinar e conferir.</li>
                             <li>Parte do que você paga ao time continua indo para refazer entregas.</li>
-                            <li>Para atender mais clientes, você precisa trabalhar mais.</li>
+                            <li>Para atender mais clientes, você precisa contratar mais.</li>
                         </ul>
                     </article>
                     <article class="caminho dark">
                         <p class="eyebrow">Com a operação organizada</p>
                         <h3>O que muda quando o time entrega certo da primeira vez</h3>
                         <ul>
-                            <li>Menos entregas voltam para ajuste, e as horas do time vão para atender mais clientes.</li>
-                            <li>O que o funcionário mais antigo sabe passa a valer para quem entra.</li>
-                            <li>O time segue o mesmo padrão, e você para de explicar a mesma coisa.</li>
-                            <li>Você atende mais clientes antes de precisar contratar.</li>
+                            <li>Menos retrabalho, e as horas do time vão para atender mais clientes.</li>
+                            <li>Quem entra aprende o padrão e passa a produzir mais rápido.</li>
+                            <li>A equipe resolve o dia a dia, e você consegue passar uns dias fora.</li>
                             <li>Sobra tempo para vender e para pensar no crescimento da empresa.</li>
-                            <li>Você consegue passar uns dias fora sem o trabalho ficar parado esperando você.</li>
                         </ul>
                     </article>
                 </div>
@@ -655,7 +691,7 @@
                 <div class="paraquem">
                     <article>
                         <h3>É para você</h3>
-                        <p>Se você tem 3 ou mais pessoas na equipe e quer que ela atenda mais clientes, sem contratar no mesmo ritmo e sem você trabalhar mais.</p>
+                        <p>Se você tem 3 ou mais pessoas na equipe e quer faturar mais sem contratar no mesmo ritmo.</p>
                     </article>
                     <article class="nao">
                         <h3>Não é para você</h3>
@@ -676,7 +712,7 @@
                     <ol class="passos-v">
                         <li><span><b>Você responde</b> as 6 perguntas do formulário.</span></li>
                         <li><span><b>Eu leio as suas respostas.</b> Se a sua aplicação for aprovada, eu entro em contato pelo WhatsApp para marcar.</span></li>
-                        <li><span><b>Fazemos os 45 minutos</b> por vídeo, no horário que for melhor para você.</span></li>
+                        <li><span><b>A análise acontece por vídeo</b>, em 45 minutos.</span></li>
                     </ol>
                 </div>
                 <form class="form-card" id="form-aplicar" novalidate>
@@ -717,7 +753,7 @@
                     </fieldset>
                     <div class="campo">
                         <label for="f-desafio">Qual é o seu maior desafio com o seu time hoje?</label>
-                        <textarea id="f-desafio" name="desafio" rows="3" placeholder="Ex.: as entregas voltam para ajuste, tudo passa por mim, quem entra demora para aprender." required aria-describedby="err-desafio"></textarea>
+                        <textarea id="f-desafio" name="desafio" rows="3" placeholder="Ex.: muito retrabalho, tudo passa por mim, quem entra demora para aprender." required aria-describedby="err-desafio"></textarea>
                         <p class="campo-erro" id="err-desafio" hidden></p>
                     </div>
                     <button type="submit" class="btn btn-form" id="f-enviar">Quero a análise da minha operação</button>
@@ -729,22 +765,22 @@
 
         <!-- AEO-BODY:START -->
         <!-- O resumo continua em .aeo-tldr — alvo do speakable e cobrado por tests/aeo.spec.js
-             (HARNESS_AEO §B3). As 7 perguntas são as mesmas do FAQPage do JSON-LD. -->
+             (HARNESS_AEO §B3). Sem JSON-LD: página noindex. -->
         <section class="aeo" aria-label="Resumo e perguntas frequentes">
             <div class="container container--wide">
                 <p class="eyebrow">Dúvidas</p>
                 <h2>Perguntas frequentes</h2>
                 <div class="aeo-tldr">
-                    <p>Na Análise de Operação e Equipe, em 45 minutos, eu te mostro como a sua empresa pode faturar mais com a equipe que você já tem, sem você precisar trabalhar mais. Você sai com o plano de 30 dias.</p>
+                    <p>Na Análise de Operação e Equipe, em 45 minutos, mapeamos os pontos da sua operação e da sua equipe que hoje reduzem o seu faturamento. Você sai com um plano de ação de 30 dias.</p>
                 </div>
                 <div class="aeo-faq">
                     <details>
-                        <summary>Quanto custa?</summary>
-                        <p>Nada. A análise é gratuita.</p>
+                        <summary>Tem custo?</summary>
+                        <p>Não, para empresas aprovadas. A análise é feita por mim, individualmente, por isso passa por aplicação.</p>
                     </details>
                     <details>
                         <summary>Preciso levar números ou relatórios?</summary>
-                        <p>Não. Eu faço as perguntas e você responde com o que sabe da sua semana. Se puder, deixe aberta a ferramenta que o time usa para organizar o trabalho, para me mostrar uma tarefa.</p>
+                        <p>Não. Eu faço as perguntas e você responde com o que sabe da sua semana.</p>
                     </details>
                     <details>
                         <summary>Já tentei ferramenta, consultoria ou contratar um gerente e nada mudou. Serve para mim?</summary>
@@ -752,7 +788,7 @@
                     </details>
                     <details>
                         <summary>O meu time não segue processo nenhum. Por onde começa?</summary>
-                        <p>Pela entrega que mais volta para ajuste ou que mais passa pela sua mão. É ela que entra no plano de 30 dias como primeiro ponto.</p>
+                        <p>Pela entrega que mais gera retrabalho ou que mais passa pela sua mão. É ela que entra no plano de 30 dias como primeiro ponto.</p>
                     </details>
                     <details>
                         <summary>Estou sem tempo nenhum. Faz sentido agendar?</summary>
@@ -775,9 +811,9 @@
             <div class="container container--wide">
                 <p class="eyebrow">Por que agora</p>
                 <p>O fim do ano é quando você planeja 2027 e decide se vai contratar. Antes da próxima contratação, vale saber se você está pagando duas vezes pelo mesmo trabalho.</p>
-                <h2 class="fechamento-frase">Em 45 minutos, veja onde a sua operação trava o faturamento <em>e o que fazer primeiro.</em></h2>
+                <h2 class="fechamento-frase">Em 45 minutos, veja o que reduz o seu faturamento hoje <em>e o que resolver primeiro.</em></h2>
                 <p><a href="#aplicar" class="btn">Quero a análise da minha operação</a></p>
-                <p class="micro">Análise gratuita · 45 minutos · Individual</p>
+                <p class="micro">45 minutos · 1:1 com a Talita · Sem custo para empresas aprovadas</p>
             </div>
         </section>
     </main>
