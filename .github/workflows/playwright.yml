@@ -12,11 +12,14 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: lts/*
+        # A mesma do deploy.yml. Com lts/* o runner passou para o Node 26, e o instalador do Playwright
+        # 1.58 trava depois do download (toda PR desde 02/11/2026 caiu no limite de 60 min).
+        node-version: 20
     - name: Install dependencies
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
+      timeout-minutes: 15 # trava = falha rápida, não 60 min
     - name: Run Playwright tests
       run: npm run gate
     - uses: actions/upload-artifact@v4

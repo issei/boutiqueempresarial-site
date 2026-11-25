@@ -1,3 +1,5 @@
+> **Texto vigente desde 24/11:** `analise-alteracoes-24-11.md` prevalece sobre este arquivo onde os dois divergem.
+>
 > **Status:** texto e visual da página `/analise` (ver `pagina-analise-operacao.md`; a home voltou à `main` em 22/11). Fonte: metaprompt da Talita de 20/11, copiado abaixo sem alteração. Divergência decidida pelo Issei em 21/11: o formulário ganhou o campo "Seu e-mail" (o CRM recusa lead sem e-mail), e o texto passou de "5 perguntas" para "6 perguntas".
 
 # Metaprompt: nova página da bio (Análise de Operação e Equipe)
